@@ -1,6 +1,6 @@
 class EndPoints {
-  static const String baseUrl = 'https://saad-ai.quickluxe.net/api/';
-  static const String globalURL = 'https://saad-ai.quickluxe.net/api/v1/Client';
+  static const String baseUrl = 'https://.net/api/';
+  static const String globalURL = 'https:/api/v1/Client';
 
   //
   static const String mobileAPI = '${baseUrl}mobile/';

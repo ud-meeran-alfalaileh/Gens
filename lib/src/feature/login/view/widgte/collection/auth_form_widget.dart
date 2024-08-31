@@ -39,7 +39,7 @@ class _AuthFormState extends State<AuthForm> {
               decoration: InputDecoration(
                   prefixIcon: Icon(
                     widget.formModel.icon,
-                    color: AppTheme.lightAppColors.primary.withOpacity(.6),
+                    color: AppTheme.lightAppColors.primary,
                   ),
                   filled: true,
                   fillColor: AppTheme.lightAppColors.background,
@@ -57,7 +57,8 @@ class _AuthFormState extends State<AuthForm> {
                   hintText: widget.formModel.hintText.tr,
                   hintStyle: TextStyle(
                       fontFamily: "Inter",
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: 1.5,
                       color: AppTheme.lightAppColors.black.withOpacity(.5),
                       fontSize: 14)))),
     );

@@ -3,6 +3,7 @@ import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/core/utils/app_button.dart';
+import 'package:gens/src/feature/forgtet_password/view/page/forget_password_page.dart';
 import 'package:gens/src/feature/login/controller/login_controller.dart';
 import 'package:gens/src/feature/login/model/login_form_model.dart';
 import 'package:gens/src/feature/login/view/widgte/collection/auth_form_widget.dart';
@@ -41,24 +42,21 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.center,
-      child: Container(
-          // padding: const EdgeInsets.all(24),
-          // margin: const EdgeInsets.all(24),
-          width: context.screenWidth,
-          height: context.screenHeight * .8,
-          decoration: BoxDecoration(
-              color: AppTheme.lightAppColors.background,
-              borderRadius: BorderRadius.circular(20)),
-          child: Form(
-            key: fromKey,
+    return Container(
+        width: context.screenWidth,
+        decoration: BoxDecoration(
+            color: AppTheme.lightAppColors.background,
+            borderRadius: BorderRadius.circular(20)),
+        child: Form(
+          key: fromKey,
+          child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                (context.screenHeight * .1).kH,
                 Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: Column(
                     children: [
                       Image.asset(
@@ -66,6 +64,9 @@ class _LoginWidgetState extends State<LoginWidget> {
                         width: context.screenWidth * .6,
                         fit: BoxFit.cover,
                       ),
+                      LoginText.mainText("Hi, Welcome Back! "),
+                      10.0.kH,
+                      LoginText.secText("Hope you’re doing fine."),
                       Obx(() {
                         return errorText.value != "valid"
                             ? Column(
@@ -105,7 +106,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                       (20.5).kH,
                       AuthForm(
                         formModel: FormModel(
-                            icon: Icons.lock,
+                            icon: Icons.lock_outline,
                             controller: controller.password,
                             enableText: false,
                             hintText: 'loginPassword'.tr,
@@ -119,7 +120,10 @@ class _LoginWidgetState extends State<LoginWidget> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           GestureDetector(
-                            child: Text("Forgot password?"),
+                            onTap: () {
+                              Get.to(() => ForgetPasswordPage());
+                            },
+                            child: const Text("Forgot password?"),
                           ),
                         ],
                       ),
@@ -140,6 +144,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                     ],
                   ),
                 ),
+                (context.screenWidth * .1).kH,
                 SizedBox(
                   height: context.screenHeight * .02,
                   child: Stack(
@@ -150,7 +155,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                         child: Container(
                           width: context.screenWidth * .1,
                           color: AppTheme.lightAppColors.background,
-                          child: Center(child: Text("Or")),
+                          child: const Center(child: Text("Or")),
                         ),
                       )
                     ],
@@ -172,7 +177,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                         )))
               ],
             ),
-          )),
-    );
+          ),
+        ));
   }
 }

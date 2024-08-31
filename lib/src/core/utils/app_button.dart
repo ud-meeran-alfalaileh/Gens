@@ -15,7 +15,7 @@ class AppButton extends StatelessWidget {
           height: context.screenHeight * .05,
           decoration: BoxDecoration(
               color: AppTheme.lightAppColors.primary,
-              borderRadius: BorderRadius.circular(23)),
+              borderRadius: BorderRadius.circular(20)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [

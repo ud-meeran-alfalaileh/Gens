@@ -161,10 +161,17 @@ class _SplashWidgetState extends State<SplashWidget> {
               image,
               fit: BoxFit.cover,
             )),
-        20.0.kH,
-        SplashText.mainText(title),
-        10.0.kH,
-        SplashText.secText(description),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            children: [
+              20.0.kH,
+              SplashText.mainText(title),
+              10.0.kH,
+              SplashText.secText(description),
+            ],
+          ),
+        )
       ],
     );
   }

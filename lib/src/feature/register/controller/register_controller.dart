@@ -1,8 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:gens/src/core/api/api_services.dart';
 import 'package:gens/src/core/api/end_points.dart';
 import 'package:gens/src/core/api/injection_container.dart';
@@ -10,11 +8,14 @@ import 'package:gens/src/core/api/netwok_info.dart';
 import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/feature/login/view/pages/login_page.dart';
 import 'package:gens/src/feature/register/model/country_model.dart';
+import 'package:get/get.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class RegisterController extends GetxController {
   final name = TextEditingController();
+  final secName = TextEditingController();
   final List<String> genderOptions = ['Male', 'Female', 'Prefer not to say'];
 
   // Initialize as null
@@ -59,7 +60,6 @@ class RegisterController extends GetxController {
   void onInit() {
     super.onInit();
     pageController = PageController();
-    getCountry();
   }
 
   vaildPassword(String? password) {
@@ -74,6 +74,15 @@ class RegisterController extends GetxController {
       return "nameValidation".tr;
     } else if (name.length < 5) {
       return "nameValidation".tr;
+    }
+    return null;
+  }
+
+  validsecName(String name) {
+    if (name.isEmpty) {
+      return "secNameValidation".tr;
+    } else if (name.length < 5) {
+      return "secNameValidation".tr;
     }
     return null;
   }
@@ -109,14 +118,14 @@ class RegisterController extends GetxController {
 
     // Validate each form field and collect errors
     final nameError = validUserName(name.text);
+    final secNameError = validsecName(secName.text);
     final phoneError = validatePhoneNumber(phoneNumber.text);
     final genderError = validGender();
-    final countryError = validCountry();
 
     if (nameError != null) errors.add("- $nameError");
+    if (secNameError != null) errors.add("- $secNameError");
     if (phoneError != null) errors.add("- $phoneError");
     if (genderError != null) errors.add("- $genderError");
-    if (countryError != null) errors.add("- $countryError");
 
     if (errors.isNotEmpty) {
       return errors.first;
@@ -223,19 +232,6 @@ class RegisterController extends GetxController {
 
     // Mark isMounted as false once the method is complete
     isMounted = false;
-  }
-
-  Future<void> getCountry() async {
-    if (await networkInfo.isConnected) {
-      final response = await dioConsumer.get(EndPoints.getCountry);
-      if (response.statusCode == StatusCode.ok) {
-        final List<dynamic> responseData =
-            json.decode(response.data)['data']['Countries'];
-        countries.value = responseData
-            .map((countryData) => CountryModel.fromJson(countryData))
-            .toList();
-      }
-    }
   }
 
   @override
