@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:gens/src/config/sizes/size_box_extension.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/core/user.dart';
+import 'package:gens/src/feature/dashboard/view/page/dashboard_page.dart';
+import 'package:gens/src/feature/history/view/page/history_page.dart';
 import 'package:gens/src/feature/login/view/pages/login_page.dart';
 import 'package:gens/src/feature/nav_bar/controller/nav_bar_controller.dart';
 import 'package:gens/src/feature/nav_bar/view/partial_widget/custome_navbar.dart';
+import 'package:get/get.dart';
 
 class NavBarPage extends StatefulWidget {
   const NavBarPage({super.key});
@@ -53,9 +55,9 @@ class _NavBarPageState extends State<NavBarPage> {
                     Obx(() {
                       switch (controller.selectedIndex.value) {
                         case 0:
-                          return const Scaffold();
+                          return const DashboardPage();
                         case 1:
-                          return const Scaffold();
+                          return const HistoryPage();
 
                         case 2:
                           return const Scaffold();
@@ -77,10 +79,13 @@ class _NavBarPageState extends State<NavBarPage> {
                               alignment: Alignment.bottomCenter,
                               child: Container(
                                 height: 80,
-                                padding: const EdgeInsets.only(top: 10),
+                                // padding: const EdgeInsets.only(top: 2),
                                 decoration: BoxDecoration(
                                   borderRadius: const BorderRadius.vertical(
-                                      top: Radius.circular(50)),
+                                      top: Radius.circular(30)),
+                                  border: Border.all(
+                                      color: AppTheme.lightAppColors.primary
+                                          .withOpacity(0.1)),
                                   color: AppTheme.lightAppColors.background,
                                 ),
                                 child: Row(
@@ -89,19 +94,36 @@ class _NavBarPageState extends State<NavBarPage> {
                                       MainAxisAlignment.spaceAround,
                                   children: <Widget>[
                                     CustomNavItem(
-                                      icon: ColorFiltered(
-                                        colorFilter: ColorFilter.mode(
-                                          controller.selectedIndex.value == 0
-                                              ? AppTheme
-                                                  .lightAppColors.thirdTextcolor
-                                              : AppTheme
-                                                  .lightAppColors.mainTextcolor
-                                                  .withOpacity(.9),
-                                          BlendMode.srcIn,
-                                        ),
-                                        child: Image.asset(
-                                          'assets/icon/Home.png',
-                                          height: 22,
+                                      icon: Container(
+                                        width: 50,
+                                        height: 50,
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: controller
+                                                        .selectedIndex.value ==
+                                                    0
+                                                ? AppTheme
+                                                    .lightAppColors.maincolor
+                                                : AppTheme
+                                                    .lightAppColors.background),
+                                        child: Center(
+                                          child: ColorFiltered(
+                                            colorFilter: ColorFilter.mode(
+                                              controller.selectedIndex.value ==
+                                                      0
+                                                  ? AppTheme
+                                                      .lightAppColors.primary
+                                                  : AppTheme.lightAppColors
+                                                      .mainTextcolor
+                                                      .withOpacity(.9),
+                                              BlendMode.srcIn,
+                                            ),
+                                            child: SvgPicture.asset(
+                                              'assets/image/Home.svg',
+                                              width: 30,
+                                            ),
+                                          ),
                                         ),
                                       ),
                                       onTap: () {
@@ -112,19 +134,36 @@ class _NavBarPageState extends State<NavBarPage> {
                                       title: ' ',
                                     ),
                                     CustomNavItem(
-                                      icon: ColorFiltered(
-                                        colorFilter: ColorFilter.mode(
-                                          controller.selectedIndex.value == 1
-                                              ? AppTheme
-                                                  .lightAppColors.thirdTextcolor
-                                              : AppTheme
-                                                  .lightAppColors.mainTextcolor
-                                                  .withOpacity(.9),
-                                          BlendMode.srcIn,
-                                        ),
-                                        child: Image.asset(
-                                          'assets/icon/History.png',
-                                          height: 23,
+                                      icon: Container(
+                                        width: 50,
+                                        height: 50,
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: controller
+                                                        .selectedIndex.value ==
+                                                    1
+                                                ? AppTheme
+                                                    .lightAppColors.maincolor
+                                                : AppTheme
+                                                    .lightAppColors.background),
+                                        child: Center(
+                                          child: ColorFiltered(
+                                            colorFilter: ColorFilter.mode(
+                                              controller.selectedIndex.value ==
+                                                      1
+                                                  ? AppTheme
+                                                      .lightAppColors.primary
+                                                  : AppTheme.lightAppColors
+                                                      .mainTextcolor
+                                                      .withOpacity(.9),
+                                              BlendMode.srcIn,
+                                            ),
+                                            child: SvgPicture.asset(
+                                              'assets/image/calendar.svg',
+                                              height: 30,
+                                            ),
+                                          ),
                                         ),
                                       ),
                                       onTap: () {
@@ -134,21 +173,37 @@ class _NavBarPageState extends State<NavBarPage> {
                                           controller.selectedIndex.value == 1,
                                       title: '',
                                     ),
-                                    (50.0).kW,
                                     CustomNavItem(
-                                      icon: ColorFiltered(
-                                        colorFilter: ColorFilter.mode(
-                                          controller.selectedIndex.value == 2
-                                              ? AppTheme
-                                                  .lightAppColors.thirdTextcolor
-                                              : AppTheme
-                                                  .lightAppColors.mainTextcolor
-                                                  .withOpacity(.9),
-                                          BlendMode.srcIn,
-                                        ),
-                                        child: Image.asset(
-                                          'assets/icon/User.png',
-                                          width: 22,
+                                      icon: Container(
+                                        width: 50,
+                                        height: 50,
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: controller
+                                                        .selectedIndex.value ==
+                                                    2
+                                                ? AppTheme
+                                                    .lightAppColors.maincolor
+                                                : AppTheme
+                                                    .lightAppColors.background),
+                                        child: Center(
+                                          child: ColorFiltered(
+                                            colorFilter: ColorFilter.mode(
+                                              controller.selectedIndex.value ==
+                                                      2
+                                                  ? AppTheme
+                                                      .lightAppColors.primary
+                                                  : AppTheme.lightAppColors
+                                                      .mainTextcolor
+                                                      .withOpacity(.9),
+                                              BlendMode.srcIn,
+                                            ),
+                                            child: SvgPicture.asset(
+                                              'assets/image/Profiel.svg',
+                                              width: 30,
+                                            ),
+                                          ),
                                         ),
                                       ),
                                       onTap: () {
@@ -157,29 +212,6 @@ class _NavBarPageState extends State<NavBarPage> {
                                       isSelected:
                                           controller.selectedIndex.value == 2,
                                       title: ' ',
-                                    ),
-                                    CustomNavItem(
-                                      icon: ColorFiltered(
-                                        colorFilter: ColorFilter.mode(
-                                          controller.selectedIndex.value == 3
-                                              ? AppTheme
-                                                  .lightAppColors.thirdTextcolor
-                                              : AppTheme
-                                                  .lightAppColors.mainTextcolor
-                                                  .withOpacity(.9),
-                                          BlendMode.srcIn,
-                                        ),
-                                        child: Image.asset(
-                                          'assets/icon/Settings.png',
-                                          width: 28,
-                                        ),
-                                      ),
-                                      onTap: () {
-                                        controller.setSelectedIndex(3);
-                                      },
-                                      isSelected:
-                                          controller.selectedIndex.value == 3,
-                                      title: 'Favorite',
                                     ),
                                   ],
                                 ),

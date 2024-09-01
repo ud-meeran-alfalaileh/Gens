@@ -23,9 +23,10 @@ class _AuthFormState extends State<AuthForm> {
   Widget build(BuildContext context) {
     return Center(
       child: SizedBox(
-          height: context.screenHeight * .08,
+          height: context.screenHeight * .07,
           width: context.screenWidth,
           child: TextFormField(
+              autofocus: true,
               cursorHeight: 15,
               textInputAction: TextInputAction.done,
               cursorColor: AppTheme.lightAppColors.black,

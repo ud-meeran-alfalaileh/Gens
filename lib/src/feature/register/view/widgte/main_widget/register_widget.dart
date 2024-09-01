@@ -11,6 +11,7 @@ import 'package:gens/src/feature/register/controller/register_controller.dart';
 import 'package:get/get.dart';
 
 RxString errorText = "".obs;
+RxString errorTextPageTwo = "".obs;
 
 class RegisterWidget extends StatelessWidget {
   const RegisterWidget({super.key});
@@ -35,18 +36,18 @@ class RegisterWidget extends StatelessWidget {
             () => Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 width: context.screenWidth,
-                height: context.screenHeight * .5,
+                height: context.screenHeight * .42,
                 decoration:
                     BoxDecoration(borderRadius: BorderRadius.circular(50)),
                 child: PageView(
-                  // physics: const NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   controller: controller.pageController,
                   onPageChanged: (index) {
                     controller.currentPageIndex.value = index;
                   },
                   children: [
-                    registerPageTwo(context, controller),
                     registerPageOne(context, controller),
+                    registerPageTwo(context, controller),
                   ],
                 )),
           ),
@@ -57,17 +58,52 @@ class RegisterWidget extends StatelessWidget {
             child: AppButton(
               onTap: () {
                 errorText.value = controller.pageOneValidateAllFields()!;
-
-                if (errorText.value == "valid") {
-                  controller.nextPage();
+                errorTextPageTwo.value = controller.validateAllFields()!;
+                if (controller.currentPageIndex.value == 0) {
+                  if (errorText.value == "valid") {
+                    controller.nextPage();
+                  } else if (errorTextPageTwo.value == 'valid') {
+                    controller.register(context);
+                  }
                 }
               },
               title: controller.currentPageIndex.value == 0
-                  ? 'start'.tr
+                  ? 'next'.tr
                   : 'register'.tr,
             ),
           ),
         ),
+        (context.screenWidth * .06).kH,
+        SizedBox(
+          height: context.screenHeight * .02,
+          child: Stack(
+            children: [
+              const Divider(),
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                  width: context.screenWidth * .1,
+                  color: AppTheme.lightAppColors.background,
+                  child: const Center(child: Text("Or")),
+                ),
+              )
+            ],
+          ),
+        ),
+        Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+                height: context.screenHeight * .03,
+                width: context.screenWidth,
+                decoration: BoxDecoration(
+                    color: AppTheme.lightAppColors.background,
+                    borderRadius:
+                        const BorderRadius.vertical(top: Radius.circular(30))),
+                child: Center(
+                  child: LoginText.haveAccount(() {
+                    Get.back();
+                  }),
+                )))
       ],
     );
   }
@@ -223,7 +259,8 @@ class RegisterWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Obx(() {
-            return controller.errorText.value != ""
+            return errorTextPageTwo.value != "" &&
+                    errorTextPageTwo.value != "valid"
                 ? Column(
                     children: [
                       (context.screenHeight * .02).kH,
@@ -232,7 +269,7 @@ class RegisterWidget extends StatelessWidget {
                         child: Row(
                           children: [
                             Text(
-                              controller.errorText.value,
+                              errorTextPageTwo.value,
                               style: const TextStyle(
                                   color: Colors.red, fontSize: 14.0),
                               textAlign: TextAlign.start,
@@ -284,17 +321,15 @@ class RegisterWidget extends StatelessWidget {
                 onTap: () {}),
           ),
           const Spacer(),
-          SizedBox(
-            width: context.screenWidth * .25,
-            child: AppButton(
-              onTap: () {
-                controller.errorText.value = controller.validateAllFields()!;
-
-                controller.register(context);
-              },
-              title: 'start'.tr,
-            ),
-          ),
+          // SizedBox(
+          //   width: context.screenWidth * .25,
+          //   child: AppButton(
+          //     onTap: () {
+          //       errorTextPageTwo.value = controller.validateAllFields()!;
+          //     },
+          //     title: 'start'.tr,
+          //   ),
+          // ),
         ],
       ),
     );

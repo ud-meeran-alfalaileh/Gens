@@ -127,7 +127,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                           ),
                         ],
                       ),
-                      (20.5).kH,
+                      (context.screenWidth * .2).kH,
                       SizedBox(
                         width: context.screenWidth * .4,
                         child: AppButton(
@@ -144,7 +144,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                     ],
                   ),
                 ),
-                (context.screenWidth * .1).kH,
+                (context.screenWidth * .15).kH,
                 SizedBox(
                   height: context.screenHeight * .02,
                   child: Stack(
@@ -164,7 +164,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                 Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
-                        height: context.screenHeight * .08,
+                        height: context.screenHeight * .03,
                         width: context.screenWidth,
                         decoration: BoxDecoration(
                             color: AppTheme.lightAppColors.background,
