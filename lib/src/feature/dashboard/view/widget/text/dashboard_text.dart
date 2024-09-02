@@ -18,6 +18,34 @@ class DashboardText {
     );
   }
 
+  static secText(title) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 10.0),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontFamily: 'Inter',
+          fontSize: 17,
+          color: AppTheme.lightAppColors.primary,
+          fontWeight:
+              FontWeight.w700, // Use FontWeight.bold for the bold variant
+        ),
+      ),
+    );
+  }
+
+  static thirdText(title) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 16,
+        color: AppTheme.lightAppColors.black.withOpacity(.5),
+        fontWeight: FontWeight.w500, // Use FontWeight.bold for the bold variant
+      ),
+    );
+  }
+
   static typeText(title) {
     return Padding(
       padding: const EdgeInsets.only(right: 10.0),

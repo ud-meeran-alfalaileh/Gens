@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
-import 'package:gens/src/feature/history/controller/history_controller.dart';
 import 'package:gens/src/feature/history/view/widget/text/history_text.dart';
-import 'package:get/get.dart';
 
 class HistoryWidget extends StatelessWidget {
   const HistoryWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(HistoryController());
+    // final controller = Get.put(HistoryController());
     return SizedBox(
       width: context.screenWidth,
       child: Padding(
