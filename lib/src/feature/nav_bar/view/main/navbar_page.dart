@@ -45,7 +45,7 @@ class _NavBarPageState extends State<NavBarPage> {
             child: LoginPage(),
           );
         } else {
-          if (!user.token.value.isNotEmpty) {
+          if (user.token.value.isNotEmpty) {
             return const LoginPage();
           } else {
             return Obx(() {

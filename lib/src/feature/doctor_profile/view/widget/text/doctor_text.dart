@@ -9,7 +9,7 @@ class DoctorText {
         title,
         style: TextStyle(
           fontFamily: 'Inter',
-          fontSize: 22,
+          fontSize: 20,
           color: AppTheme.lightAppColors.black.withOpacity(.8),
           fontWeight:
               FontWeight.w600, // Use FontWeight.bold for the bold variant

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gens/src/config/sizes/short_text.dart';
 import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
@@ -15,7 +16,7 @@ doctorDashboardContainer(BuildContext context, DoctorModel model) {
           ));
     },
     child: Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
       width: context.screenWidth,
       height: context.screenHeight * .2,
       decoration: BoxDecoration(
@@ -34,8 +35,8 @@ doctorDashboardContainer(BuildContext context, DoctorModel model) {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 150,
-            height: 150,
+            width: 130,
+            height: 130,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               image: DecorationImage(
@@ -46,7 +47,6 @@ doctorDashboardContainer(BuildContext context, DoctorModel model) {
           ),
           10.0.kW,
           SizedBox(
-            width: context.screenWidth * .434,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,11 +55,20 @@ doctorDashboardContainer(BuildContext context, DoctorModel model) {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     DashboardText.mainText(model.name),
-                    40.0.kW,
+                    (context.screenWidth * .08).kW,
                     const Icon(Icons.favorite_outline)
                   ],
                 ),
-                const Divider(),
+                7.0.kH,
+                Container(
+                  width: context.screenWidth * .45,
+                  decoration: BoxDecoration(
+                      color: AppTheme.lightAppColors.subTextcolor,
+                      border: Border.all(
+                          color: AppTheme.lightAppColors.bordercolor,
+                          width: .5)),
+                ),
+                7.0.kH,
                 DashboardText.typeText(model.type),
                 10.0.kH,
                 Row(
@@ -70,7 +79,7 @@ doctorDashboardContainer(BuildContext context, DoctorModel model) {
                       color: AppTheme.lightAppColors.black.withOpacity(0.5),
                     ),
                     // 5.0.kW,
-                    DashboardText.locationText(model.location)
+                    DashboardText.locationText(storyShortenText(model.location))
                   ],
                 )
               ],

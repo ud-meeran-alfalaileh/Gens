@@ -116,7 +116,7 @@ class DashboradWidget extends StatelessWidget {
                                         doctorController.doctors.length)),
                           ],
                         )
-                      : Container(
+                      : Padding(
                           padding: const EdgeInsets.only(top: 10),
                           child: ListView.separated(
                               physics: const NeverScrollableScrollPhysics(),

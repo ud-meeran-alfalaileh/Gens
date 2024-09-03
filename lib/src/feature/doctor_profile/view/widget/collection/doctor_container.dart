@@ -7,7 +7,7 @@ import 'package:gens/src/feature/doctor_profile/model/doctor_model.dart';
 
 doctorContainer(BuildContext context, DoctorModel model) {
   return Container(
-    padding: const EdgeInsets.all(20),
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
     width: context.screenWidth,
     height: context.screenHeight * .17,
     decoration: BoxDecoration(
@@ -36,9 +36,9 @@ doctorContainer(BuildContext context, DoctorModel model) {
                 alignment: Alignment.topCenter),
           ),
         ),
-        10.0.kW,
+        (context.screenWidth * .02).kW,
         SizedBox(
-          width: context.screenWidth * .434,
+          // width: context.screenWidth * .434,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,7 +52,15 @@ doctorContainer(BuildContext context, DoctorModel model) {
                   const Icon(Icons.favorite_outline)
                 ],
               ),
-              const Divider(),
+              7.0.kH,
+              Container(
+                width: context.screenWidth * .45,
+                decoration: BoxDecoration(
+                    color: AppTheme.lightAppColors.subTextcolor,
+                    border: Border.all(
+                        color: AppTheme.lightAppColors.bordercolor, width: .5)),
+              ),
+              7.0.kH,
               DashboardText.typeText(model.type),
               10.0.kH,
               Row(

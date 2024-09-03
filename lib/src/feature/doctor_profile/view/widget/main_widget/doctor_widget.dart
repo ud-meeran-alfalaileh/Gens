@@ -4,6 +4,7 @@ import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/core/utils/app_button.dart';
+import 'package:gens/src/feature/booking/view/page/booking_page.dart';
 import 'package:gens/src/feature/doctor_profile/controller/doctor_controller.dart';
 import 'package:gens/src/feature/doctor_profile/model/doctor_model.dart';
 import 'package:gens/src/feature/doctor_profile/view/widget/collection/doctor_container.dart';
@@ -102,7 +103,12 @@ class DoctorWidget extends StatelessWidget {
                 color: AppTheme.lightAppColors.subTextcolor,
               ),
             ),
-            AppButton(onTap: () {}, title: "Book Appointment".tr)
+            (context.screenHeight * .1).kH,
+            AppButton(
+                onTap: () {
+                  Get.to(() => const BookingPage());
+                },
+                title: "Book Appointment".tr)
           ],
         ),
       ),
