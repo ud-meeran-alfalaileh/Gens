@@ -19,94 +19,114 @@ class RegisterWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(RegisterController());
-    return Column(
-      children: [
-        (context.screenHeight * .07).kH,
-        Image.asset(
-          "assets/image/logo.png",
-          width: context.screenWidth * .6,
-          fit: BoxFit.cover,
-        ),
-        LoginText.mainText("Create Account"),
-        10.0.kH,
-        LoginText.secText("We are here to help you!"),
-        Align(
-          alignment: Alignment.center,
-          child: Obx(
-            () => Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                width: context.screenWidth,
-                height: context.screenHeight * .42,
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(50)),
-                child: PageView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  controller: controller.pageController,
-                  onPageChanged: (index) {
-                    controller.currentPageIndex.value = index;
-                  },
-                  children: [
-                    registerPageOne(context, controller),
-                    registerPageTwo(context, controller),
-                  ],
-                )),
-          ),
-        ),
-        Obx(
-          () => SizedBox(
-            width: context.screenWidth * .85,
-            child: AppButton(
-              onTap: () {
-                errorText.value = controller.pageOneValidateAllFields()!;
-                errorTextPageTwo.value = controller.validateAllFields()!;
-                if (controller.currentPageIndex.value == 0) {
-                  if (errorText.value == "valid") {
-                    controller.nextPage();
-                  } else if (errorTextPageTwo.value == 'valid') {
-                    controller.register(context);
-                  }
-                } else {
-                  controller.register(context);
-                }
-              },
-              title: controller.currentPageIndex.value == 0
-                  ? 'next'.tr
-                  : 'register'.tr,
-            ),
-          ),
-        ),
-        (context.screenWidth * .06).kH,
-        SizedBox(
-          height: context.screenHeight * .02,
-          child: Stack(
+    return Obx(
+      () => Stack(
+        children: [
+          Column(
             children: [
-              const Divider(),
+              (context.screenHeight * .07).kH,
+              Image.asset(
+                "assets/image/logo.png",
+                width: context.screenWidth * .6,
+                fit: BoxFit.cover,
+              ),
+              LoginText.mainText("Create Account"),
+              10.0.kH,
+              LoginText.secText("We are here to help you!"),
               Align(
                 alignment: Alignment.center,
-                child: Container(
-                  width: context.screenWidth * .1,
-                  color: AppTheme.lightAppColors.background,
-                  child: const Center(child: Text("Or")),
+                child: Obx(
+                  () => Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      width: context.screenWidth,
+                      height: context.screenHeight * .42,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50)),
+                      child: PageView(
+                        physics: const NeverScrollableScrollPhysics(),
+                        controller: controller.pageController,
+                        onPageChanged: (index) {
+                          controller.currentPageIndex.value = index;
+                        },
+                        children: [
+                          registerPageOne(context, controller),
+                          registerPageTwo(context, controller),
+                        ],
+                      )),
                 ),
-              )
+              ),
+              Obx(
+                () => SizedBox(
+                  width: context.screenWidth * .85,
+                  child: AppButton(
+                    onTap: () {
+                      errorText.value = controller.pageOneValidateAllFields()!;
+                      errorTextPageTwo.value = controller.validateAllFields()!;
+                      if (controller.currentPageIndex.value == 0) {
+                        if (errorText.value == "valid") {
+                          controller.nextPage();
+                        }
+                      } else {
+                        if (errorTextPageTwo.value == 'valid') {
+                          controller.sendEmail(context);
+                          // Get.to(() => const OtpWidget());
+                          // controller.register(context);
+                        }
+                      }
+                    },
+                    title: controller.currentPageIndex.value == 0
+                        ? 'next'.tr
+                        : 'register'.tr,
+                  ),
+                ),
+              ),
+              (context.screenWidth * .06).kH,
+              SizedBox(
+                height: context.screenHeight * .02,
+                child: Stack(
+                  children: [
+                    const Divider(),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        width: context.screenWidth * .1,
+                        color: AppTheme.lightAppColors.background,
+                        child: const Center(child: Text("Or")),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                      height: context.screenHeight * .03,
+                      width: context.screenWidth,
+                      decoration: BoxDecoration(
+                          color: AppTheme.lightAppColors.background,
+                          borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(30))),
+                      child: Center(
+                        child: LoginText.haveAccount(() {
+                          Get.back();
+                        }),
+                      )))
             ],
           ),
-        ),
-        Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-                height: context.screenHeight * .03,
-                width: context.screenWidth,
-                decoration: BoxDecoration(
-                    color: AppTheme.lightAppColors.background,
-                    borderRadius:
-                        const BorderRadius.vertical(top: Radius.circular(30))),
-                child: Center(
-                  child: LoginText.haveAccount(() {
-                    Get.back();
-                  }),
-                )))
-      ],
+          controller.isLoading.value
+              ? Container(
+                  width: context.screenWidth,
+                  height: context.screenHeight,
+                  color: AppTheme.lightAppColors.black.withOpacity(0.3),
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: AppTheme.lightAppColors.maincolor,
+                    ),
+                  ),
+                )
+              : SizedBox.shrink()
+        ],
+      ),
     );
   }
 

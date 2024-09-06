@@ -3,7 +3,7 @@ import 'package:gens/src/config/localization/local_strings.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/core/api/injection_container.dart' as di;
 import 'package:gens/src/core/user.dart';
-import 'package:gens/src/feature/nav_bar/view/main/main_app_page.dart';
+import 'package:gens/src/feature/forgtet_password/view/widget/main_widget/otp_widget.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
 Future<void> main() async {
@@ -31,7 +31,9 @@ class _MyAppState extends State<MyApp> {
   Future<void> initst() async {
     // await user.clearId();
     await user.loadToken();
+    await user.loadOtp();
     print(user.userId);
+    print(user.otpCode);
   }
 
   @override
@@ -42,6 +44,6 @@ class _MyAppState extends State<MyApp> {
         translations: LocalStrings(),
         theme: AppTheme.light,
         debugShowCheckedModeBanner: false,
-        home: const MainAppPage());
+        home: const OtpWidget());
   }
 }

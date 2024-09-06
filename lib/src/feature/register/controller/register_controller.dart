@@ -7,6 +7,7 @@ import 'package:gens/src/core/api/injection_container.dart';
 import 'package:gens/src/core/api/netwok_info.dart';
 import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
+import 'package:gens/src/feature/forgtet_password/view/widget/main_widget/otp_widget.dart';
 import 'package:gens/src/feature/login/view/pages/login_page.dart';
 import 'package:gens/src/feature/nav_bar/view/main/main_app_page.dart';
 import 'package:gens/src/feature/register/model/country_model.dart';
@@ -20,7 +21,10 @@ class RegisterController extends GetxController {
   final name = TextEditingController();
   final secName = TextEditingController();
   final List<String> genderOptions = ['Male', 'Female', 'Prefer not to say'];
+  RxBool isLoading = false.obs;
   User user = User();
+  RxInt remainingTime = 30.obs;
+  RxBool isButtonEnabled = false.obs;
   // Initialize as null
   Rx<String?> selectedGender = Rx<String?>(null);
 
@@ -218,6 +222,8 @@ class RegisterController extends GetxController {
               message: "loginSuccess".tr,
             ),
           );
+          isLoading.value = false;
+
           Get.offAll(const MainAppPage());
           phoneNumber.clear();
           password.clear();
@@ -234,6 +240,63 @@ class RegisterController extends GetxController {
 
     // Mark isMounted as false once the method is complete
     isMounted = false;
+  }
+
+  Future<void> sendEmail(context) async {
+    isLoading.value = true;
+
+    await user.clearOtp();
+    var body = jsonEncode({
+      "email": email.text.trim(),
+      "subject": "Access code",
+      "message": "otp"
+    });
+    final response = await http.post(Uri.parse(EndPoints.senMessage),
+        headers: {
+          'Content-Type':
+              'application/json', // This should match the API's expected content type
+          'Accept': 'application/json',
+        },
+        body: body);
+    print(response.body);
+
+    if (response.statusCode == StatusCode.ok) {
+      final jsonData = json.decode(response.body);
+      final otpId = jsonData['randomNumber'];
+      await user.saveOtp(otpId.toString());
+      await user.loadOtp();
+      print(user.otpCode.value);
+      isLoading.value = false;
+
+      Get.to(() => const OtpWidget());
+    } else {
+      isLoading.value = false;
+
+      showTopSnackBar(
+        Overlay.of(context),
+        const CustomSnackBar.error(
+          message: 'Something went wrong.',
+        ),
+      );
+      print(response.body);
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> checklOtp(String verificationCode, context) async {
+    await user.loadOtp();
+    isLoading.value = true;
+    if (user.otpCode.value == verificationCode) {
+      register(context);
+    } else {
+      isLoading.value = false;
+      showTopSnackBar(
+        Overlay.of(context),
+        const CustomSnackBar.error(
+          message: 'Verification Code is not Correct',
+        ),
+      );
+    }
   }
 
   @override

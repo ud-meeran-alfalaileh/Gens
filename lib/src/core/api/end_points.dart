@@ -7,6 +7,7 @@ class EndPoints {
   static const String mobileAPI = '${baseUrl}mobile/';
   static const String login = '${baseUrl}User/login';
   static const String signup = '${baseUrl}User/register';
+  static const String senMessage = '${baseUrl}User/sendemail';
   static const String logout = 'auth/logout';
   static const String profile = 'auth/profile';
   static const String updateUser = 'auth/profile/update';

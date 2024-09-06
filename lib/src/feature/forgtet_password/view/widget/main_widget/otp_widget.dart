@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
@@ -6,74 +8,135 @@ import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/core/utils/app_button.dart';
 import 'package:gens/src/feature/forgtet_password/view/widget/text/forget_password_text.dart';
+import 'package:gens/src/feature/register/controller/register_controller.dart';
 import 'package:get/get.dart';
 
-class OtpWidget extends StatelessWidget {
+class OtpWidget extends StatefulWidget {
   const OtpWidget({super.key});
 
   @override
+  State<OtpWidget> createState() => _OtpWidgetState();
+}
+
+class _OtpWidgetState extends State<OtpWidget> {
+  final controller = Get.put(RegisterController());
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+  }
+
+  void _startTimer() {
+    controller.remainingTime.value = 30;
+    controller.isButtonEnabled.value = false;
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (controller.remainingTime.value > 0) {
+        controller.remainingTime.value--;
+      } else {
+        controller.isButtonEnabled.value = true;
+        _timer?.cancel();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ForgetPasswordText());
     return Scaffold(
       backgroundColor: AppTheme.lightAppColors.background,
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          // textDirection: TextDirection.rtl,
-          // mainAxisAlignment: MainAxisAlignment.center,
+      body: Obx(
+        () => Stack(
           children: [
-            (context.screenHeight * .05).kH,
-            Row(
-              children: [
-                IconButton(
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  (context.screenHeight * .05).kH,
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        icon: const Icon(Icons.arrow_back_ios),
+                      )
+                    ],
+                  ),
+                  (context.screenHeight * .1).kH,
+                  ForgetPasswordText.mainText(
+                    'OTP Verification'.tr,
+                  ),
+                  10.0.kH,
+                  ForgetPasswordText.secText(
+                      "Enter the verification code we just send on your Email"
+                          .tr),
+                  (context.screenHeight * .072).kH,
+                  Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: OtpTextField(
+                      autoFocus: true,
+                      numberOfFields: 4,
+                      cursorColor: AppTheme.lightAppColors.primary,
+                      borderColor: AppTheme.lightAppColors.primary,
+                      focusedBorderColor: AppTheme.lightAppColors.primary,
+                      showFieldAsBox: true,
+                      fieldWidth: context.screenWidth * 0.12,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      onCodeChanged: (String code) {
+                        print("82822");
+                      },
+                      onSubmit: (String verificationCode) {
+                        controller.checklOtp(verificationCode, context);
+                      },
+                    ),
+                  ),
+                  (context.screenHeight * .04).kH,
+                  SizedBox(
+                    width: context.screenWidth * .7,
+                    child: AppButton(onTap: () {}, title: "Continue".tr),
+                  ),
+                  20.0.kH,
+                  TextButton(
                     onPressed: () {
-                      Get.back();
+                      if (controller.isButtonEnabled.value) {
+                        controller.sendEmail(context);
+                        _startTimer();
+                      } else {
+                        null;
+                      }
                     },
-                    icon: Icon(Icons.arrow_back_ios))
-              ],
-            ),
-            (context.screenHeight * .1).kH,
-            ForgetPasswordText.mainText(
-              'OTP Verification'.tr,
-            ),
-            10.0.kH,
-            ForgetPasswordText.secText(
-                "Enter the verification code we just send on your Email".tr),
-            (context.screenHeight * .072).kH,
-            Directionality(
-              textDirection: TextDirection.ltr,
-              child: OtpTextField(
-                autoFocus: true,
-                numberOfFields: 5,
-                cursorColor: AppTheme.lightAppColors.primary,
-                borderColor: AppTheme.lightAppColors.primary,
-                focusedBorderColor: AppTheme
-                    .lightAppColors.primary, // Border color when focused
-                showFieldAsBox: true,
-                fieldWidth: context.screenWidth * 0.12, // Adjust field width
-                keyboardType:
-                    TextInputType.number, // Set keyboard to number only
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                onCodeChanged: (String code) {
-                  // Handle code change
-                },
-                onSubmit: (String verificationCode) {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text("Verification Code"),
-                        content: Text('Code entered is $verificationCode'),
-                      );
-                    },
-                  );
-                },
+                    child: Text(
+                      controller.remainingTime > 0
+                          ? 'Resend OTP in ${controller.remainingTime.value} seconds'
+                          : 'Resend',
+                      style: TextStyle(color: AppTheme.lightAppColors.primary),
+                    ),
+                  ),
+                  10.0.kH,
+                ],
               ),
             ),
-            (context.screenHeight * .04).kH,
-            SizedBox(
-                width: context.screenWidth * .7,
-                child: AppButton(onTap: () {}, title: "Change Password".tr))
+            controller.isLoading.value
+                ? Container(
+                    width: context.screenWidth,
+                    height: context.screenHeight,
+                    color: AppTheme.lightAppColors.black.withOpacity(0.3),
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: AppTheme.lightAppColors.maincolor,
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink(),
           ],
         ),
       ),
