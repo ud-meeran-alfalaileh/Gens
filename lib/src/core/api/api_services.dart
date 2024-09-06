@@ -1,12 +1,14 @@
 import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:gens/src/core/api/app_interceptors.dart';
-import 'package:gens/src/core/error/exceptions.dart';
-import 'package:gens/src/core/api/status_code.dart';
-import 'package:gens/src/core/api/injection_container.dart' as di;
 import 'package:gens/src/core/api/end_points.dart';
+import 'package:gens/src/core/api/injection_container.dart' as di;
+import 'package:gens/src/core/api/status_code.dart';
+import 'package:gens/src/core/error/exceptions.dart';
 import 'package:gens/src/core/user.dart';
+
 import 'api_consumer.dart';
 
 class DioConsumer implements ApiConsumer {
@@ -29,7 +31,6 @@ class DioConsumer implements ApiConsumer {
 
   void _setHeaders() async {
     // final prefs = await SharedPreferences.getInstance();
-    final token = user.token;
 
     client.options
       ..baseUrl = EndPoints.baseUrl
@@ -38,8 +39,7 @@ class DioConsumer implements ApiConsumer {
       ..receiveDataWhenStatusError = true
       ..headers = {
         'Accept': 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': 'Bearer $token', // Set the token here
+        'Content-Type': 'application/json',
       }
       ..validateStatus = (status) {
         return status! < StatusCode.internalServerError;

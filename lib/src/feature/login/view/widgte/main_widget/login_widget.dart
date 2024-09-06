@@ -26,7 +26,8 @@ class _LoginWidgetState extends State<LoginWidget> {
     RxList<String?> errors = <String>[].obs;
 
     // Validate each form field and collect errors
-    final emailError = controller.vaildEmail(controller.username.text);
+    final emailError =
+        controller.validatePhoneNumber(controller.phoneNumber.text);
     final passwordError = controller.vaildPassword(controller.password.text);
 
     if (emailError != null) errors.add("- $emailError");
@@ -42,142 +43,158 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        width: context.screenWidth,
-        decoration: BoxDecoration(
-            color: AppTheme.lightAppColors.background,
-            borderRadius: BorderRadius.circular(20)),
-        child: Form(
-          key: fromKey,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                (context.screenHeight * .1).kH,
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
+    return Obx(
+      () => Stack(
+        children: [
+          Container(
+              width: context.screenWidth,
+              decoration: BoxDecoration(
+                  color: AppTheme.lightAppColors.background,
+                  borderRadius: BorderRadius.circular(20)),
+              child: Form(
+                key: fromKey,
+                child: SingleChildScrollView(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Image.asset(
-                        "assets/image/logo.png",
-                        width: context.screenWidth * .6,
-                        fit: BoxFit.cover,
-                      ),
-                      LoginText.mainText("Hi, Welcome Back! "),
-                      10.0.kH,
-                      LoginText.secText("Hope you’re doing fine."),
-                      Obx(() {
-                        return errorText.value != "valid"
-                            ? Column(
-                                children: [
-                                  (10.5).kH,
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.only(bottom: 10.0),
-                                    child: Row(
+                      (context.screenHeight * .1).kH,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25),
+                        child: Column(
+                          children: [
+                            Image.asset(
+                              "assets/image/logo.png",
+                              width: context.screenWidth * .6,
+                              fit: BoxFit.cover,
+                            ),
+                            LoginText.mainText("Hi, Welcome Back! "),
+                            10.0.kH,
+                            LoginText.secText("Hope you’re doing fine."),
+                            Obx(() {
+                              return errorText.value != "valid"
+                                  ? Column(
                                       children: [
-                                        Text(
-                                          errorText.value,
-                                          style: const TextStyle(
-                                              color: Colors.red,
-                                              fontSize: 14.0),
-                                          textAlign: TextAlign.start,
+                                        (10.5).kH,
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              bottom: 10.0),
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                errorText.value,
+                                                style: const TextStyle(
+                                                    color: Colors.red,
+                                                    fontSize: 14.0),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ],
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : (40.5).kH; // If no errors, display nothing
-                      }),
-                      AuthForm(
-                        formModel: FormModel(
-                            icon: Icons.email_outlined,
-                            controller: controller.username,
-                            enableText: false,
-                            hintText: 'loginEmail'.tr,
-                            invisible: false,
-                            validator: null,
-                            type: TextInputType.text,
-                            inputFormat: [],
-                            onTap: () {}),
+                                    )
+                                  : (40.5).kH; // If no errors, display nothing
+                            }),
+                            AuthForm(
+                              formModel: FormModel(
+                                  icon: Icons.phone,
+                                  controller: controller.phoneNumber,
+                                  enableText: false,
+                                  hintText: 'loginEmail'.tr,
+                                  invisible: false,
+                                  validator: null,
+                                  type: TextInputType.text,
+                                  inputFormat: [],
+                                  onTap: () {}),
+                            ),
+                            (20.5).kH,
+                            AuthForm(
+                              formModel: FormModel(
+                                  icon: Icons.lock_outline,
+                                  controller: controller.password,
+                                  enableText: false,
+                                  hintText: 'loginPassword'.tr,
+                                  invisible: true,
+                                  validator: null,
+                                  type: TextInputType.text,
+                                  inputFormat: [],
+                                  onTap: () {}),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Get.to(() => ForgetPasswordPage());
+                                  },
+                                  child: const Text("Forgot password?"),
+                                ),
+                              ],
+                            ),
+                            (context.screenWidth * .2).kH,
+                            SizedBox(
+                              width: context.screenWidth * .4,
+                              child: AppButton(
+                                onTap: () {
+                                  errorText.value = validateAllFields()!;
+                                  if (errorText.value == "valid") {
+                                    controller.login(context);
+                                  }
+                                },
+                                title: 'login'.tr,
+                              ),
+                            ),
+                            30.0.kH,
+                          ],
+                        ),
                       ),
-                      (20.5).kH,
-                      AuthForm(
-                        formModel: FormModel(
-                            icon: Icons.lock_outline,
-                            controller: controller.password,
-                            enableText: false,
-                            hintText: 'loginPassword'.tr,
-                            invisible: true,
-                            validator: null,
-                            type: TextInputType.text,
-                            inputFormat: [],
-                            onTap: () {}),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              Get.to(() => ForgetPasswordPage());
-                            },
-                            child: const Text("Forgot password?"),
-                          ),
-                        ],
-                      ),
-                      (context.screenWidth * .2).kH,
+                      (context.screenWidth * .15).kH,
                       SizedBox(
-                        width: context.screenWidth * .4,
-                        child: AppButton(
-                          onTap: () {
-                            errorText.value = validateAllFields()!;
-                            if (errorText.value == "valid") {
-                              controller.login(context);
-                            }
-                          },
-                          title: 'login'.tr,
+                        height: context.screenHeight * .02,
+                        child: Stack(
+                          children: [
+                            const Divider(),
+                            Align(
+                              alignment: Alignment.center,
+                              child: Container(
+                                width: context.screenWidth * .1,
+                                color: AppTheme.lightAppColors.background,
+                                child: const Center(child: Text("Or")),
+                              ),
+                            )
+                          ],
                         ),
                       ),
-                      30.0.kH,
-                    ],
-                  ),
-                ),
-                (context.screenWidth * .15).kH,
-                SizedBox(
-                  height: context.screenHeight * .02,
-                  child: Stack(
-                    children: [
-                      const Divider(),
                       Align(
-                        alignment: Alignment.center,
-                        child: Container(
-                          width: context.screenWidth * .1,
-                          color: AppTheme.lightAppColors.background,
-                          child: const Center(child: Text("Or")),
-                        ),
-                      )
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                              height: context.screenHeight * .03,
+                              width: context.screenWidth,
+                              decoration: BoxDecoration(
+                                  color: AppTheme.lightAppColors.background,
+                                  borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(30))),
+                              child: Center(
+                                child: LoginText.haveAccount(() {
+                                  Get.to(() => const RegisterPage());
+                                }),
+                              )))
                     ],
                   ),
                 ),
-                Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                        height: context.screenHeight * .03,
-                        width: context.screenWidth,
-                        decoration: BoxDecoration(
-                            color: AppTheme.lightAppColors.background,
-                            borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(30))),
-                        child: Center(
-                          child: LoginText.haveAccount(() {
-                            Get.to(() => const RegisterPage());
-                          }),
-                        )))
-              ],
-            ),
-          ),
-        ));
+              )),
+          controller.isLoading.value
+              ? Container(
+                  width: context.screenWidth,
+                  height: context.screenHeight,
+                  color: AppTheme.lightAppColors.black.withOpacity(0.3),
+                  child: CircularProgressIndicator(
+                    color: AppTheme.lightAppColors.primary,
+                  ),
+                )
+              : const SizedBox.shrink()
+        ],
+      ),
+    );
   }
 }

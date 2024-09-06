@@ -6,9 +6,12 @@ import 'package:gens/src/core/api/end_points.dart';
 import 'package:gens/src/core/api/injection_container.dart';
 import 'package:gens/src/core/api/netwok_info.dart';
 import 'package:gens/src/core/api/status_code.dart';
+import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/login/view/pages/login_page.dart';
+import 'package:gens/src/feature/nav_bar/view/main/main_app_page.dart';
 import 'package:gens/src/feature/register/model/country_model.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -17,7 +20,7 @@ class RegisterController extends GetxController {
   final name = TextEditingController();
   final secName = TextEditingController();
   final List<String> genderOptions = ['Male', 'Female', 'Prefer not to say'];
-
+  User user = User();
   // Initialize as null
   Rx<String?> selectedGender = Rx<String?>(null);
 
@@ -179,54 +182,53 @@ class RegisterController extends GetxController {
     }
 
     if (await networkInfo.isConnected) {
-      var body = {
-        "name": name.text,
-        "email": email.text,
-        "phone": "962${removeLeadingZero(phoneNumber.text)}",
-        "password": password.text,
-        "password_confirmation": confirmPassword.text,
+      var body = jsonEncode({
+        "password": password.text.trim(),
+        "email": email.text.trim(),
+        "fName": name.text.trim(),
+        "secName": secName.text.trim(),
+        "phone": phoneNumber.text.trim(),
         "gender": selectedGender.value,
-        'country_id': selectedCountry.value?.id
-      };
-      final response = await dioConsumer.post(EndPoints.signup, body: body);
+        "userType": "User",
+        "logined": true,
+        "disable": true,
+        "locked": true,
+        "userImage": ""
+      });
+      final response = await http.post(Uri.parse(EndPoints.signup),
+          headers: {
+            'Content-Type':
+                'application/json', // This should match the API's expected content type
+            'Accept': 'application/json',
+          },
+          body: body);
+      print(body);
+      print(response.body);
       try {
         if (response.statusCode == StatusCode.ok ||
             response.statusCode == StatusCode.created) {
-          final data = jsonDecode(response.data);
-          if (data['success'] == false) {
-            // Extract the error message
-            final errorEmailMessage = data['error']?['email']?.first;
-            final errorPhoneMessage = data['error']?['phone']?.first;
-            String errorMessage = '';
-            if (errorEmailMessage != null && errorPhoneMessage != null) {
-              errorMessage = "لقد تم استخدام الهاتف والبريد الإلكتروني.";
-            } else if (errorEmailMessage == null && errorPhoneMessage != null) {
-              errorMessage = "لقد تم استخدام رقم الهاتف بالفعل.";
-            } else if (errorEmailMessage != null && errorPhoneMessage == null) {
-              errorMessage = "لقد تم استخدام البريد الإلكتروني بالفعل.";
-            }
-            // Show the error message in the SnackBar
-            showSnackBarIfMounted(CustomSnackBar.error(
-              message: errorMessage,
-            ));
-          } else {
-            // Success case
-            showSnackBarIfMounted(const CustomSnackBar.success(
-              message: "تم تسجيلك بنجاح!",
-            ));
-            Get.offAll(const LoginPage());
-          }
-        } else {
-          // Handle other status codes
-          showSnackBarIfMounted(const CustomSnackBar.error(
-            message: 'لقد حدث خطأ ما، حاول مرة أخرى',
-          ));
-        }
-      } catch (e) {
-        // Handle exception
-        showSnackBarIfMounted(const CustomSnackBar.error(
-          message: 'لقد حدث خطأ ما، حاول مرة أخرى',
-        ));
+          final jsonData = json.decode(response.body);
+          final token = jsonData['userId'];
+          print(token);
+          await user.saveId(token.toString());
+          user.userId.value = token.toString();
+          showTopSnackBar(
+            Overlay.of(context),
+            CustomSnackBar.success(
+              message: "loginSuccess".tr,
+            ),
+          );
+          Get.offAll(const MainAppPage());
+          phoneNumber.clear();
+          password.clear();
+        } else {}
+      } catch (error) {
+        showTopSnackBar(
+          Overlay.of(context),
+          CustomSnackBar.error(
+            message: error.toString(),
+          ),
+        );
       }
     }
 

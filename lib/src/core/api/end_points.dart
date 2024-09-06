@@ -1,11 +1,12 @@
 class EndPoints {
-  static const String baseUrl = 'https://.net/api/';
+  static const String baseUrl =
+      'https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/';
   static const String globalURL = 'https:/api/v1/Client';
 
   //
   static const String mobileAPI = '${baseUrl}mobile/';
-  static const String login = 'auth/login';
-  static const String signup = 'auth/signup';
+  static const String login = '${baseUrl}User/login';
+  static const String signup = '${baseUrl}User/register';
   static const String logout = 'auth/logout';
   static const String profile = 'auth/profile';
   static const String updateUser = 'auth/profile/update';

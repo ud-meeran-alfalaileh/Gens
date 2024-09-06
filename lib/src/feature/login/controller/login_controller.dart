@@ -1,21 +1,23 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:gens/src/core/api/api_services.dart';
 import 'package:gens/src/core/api/end_points.dart';
 import 'package:gens/src/core/api/injection_container.dart';
 import 'package:gens/src/core/api/netwok_info.dart';
 import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
-import 'package:gens/src/feature/nav_bar/view/main/navbar_page.dart';
+import 'package:gens/src/feature/nav_bar/view/main/main_app_page.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class LoginController extends GetxController {
-  final username = TextEditingController();
+  final phoneNumber = TextEditingController();
   final password = TextEditingController();
+  RxBool isLoading = false.obs;
 
   RxBool unauthorized = false.obs;
   final DioConsumer dioConsumer = sl<DioConsumer>();
@@ -23,20 +25,25 @@ class LoginController extends GetxController {
       NetworkInfoImpl(connectionChecker: InternetConnectionChecker());
 
   //validation
-  validUserName(String name) {
-    if (name.isEmpty) {
-      return "usernamePassword".tr;
-    } else if (name.length < 5) {
-      return "usernamePasswordLength".tr;
+  String removeLeadingZero(String input) {
+    if (input.startsWith("962")) {
+      return input.substring(3); // Remove "962"
+    } else if (input.startsWith("0")) {
+      return input.replaceFirst(RegExp('^0+'), '');
     }
-    return null;
+    return input;
   }
 
-  vaildEmail(String? email) {
-    if (!GetUtils.isEmail(email!)) {
-      return "EmailValidate".tr;
+  String? validatePhoneNumber(String? phoneNumber) {
+    if (phoneNumber != null && phoneNumber.length >= 10) {
+      if (GetUtils.isPhoneNumber(phoneNumber)) {
+        return null;
+      } else {
+        return "phoneValidation".tr;
+      }
+    } else {
+      return "phoneValidation".tr;
     }
-    return null;
   }
 
   vaildPassword(String? password) {
@@ -50,30 +57,36 @@ class LoginController extends GetxController {
   Future<void> login(context) async {
     if (await networkInfo.isConnected) {
       try {
-        final response = await dioConsumer.post(EndPoints.login, body: {
-          "email": username.text,
-          "password": password.text,
-          'remember_me': 1,
+        final body = jsonEncode({
+          "phone": phoneNumber.text.trim(),
+          "password": password.text.trim(),
         });
-        if (response.statusCode == StatusCode.ok ||
-            response.statusCode == StatusCode.created) {
-          final jsonData = json.decode(response.data);
-          final token = jsonData['access_token'];
-          await user.saveToken(token);
-          user.token.value = token;
-          await user.loadToken();
-          user.saveToken(token);
-          await user.loadGoogleToken();
+        final response = await http.post(Uri.parse(EndPoints.login),
+            headers: {
+              'Content-Type':
+                  'application/json', // This should match the API's expected content type
+              'Accept': 'application/json',
+            },
+            body: body);
+        print(response.body);
+        print(response.statusCode);
+        print(body);
+        if (response.statusCode == StatusCode.ok) {
+          final jsonData = json.decode(response.body);
+          final token = jsonData['userId'];
+          print(token);
+          await user.saveId(token.toString());
+          user.userId.value = token.toString();
           showTopSnackBar(
             Overlay.of(context),
             CustomSnackBar.success(
               message: "loginSuccess".tr,
             ),
           );
-          Get.offAll(const NavBarPage());
-          username.clear();
+          Get.offAll(const MainAppPage());
+          phoneNumber.clear();
           password.clear();
-        } else if (response.data['message'] == "Unauthorized") {
+        } else {
           showTopSnackBar(
             Overlay.of(context),
             CustomSnackBar.error(

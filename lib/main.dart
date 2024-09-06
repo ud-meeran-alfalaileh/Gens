@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gens/src/config/localization/local_strings.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/core/api/injection_container.dart' as di;
+import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/nav_bar/view/main/main_app_page.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
@@ -12,8 +13,26 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  User user = User();
+  @override
+  void initState() {
+    initst();
+    super.initState();
+  }
+
+  Future<void> initst() async {
+    // await user.clearId();
+    await user.loadToken();
+    print(user.userId);
+  }
 
   @override
   Widget build(BuildContext context) {

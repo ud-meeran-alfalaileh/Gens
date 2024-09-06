@@ -65,6 +65,8 @@ class RegisterWidget extends StatelessWidget {
                   } else if (errorTextPageTwo.value == 'valid') {
                     controller.register(context);
                   }
+                } else {
+                  controller.register(context);
                 }
               },
               title: controller.currentPageIndex.value == 0
