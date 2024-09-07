@@ -56,6 +56,7 @@ class LoginController extends GetxController {
   User user = User();
   Future<void> login(context) async {
     if (await networkInfo.isConnected) {
+      isLoading.value = true;
       try {
         final body = jsonEncode({
           "phone": phoneNumber.text.trim(),
@@ -75,18 +76,22 @@ class LoginController extends GetxController {
           final jsonData = json.decode(response.body);
           final token = jsonData['userId'];
           print(token);
-          await user.saveId(token.toString());
-          user.userId.value = token.toString();
+          await user.saveId(token);
+          user.userId.value = token;
           showTopSnackBar(
             Overlay.of(context),
             CustomSnackBar.success(
               message: "loginSuccess".tr,
             ),
           );
+          isLoading.value = false;
+
           Get.offAll(const MainAppPage());
           phoneNumber.clear();
           password.clear();
         } else {
+          isLoading.value = false;
+
           showTopSnackBar(
             Overlay.of(context),
             CustomSnackBar.error(
@@ -97,6 +102,8 @@ class LoginController extends GetxController {
           unauthorized.value = true;
         }
       } catch (e) {
+        isLoading.value = false;
+
         showTopSnackBar(
           Overlay.of(context),
           CustomSnackBar.error(

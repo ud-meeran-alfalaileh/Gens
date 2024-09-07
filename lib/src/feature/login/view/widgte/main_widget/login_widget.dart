@@ -100,7 +100,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                   icon: Icons.phone,
                                   controller: controller.phoneNumber,
                                   enableText: false,
-                                  hintText: 'loginEmail'.tr,
+                                  hintText: 'phone'.tr,
                                   invisible: false,
                                   validator: null,
                                   type: TextInputType.text,

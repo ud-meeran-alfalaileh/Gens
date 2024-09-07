@@ -1,14 +1,14 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:gens/src/config/localization/local_strings.dart';
 import 'package:gens/src/config/theme/theme.dart';
-import 'package:gens/src/core/api/injection_container.dart' as di;
 import 'package:gens/src/core/user.dart';
-import 'package:gens/src/feature/nav_bar/view/main/navbar_page.dart';
+import 'package:gens/src/feature/nav_bar/view/main/main_app_page.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await di.init();
+  await Firebase.initializeApp();
 
   runApp(const MyApp());
 }
@@ -44,6 +44,6 @@ class _MyAppState extends State<MyApp> {
         translations: LocalStrings(),
         theme: AppTheme.light,
         debugShowCheckedModeBanner: false,
-        home: const NavBarPage());
+        home: const MainAppPage());
   }
 }

@@ -214,8 +214,8 @@ class RegisterController extends GetxController {
           final jsonData = json.decode(response.body);
           final token = jsonData['userId'];
           print(token);
-          await user.saveId(token.toString());
-          user.userId.value = token.toString();
+          await user.saveId(token);
+          user.userId.value = token;
           showTopSnackBar(
             Overlay.of(context),
             CustomSnackBar.success(

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "269801959308",
+    "project_id": "gens-3bb19",
+    "storage_bucket": "gens-3bb19.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:269801959308:android:879007b67a2fbacc1db0a9",
+        "android_client_info": {
+          "package_name": "com.example.gens"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdLJwJ1phBZmBtsyViV6KPCuM6DWYjXcY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

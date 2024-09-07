@@ -7,6 +7,7 @@ import 'package:gens/src/feature/history/view/page/history_page.dart';
 import 'package:gens/src/feature/login/view/pages/login_page.dart';
 import 'package:gens/src/feature/nav_bar/controller/nav_bar_controller.dart';
 import 'package:gens/src/feature/nav_bar/view/partial_widget/custome_navbar.dart';
+import 'package:gens/src/feature/profile/view/page/profile_page.dart';
 import 'package:get/get.dart';
 
 class NavBarPage extends StatefulWidget {
@@ -45,7 +46,7 @@ class _NavBarPageState extends State<NavBarPage> {
             child: LoginPage(),
           );
         } else {
-          if (user.userId.value.isEmpty) {
+          if (user.userId.value == 0) {
             return const LoginPage();
           } else {
             return Obx(() {
@@ -60,7 +61,7 @@ class _NavBarPageState extends State<NavBarPage> {
                           return const HistoryPage();
 
                         case 2:
-                          return const Scaffold();
+                          return const ProfilePage();
 
                         case 3:
                           return const Scaffold();
