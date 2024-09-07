@@ -72,6 +72,7 @@ class BookingWidget extends StatelessWidget {
                   ),
                   (context.screenHeight * .01).kH,
                   hourContainer(context, controller),
+                  (context.screenHeight * .02).kH,
                   AppButton(
                       onTap: () {
                         if (controller.selectedDay.value == null) {

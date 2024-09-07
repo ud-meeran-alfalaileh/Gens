@@ -124,7 +124,7 @@ class RegisterWidget extends StatelessWidget {
                     ),
                   ),
                 )
-              : SizedBox.shrink()
+              : const SizedBox.shrink()
         ],
       ),
     );

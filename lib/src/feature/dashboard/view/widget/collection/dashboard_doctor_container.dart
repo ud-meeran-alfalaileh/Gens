@@ -18,7 +18,7 @@ doctorDashboardContainer(BuildContext context, DoctorModel model) {
     child: Container(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
       width: context.screenWidth,
-      height: context.screenHeight * .2,
+      height: 170,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           boxShadow: [

@@ -125,7 +125,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    Get.to(() => ForgetPasswordPage());
+                                    Get.to(() => const ForgetPasswordPage());
                                   },
                                   child: const Text("Forgot password?"),
                                 ),

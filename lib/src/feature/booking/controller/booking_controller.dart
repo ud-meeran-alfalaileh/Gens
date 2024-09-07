@@ -24,11 +24,11 @@ class BookingController extends GetxController {
   List<DateTime> generateTimeSlots() {
     List<DateTime> slots = [];
     DateTime startTime = DateTime.now().copyWith(hour: 10, minute: 0);
-    DateTime endTime = DateTime.now().copyWith(hour: 15, minute: 30);
+    DateTime endTime = DateTime.now().copyWith(hour: 17, minute: 0);
 
     while (startTime.isBefore(endTime) || startTime.isAtSameMomentAs(endTime)) {
       slots.add(startTime);
-      startTime = startTime.add(const Duration(minutes: 30));
+      startTime = startTime.add(const Duration(hours: 1));
     }
     return slots;
   }

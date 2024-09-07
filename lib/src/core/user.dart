@@ -14,7 +14,7 @@ class User {
   loadToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId.value = prefs.getString('LoginId') ?? "";
-    print("Loaded Token : ${userId}");
+    print("Loaded Token : $userId");
   }
 
   saveId(String id) async {
@@ -31,7 +31,7 @@ class User {
   loadOtp() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     otpCode.value = prefs.getString('OtpCode') ?? "";
-    print("Loaded Token : ${otpCode}");
+    print("Loaded Token : $otpCode");
   }
 
   saveOtp(String id) async {

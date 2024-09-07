@@ -43,37 +43,37 @@ SingleChildScrollView dashboardContainerRow(DashboardController controller) {
           DashboardContainer(
             model: DashboardFilterModel(
                 onTap: () {
-                  controller.setSelectedIndex(2);
+                  controller.setSelectedIndex(3);
                 },
-                isSelected: controller.selectedIndex.value == 2,
+                isSelected: controller.selectedIndex.value == 3,
                 title: "persons"),
           ),
           20.0.kW,
           DashboardContainer(
             model: DashboardFilterModel(
                 onTap: () {
-                  controller.setSelectedIndex(2);
+                  controller.setSelectedIndex(4);
                 },
-                isSelected: controller.selectedIndex.value == 2,
-                title: "title"),
+                isSelected: controller.selectedIndex.value == 4,
+                title: "Freelancer"),
           ),
           20.0.kW,
           DashboardContainer(
             model: DashboardFilterModel(
                 onTap: () {
-                  controller.setSelectedIndex(2);
+                  controller.setSelectedIndex(5);
                 },
-                isSelected: controller.selectedIndex.value == 2,
-                title: "title"),
+                isSelected: controller.selectedIndex.value == 5,
+                title: "person"),
           ),
           20.0.kW,
           DashboardContainer(
             model: DashboardFilterModel(
                 onTap: () {
-                  controller.setSelectedIndex(3);
+                  controller.setSelectedIndex(6);
                 },
-                isSelected: controller.selectedIndex.value == 3,
-                title: "title"),
+                isSelected: controller.selectedIndex.value == 6,
+                title: "persons"),
           ),
           20.0.kW,
         ],

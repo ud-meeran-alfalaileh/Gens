@@ -3,7 +3,7 @@ import 'package:gens/src/config/localization/local_strings.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/core/api/injection_container.dart' as di;
 import 'package:gens/src/core/user.dart';
-import 'package:gens/src/feature/forgtet_password/view/widget/main_widget/otp_widget.dart';
+import 'package:gens/src/feature/nav_bar/view/main/navbar_page.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
 Future<void> main() async {
@@ -44,6 +44,6 @@ class _MyAppState extends State<MyApp> {
         translations: LocalStrings(),
         theme: AppTheme.light,
         debugShowCheckedModeBanner: false,
-        home: const OtpWidget());
+        home: const NavBarPage());
   }
 }
