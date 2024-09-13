@@ -271,7 +271,8 @@ class DoctorController extends GetxController {
         var body = jsonEncode({
           "description": messageController.text.trim(),
           "imgUrl": serviceImage.value,
-          "status": 'Done'
+          "status": 'Done',
+          "reviewRate": userRating.value.toInt()
         });
 
         final response = await http.put(
