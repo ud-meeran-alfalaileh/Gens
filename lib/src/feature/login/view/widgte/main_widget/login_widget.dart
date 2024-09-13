@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/core/utils/app_button.dart';
+import 'package:gens/src/core/utils/loading_page.dart';
 import 'package:gens/src/feature/forgtet_password/view/page/forget_password_page.dart';
 import 'package:gens/src/feature/login/controller/login_controller.dart';
 import 'package:gens/src/feature/login/model/login_form_model.dart';
 import 'package:gens/src/feature/login/view/widgte/collection/auth_form_widget.dart';
 import 'package:gens/src/feature/login/view/widgte/text/login_text.dart';
-import 'package:gens/src/feature/register/view/pages/register_page.dart';
+import 'package:gens/src/feature/register/view/pages/register_main_page.dart';
+import 'package:gens/src/feature/vendor_login/view/page/vendor_login_page.dart';
 import 'package:get/get.dart';
 
 class LoginWidget extends StatefulWidget {
@@ -104,7 +107,10 @@ class _LoginWidgetState extends State<LoginWidget> {
                                   invisible: false,
                                   validator: null,
                                   type: TextInputType.text,
-                                  inputFormat: [],
+                                  inputFormat: [
+                                    LengthLimitingTextInputFormatter(10),
+                                    FilteringTextInputFormatter.digitsOnly,
+                                  ],
                                   onTap: () {}),
                             ),
                             (20.5).kH,
@@ -131,7 +137,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                 ),
                               ],
                             ),
-                            (context.screenWidth * .2).kH,
+                            (context.screenWidth * .1).kH,
                             SizedBox(
                               width: context.screenWidth * .4,
                               child: AppButton(
@@ -144,54 +150,40 @@ class _LoginWidgetState extends State<LoginWidget> {
                                 title: 'login'.tr,
                               ),
                             ),
-                            30.0.kH,
+                            10.0.kH,
                           ],
                         ),
                       ),
-                      (context.screenWidth * .15).kH,
-                      SizedBox(
-                        height: context.screenHeight * .02,
-                        child: Stack(
-                          children: [
-                            const Divider(),
-                            Align(
-                              alignment: Alignment.center,
-                              child: Container(
-                                width: context.screenWidth * .1,
-                                color: AppTheme.lightAppColors.background,
-                                child: const Center(child: Text("Or")),
-                              ),
-                            )
-                          ],
+                      Container(
+                          height: context.screenHeight * .03,
+                          width: context.screenWidth,
+                          decoration: BoxDecoration(
+                              color: AppTheme.lightAppColors.background,
+                              borderRadius: const BorderRadius.vertical(
+                                  top: Radius.circular(30))),
+                          child: Center(
+                            child: LoginText.haveAccount(() {
+                              Get.to(() => const RegisterMainPage());
+                            }),
+                          )),
+                      TextButton(
+                        onPressed: () {
+                          Get.to(() => const VendorLoginPage());
+                        },
+                        child: Text(
+                          "Login As Vendor",
+                          style: TextStyle(
+                            fontFamily: "Inter",
+                            color: AppTheme.lightAppColors.primary,
+                          ),
                         ),
-                      ),
-                      Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                              height: context.screenHeight * .03,
-                              width: context.screenWidth,
-                              decoration: BoxDecoration(
-                                  color: AppTheme.lightAppColors.background,
-                                  borderRadius: const BorderRadius.vertical(
-                                      top: Radius.circular(30))),
-                              child: Center(
-                                child: LoginText.haveAccount(() {
-                                  Get.to(() => const RegisterPage());
-                                }),
-                              )))
+                      )
                     ],
                   ),
                 ),
               )),
           controller.isLoading.value
-              ? Container(
-                  width: context.screenWidth,
-                  height: context.screenHeight,
-                  color: AppTheme.lightAppColors.black.withOpacity(0.3),
-                  child: CircularProgressIndicator(
-                    color: AppTheme.lightAppColors.primary,
-                  ),
-                )
+              ? loadingPage(context)
               : const SizedBox.shrink()
         ],
       ),

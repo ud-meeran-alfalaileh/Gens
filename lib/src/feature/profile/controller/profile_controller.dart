@@ -7,26 +7,39 @@ import 'package:gens/src/core/api/end_points.dart';
 import 'package:gens/src/core/api/netwok_info.dart';
 import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
+import 'package:gens/src/feature/login/view/pages/login_page.dart';
 import 'package:gens/src/feature/profile/model/user_model.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class ProfileController extends GetxController {
   final NetworkInfo networkInfo =
       NetworkInfoImpl(connectionChecker: InternetConnectionChecker());
   User user = User();
   RxInt userId = 0.obs;
+  final passwordFromKey = GlobalKey<FormState>();
+  RxString errorText = "".obs;
+
   Rx<String?> imagefile = "".obs;
   RxBool isUpdating = false.obs;
   final email = TextEditingController();
   final phoneNumber = TextEditingController();
   final password = TextEditingController();
+
+  final oldPassword = TextEditingController();
+  final newPassword = TextEditingController();
   final confirmPassword = TextEditingController();
   final name = TextEditingController();
   final secName = TextEditingController();
+  RxBool isLoading = false.obs;
+  RxBool isLoadingImg = false.obs;
+  Rx<String?> selectedGender = Rx<String?>(null);
+  final List<String> genderOptions = ['Male', 'Female', 'Prefer not to say'];
 
   Rx<UserModel?> userData = UserModel(
           userId: 0,
@@ -37,8 +50,6 @@ class ProfileController extends GetxController {
           phone: "phone",
           gender: "gender",
           userType: "userType",
-          questionID: 0,
-          userImagesID: 0,
           userImage: "")
       .obs;
   String removeLeadingZero(String input) {
@@ -52,35 +63,112 @@ class ProfileController extends GetxController {
 
   @override
   void onInit() async {
-    super.onInit();
     await user.loadToken();
     userId.value = user.userId.value;
-    await getUser(userId.value);
+    super.onInit();
   }
 
-  Future<void> getUser(id) async {
-    final response = await http.get(
-      Uri.parse("${EndPoints.getUser}/${userId.value}"),
-      headers: {
-        'Accept': 'application/json',
-      },
-    );
+  Future<void> getUser(id, context) async {
+    if (await networkInfo.isConnected) {
+      isLoading.value = true;
+      try {
+        final response = await http.get(
+          Uri.parse("${EndPoints.getUser}/${userId.value}"),
+          headers: {
+            'Accept': 'application/json',
+          },
+        );
 
-    print(response.body);
-    print(response.statusCode);
+        if (response.statusCode == StatusCode.ok) {
+          isLoading.value = false;
 
-    if (response.statusCode == StatusCode.ok) {
-      final data = jsonDecode(response.body);
-      final responseData = UserModel.fromJson(data);
-      userData.value = responseData;
-      email.text = responseData.email;
-      name.text = responseData.fName;
-      secName.text = responseData.secName;
-      phoneNumber.text = responseData.phone;
+          final data = jsonDecode(response.body);
+          final responseData = UserModel.fromJson(data);
+          userData.value = responseData;
+          email.text = responseData.email;
+          name.text = responseData.fName;
+          secName.text = responseData.secName;
+          phoneNumber.text = responseData.phone;
+          // selectedGender.value = responseData.g
+        } else {}
+      } catch (e) {
+        isLoading.value = false;
+      }
+    } else {
+      isLoading.value = false;
+
+      showTopSnackBar(
+        Overlay.of(context),
+        CustomSnackBar.error(
+          message: 'No Internet Connection'.tr,
+        ),
+      );
     }
   }
 
-  Future<String?> uploadImageToFirebase(File pickedFile) async {
+  Future<void> updateUser(context) async {
+    if (await networkInfo.isConnected) {
+      isLoading.value = true;
+      var body = jsonEncode({
+        "email": email.text.trim(),
+        "fName": name.text.trim(),
+        "secName": secName.text.trim(),
+        "phone": "962${removeLeadingZero(phoneNumber.text.trim())}",
+        "gender": selectedGender.value
+      });
+      try {
+        final response =
+            await http.put(Uri.parse("${EndPoints.getUser}/${userId.value}"),
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json',
+                },
+                body: body);
+
+        if (response.statusCode == StatusCode.ok) {
+          isLoading.value = false;
+
+          getUser(user.userId, context);
+        } else {}
+      } catch (e) {
+        isLoading.value = false;
+
+        print(e);
+      }
+    } else {
+      isLoading.value = false;
+
+      showTopSnackBar(
+        Overlay.of(context),
+        CustomSnackBar.error(
+          message: 'No Internet Connection'.tr,
+        ),
+      );
+    }
+  }
+
+  vaildoldPassword(String? password) {
+    if (!GetUtils.isLengthGreaterOrEqual(password, 8)) {
+      return "PasswordOldValidation".tr;
+    }
+    return null;
+  }
+
+  vaildNewPassword(String? password) {
+    if (!GetUtils.isLengthGreaterOrEqual(password, 8)) {
+      return "PasswordNewValidation".tr;
+    }
+    return null;
+  }
+
+  validConfirmPassword(String password) {
+    if (password != newPassword.text) {
+      return "VaildConfirmPassword".tr;
+    }
+    return null;
+  }
+
+  Future<String?> uploadImageToFirebase(File pickedFile, context) async {
     try {
       // Create a reference to Firebase Storage
       final storageRef = FirebaseStorage.instance
@@ -91,20 +179,17 @@ class ProfileController extends GetxController {
 
       // Get download URL
       String downloadURL = await storageRef.getDownloadURL();
-      print(downloadURL);
       imagefile.value = downloadURL;
-      await updateUserImage(downloadURL);
+      await updateUserImage(downloadURL, context);
 
       return downloadURL;
     } catch (e) {
-      print("Error uploading image: $e");
       return null;
     }
   }
 
-  Future<void> pickImages() async {
-    // await requestPermissions();
-
+  Future<void> pickImages(context) async {
+    isLoadingImg.value = true;
     try {
       PermissionStatus status = await Permission.storage.request();
 
@@ -115,7 +200,7 @@ class ProfileController extends GetxController {
           File image = File(pickedFile.path);
           isUpdating.value = true;
 
-          await uploadImageToFirebase(image);
+          await uploadImageToFirebase(image, context);
 
           Get.back();
           isUpdating.value = false;
@@ -132,7 +217,7 @@ class ProfileController extends GetxController {
     }
   }
 
-  Future<void> updateUserImage(downloadURL) async {
+  Future<void> updateUserImage(downloadURL, context) async {
     if (await networkInfo.isConnected) {
       try {
         var body = jsonEncode(
@@ -144,14 +229,86 @@ class ProfileController extends GetxController {
               'Content-Type': 'application/json',
             },
             body: body);
-        print(response.body);
-        print(response.statusCode);
         if (response.statusCode == StatusCode.ok) {
-          getUser(userId);
+          getUser(userId, context);
         }
+        isLoadingImg.value = false;
       } catch (e) {
         print(e);
       }
+      isLoadingImg.value = false;
     }
+  }
+
+  String? validateAllFields() {
+    RxList<String?> errors = <String>[].obs;
+
+    // Validate each form field and collect errors
+    final oldPasswordError = vaildoldPassword(oldPassword.text);
+    final passwordError = vaildNewPassword(newPassword.text);
+    final confirmPasswordError = validConfirmPassword(confirmPassword.text);
+
+    if (oldPasswordError != null) errors.add("- $oldPasswordError");
+    if (passwordError != null) errors.add("- $passwordError");
+    if (confirmPasswordError != null) errors.add("- $confirmPasswordError");
+
+    if (errors.isNotEmpty) {
+      return errors.first;
+    }
+    return "valid";
+  }
+
+  Future<void> updtaePassword(context) async {
+    if (await networkInfo.isConnected) {
+      isLoading.value = true;
+      var body = jsonEncode({
+        "currentPassword": oldPassword.text.trim(),
+        "newPassword": newPassword.text.trim()
+      });
+      try {
+        final response = await http.post(
+            Uri.parse("${EndPoints.getUser}/${userId.value}/change-password"),
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: body);
+
+        if (response.statusCode == StatusCode.ok) {
+          showTopSnackBar(
+            Overlay.of(context),
+            CustomSnackBar.success(
+              message: 'Password changed successfully.'.tr,
+            ),
+          );
+          isLoading.value = false;
+        } else {
+          showTopSnackBar(
+            Overlay.of(context),
+            CustomSnackBar.error(
+              message: 'Current password is incorrect'.tr,
+            ),
+          );
+        }
+      } catch (e) {
+        isLoading.value = false;
+
+        print(e);
+      }
+    } else {
+      isLoading.value = false;
+
+      showTopSnackBar(
+        Overlay.of(context),
+        CustomSnackBar.error(
+          message: 'No Internet Connection'.tr,
+        ),
+      );
+    }
+  }
+
+  void logout() async {
+    await user.clearId();
+    Get.off(() => const LoginPage());
   }
 }

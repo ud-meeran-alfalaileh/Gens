@@ -4,14 +4,13 @@ import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/core/utils/app_button.dart';
-import 'package:gens/src/feature/booking/controller/booking_controller.dart';
 import 'package:gens/src/feature/booking/view/widget/text/login_text.dart';
 import 'package:gens/src/feature/doctor_profile/view/widget/text/doctor_text.dart';
 import 'package:gens/src/feature/nav_bar/view/main/navbar_page.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-successBookingDialog(context, BookingController controller) {
+successBookingDialog(context, focusedDay, hourSelected) {
   return showDialog(
     barrierDismissible:
         false, // Prevents closing the dialog when tapping outside
@@ -33,7 +32,7 @@ successBookingDialog(context, BookingController controller) {
               (context.screenHeight * .06).kH,
               DoctorText.mainText("Congratulations!"),
               BookingText.mainText(
-                  "Your appointment with Israa Elshebli is confirmed for ${DateFormat.yMMMMd().format(controller.focusedDay.value)}, at ${controller.hourSelected.value}"),
+                  "Your appointment with Israa Elshebli is confirmed for ${DateFormat.yMMMMd().format(focusedDay)}, at $hourSelected"),
               (context.screenHeight * .03).kH,
               AppButton(
                   onTap: () {

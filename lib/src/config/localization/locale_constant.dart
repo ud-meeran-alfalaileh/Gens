@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart'; // Import shared_pr
 
 // ignore: camel_case_types
 class localizationController extends GetxController {
-      RxBool showButton = false.obs;
+  RxBool showButton = false.obs;
 
   late SharedPreferences prefs; // SharedPreferences instance
   void loadLanguage() async {
@@ -17,7 +17,6 @@ class localizationController extends GetxController {
   }
 
   updateLanguage(Locale locale) {
-    Get.back();
     Get.updateLocale(locale);
     prefs.setString('language',
         locale.languageCode); // Save selected language to SharedPreferences

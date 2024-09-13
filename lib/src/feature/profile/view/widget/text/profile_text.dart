@@ -5,6 +5,7 @@ class ProfileText {
   static mainText(title) {
     return Text(
       title,
+      textAlign: TextAlign.center,
       style: TextStyle(
         fontFamily: 'Inter',
         fontSize: 16,
@@ -23,6 +24,17 @@ class ProfileText {
         color: AppTheme.lightAppColors.black,
         fontWeight: FontWeight.w500, // Use FontWeight.bold for the bold variant
       ),
+    );
+  }
+
+  static thirdText(title) {
+    return Text(
+      title,
+      style: TextStyle(
+          color: AppTheme.lightAppColors.black,
+          fontWeight: FontWeight.w400,
+          fontSize: 17,
+          fontFamily: "Inter"),
     );
   }
 }

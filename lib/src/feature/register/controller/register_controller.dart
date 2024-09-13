@@ -159,6 +159,13 @@ class RegisterController extends GetxController {
     return "valid";
   }
 
+  validConfirmPassword(String password) {
+    if (password != this.password.text) {
+      return "VaildConfirmPassword".tr;
+    }
+    return null;
+  }
+
   String removeLeadingZero(String input) {
     if (input.startsWith("962")) {
       return input.substring(3); // Remove "962"
@@ -168,22 +175,8 @@ class RegisterController extends GetxController {
     return input;
   }
 
-  validConfirmPassword(String password) {
-    if (password != this.password.text) {
-      return "VaildConfirmPassword".tr;
-    }
-    return null;
-  }
-
-  Future<void> register(BuildContext context) async {
-    bool isMounted = true;
-
+  Future<void> register(context) async {
     // Check if the context is still mounted before showing any SnackBars
-    void showSnackBarIfMounted(Widget snackBar) {
-      if (isMounted) {
-        showTopSnackBar(Overlay.of(context), snackBar);
-      }
-    }
 
     if (await networkInfo.isConnected) {
       var body = jsonEncode({
@@ -191,7 +184,7 @@ class RegisterController extends GetxController {
         "email": email.text.trim(),
         "fName": name.text.trim(),
         "secName": secName.text.trim(),
-        "phone": phoneNumber.text.trim(),
+        "phone": "962${removeLeadingZero(phoneNumber.text.trim())}",
         "gender": selectedGender.value,
         "userType": "User",
         "logined": true,
@@ -206,14 +199,11 @@ class RegisterController extends GetxController {
             'Accept': 'application/json',
           },
           body: body);
-      print(body);
-      print(response.body);
       try {
         if (response.statusCode == StatusCode.ok ||
             response.statusCode == StatusCode.created) {
           final jsonData = json.decode(response.body);
           final token = jsonData['userId'];
-          print(token);
           await user.saveId(token);
           user.userId.value = token;
           showTopSnackBar(
@@ -239,7 +229,6 @@ class RegisterController extends GetxController {
     }
 
     // Mark isMounted as false once the method is complete
-    isMounted = false;
   }
 
   Future<void> sendEmail(context) async {
@@ -258,14 +247,12 @@ class RegisterController extends GetxController {
           'Accept': 'application/json',
         },
         body: body);
-    print(response.body);
 
     if (response.statusCode == StatusCode.ok) {
       final jsonData = json.decode(response.body);
       final otpId = jsonData['randomNumber'];
       await user.saveOtp(otpId.toString());
       await user.loadOtp();
-      print(user.otpCode.value);
       isLoading.value = false;
 
       Get.to(() => const OtpWidget());
@@ -278,7 +265,6 @@ class RegisterController extends GetxController {
           message: 'Something went wrong.',
         ),
       );
-      print(response.body);
       isLoading.value = false;
     }
   }

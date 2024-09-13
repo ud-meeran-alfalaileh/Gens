@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class User {
   final RxInt userId = 0.obs;
+  final RxInt vendorId = 0.obs;
   final RxString otpCode = ''.obs;
 
   clearId() async {
@@ -14,12 +15,28 @@ class User {
   loadToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId.value = prefs.getInt('LoginId') ?? 0;
-    print("Loaded Token : $userId");
+    vendorId.value = prefs.getInt('VendorId') ?? 0;
   }
 
   saveId(int id) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt('LoginId', id); // Save the passed id
+  }
+
+  clearVendorId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('VendorId');
+    userId.value = 0;
+  }
+
+  loadVendorId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    vendorId.value = prefs.getInt('VendorId') ?? 0;
+  }
+
+  saveVendorId(int id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('VendorId', id); // Save the passed id
   }
 
   clearOtp() async {
@@ -31,7 +48,6 @@ class User {
   loadOtp() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     otpCode.value = prefs.getString('OtpCode') ?? "";
-    print("Loaded Token : $otpCode");
   }
 
   saveOtp(String id) async {

@@ -7,6 +7,7 @@ import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/core/utils/app_button.dart';
+import 'package:gens/src/core/utils/loading_page.dart';
 import 'package:gens/src/feature/forgtet_password/view/widget/text/forget_password_text.dart';
 import 'package:gens/src/feature/register/controller/register_controller.dart';
 import 'package:get/get.dart';
@@ -91,9 +92,7 @@ class _OtpWidgetState extends State<OtpWidget> {
                       fieldWidth: context.screenWidth * 0.12,
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      onCodeChanged: (String code) {
-                        print("82822");
-                      },
+                      onCodeChanged: (String code) {},
                       onSubmit: (String verificationCode) {
                         controller.checklOtp(verificationCode, context);
                       },
@@ -126,16 +125,7 @@ class _OtpWidgetState extends State<OtpWidget> {
               ),
             ),
             controller.isLoading.value
-                ? Container(
-                    width: context.screenWidth,
-                    height: context.screenHeight,
-                    color: AppTheme.lightAppColors.black.withOpacity(0.3),
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        color: AppTheme.lightAppColors.maincolor,
-                      ),
-                    ),
-                  )
+                ? loadingPage(context)
                 : const SizedBox.shrink(),
           ],
         ),

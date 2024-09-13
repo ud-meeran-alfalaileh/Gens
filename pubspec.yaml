@@ -53,6 +53,11 @@ dependencies:
   image_picker: ^1.1.2
   permission_handler: ^11.3.1
   firebase_core: ^3.3.0
+  flutter_spinkit: ^5.2.1
+  flutter_launcher_icons: ^0.13.1
+  shimmer: ^3.0.0
+  url_launcher: ^6.3.0
+  flutter_rating_bar: ^4.0.1
 
 
 dev_dependencies:
@@ -98,3 +103,11 @@ flutter:
           weight: 400
         - asset: assets/text/Inter_18pt-Light.ttf
           weight: 200
+
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/image/AppLogo (1).png"
+  adaptive_icon_forground: "#ffffff"
+  adaptive_icon_background: ""

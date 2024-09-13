@@ -5,19 +5,21 @@ import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/core/utils/app_button.dart';
 import 'package:gens/src/feature/booking/controller/booking_controller.dart';
 import 'package:gens/src/feature/booking/view/widget/collection/booking_containers.dart';
-import 'package:gens/src/feature/booking/view/widget/collection/booking_success.dart';
+import 'package:gens/src/feature/doctor_profile/controller/doctor_controller.dart';
 import 'package:gens/src/feature/doctor_profile/view/widget/text/doctor_text.dart';
+import 'package:gens/src/feature/vendor_services/view/widget/text/services_text.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class BookingWidget extends StatelessWidget {
-  const BookingWidget({super.key});
+  const BookingWidget({super.key, required this.vendorId});
+  final int vendorId;
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(BookingController());
+    final doctorController = Get.put(DoctorController());
     return SafeArea(
       bottom: false,
       child: CustomScrollView(slivers: [
@@ -62,7 +64,7 @@ class BookingWidget extends StatelessWidget {
                   ),
                   (context.screenHeight * .02).kH,
                   Obx(
-                    () => calendarContainer(controller),
+                    () => calendarContainer(controller, vendorId),
                   ),
                   (context.screenHeight * .03).kH,
                   Row(
@@ -71,7 +73,27 @@ class BookingWidget extends StatelessWidget {
                     ],
                   ),
                   (context.screenHeight * .01).kH,
-                  hourContainer(context, controller),
+                  Obx(
+                    () => controller.isLoading.value
+                        ? CircularProgressIndicator(
+                            color: AppTheme.lightAppColors.primary,
+                          )
+                        : controller.workingHors.isEmpty
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    "assets/image/no.png",
+                                    width: context.screenWidth * .2,
+                                    height: context.screenHeight * .1,
+                                  ),
+                                  20.0.kW,
+                                  ServicesText.secText(
+                                      "There is no available\n time this day"),
+                                ],
+                              )
+                            : hourContainer(context, controller),
+                  ),
                   (context.screenHeight * .02).kH,
                   AppButton(
                       onTap: () {
@@ -90,10 +112,8 @@ class BookingWidget extends StatelessWidget {
                             ),
                           );
                         } else {
-                          print(DateFormat.yMMMMd()
-                              .format(controller.focusedDay.value));
-                          print(controller.hourSelected.value);
-                          successBookingDialog(context, controller);
+                          controller.postBooking(doctorController.srevice.value,
+                              vendorId, context);
                         }
                       },
                       title: "Book Appointment".tr)

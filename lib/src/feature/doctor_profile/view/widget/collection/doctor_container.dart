@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:gens/src/config/sizes/short_text.dart';
 import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/feature/dashboard/view/widget/text/dashboard_text.dart';
 import 'package:gens/src/feature/doctor_profile/model/doctor_model.dart';
 
-doctorContainer(BuildContext context, DoctorModel model) {
+doctorContainer(BuildContext context, DoctorModelById model) {
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+    margin: const EdgeInsets.symmetric(horizontal: 20),
     width: context.screenWidth,
     height: context.screenHeight * .17,
     decoration: BoxDecoration(
@@ -31,7 +33,7 @@ doctorContainer(BuildContext context, DoctorModel model) {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             image: DecorationImage(
-                image: AssetImage(model.img),
+                image: NetworkImage(model.businessImages.first.imgUrl1),
                 fit: BoxFit.cover,
                 alignment: Alignment.topCenter),
           ),
@@ -44,13 +46,14 @@ doctorContainer(BuildContext context, DoctorModel model) {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               10.0.kH,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  DashboardText.mainText(model.name),
-                  40.0.kW,
-                  const Icon(Icons.favorite_outline)
-                ],
+              SizedBox(
+                width: context.screenWidth * .45,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    DashboardText.mainText(vendorNShortText(model.name)),
+                  ],
+                ),
               ),
               7.0.kH,
               Container(

@@ -59,7 +59,7 @@ class LoginController extends GetxController {
       isLoading.value = true;
       try {
         final body = jsonEncode({
-          "phone": phoneNumber.text.trim(),
+          "phone": "962791368189",
           "password": password.text.trim(),
         });
         final response = await http.post(Uri.parse(EndPoints.login),
@@ -69,26 +69,41 @@ class LoginController extends GetxController {
               'Accept': 'application/json',
             },
             body: body);
-        print(response.body);
-        print(response.statusCode);
-        print(body);
         if (response.statusCode == StatusCode.ok) {
           final jsonData = json.decode(response.body);
-          final token = jsonData['userId'];
-          print(token);
-          await user.saveId(token);
-          user.userId.value = token;
-          showTopSnackBar(
-            Overlay.of(context),
-            CustomSnackBar.success(
-              message: "loginSuccess".tr,
-            ),
-          );
-          isLoading.value = false;
+          final type = jsonData['userType'];
+          if (type == 'string') {
+            final token = jsonData['userId'];
+            await user.saveId(token);
+            user.userId.value = token;
+            showTopSnackBar(
+              Overlay.of(context),
+              CustomSnackBar.success(
+                message: "loginSuccess".tr,
+              ),
+            );
+            isLoading.value = false;
 
-          Get.offAll(const MainAppPage());
-          phoneNumber.clear();
-          password.clear();
+            Get.offAll(const MainAppPage());
+            phoneNumber.clear();
+            password.clear();
+          } else {
+            final jsonData = json.decode(response.body);
+            final token = jsonData['vendorId'];
+            await user.saveVendorId(token);
+            user.vendorId.value = token;
+            showTopSnackBar(
+              Overlay.of(context),
+              CustomSnackBar.success(
+                message: "loginSuccess".tr,
+              ),
+            );
+            isLoading.value = false;
+
+            Get.offAll(const MainAppPage());
+            phoneNumber.clear();
+            password.clear();
+          }
         } else {
           isLoading.value = false;
 
@@ -103,7 +118,6 @@ class LoginController extends GetxController {
         }
       } catch (e) {
         isLoading.value = false;
-
         showTopSnackBar(
           Overlay.of(context),
           CustomSnackBar.error(

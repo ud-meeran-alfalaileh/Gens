@@ -5,25 +5,28 @@ class EndPoints {
 
   //
   static const String mobileAPI = '${baseUrl}mobile/';
-  static const String login = '${baseUrl}User/login';
+  static const String login = '${baseUrl}User/loginForUsers';
+  static const String vendorLogin = '${baseUrl}Vendor/login';
   static const String signup = '${baseUrl}User/register';
+  static const String vendorRignup = '${baseUrl}Vendor';
+  static const String getVendor = '${baseUrl}Vendor/dashboard';
+  static const String getVendorId = '${baseUrl}Vendor';
+  static const String getVendorServices = '${baseUrl}Service/vendor';
   static const String senMessage = '${baseUrl}User/sendemail';
   static const String getUser = '${baseUrl}User';
   static const String updateImage = '${baseUrl}User/changeimage';
   static const String logout = 'auth/logout';
   static const String profile = 'auth/profile';
-  static const String updateUser = 'auth/profile/update';
-  static const String updateUserImage = 'auth/profile/change-photo';
-  static const String conversation = '$globalURL/conversations';
-  static const String addMessage = '$globalURL/messages';
-  static const String addAiMessage = '$globalURL/messages/aiReplay';
-  static const String getTopics = '$globalURL/topics';
-  static const String getSlider = '$globalURL/sliders';
-  static const String getCountry = '$globalURL/countries';
-  static const String getSubscription = '$globalURL/subscriptions';
-  static const String subscription = '$globalURL/subscriptions/';
-  static const String apiKey =
-      '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'; // Your OpenAI API key
+  static const String postSchadule = '${baseUrl}Schedule/create';
+  static const String postBooking = '${baseUrl}Booking';
+  static const String getBooking = '${baseUrl}Booking/user/';
+  static const String getBookingVendor = '${baseUrl}Booking/vendor/';
+  static const String getvendorServices = '${baseUrl}Service/vendor';
+  static const String ediSvendorServices = '${baseUrl}Service';
+  static const String getPendingReview = '${baseUrl}Review/pending/user';
+  static const String postReview = '${baseUrl}Review';
+  static const String timeslotsForDay =
+      '${baseUrl}Schedule/generate-timeslotsForDay';
 
   // static const String crateConversation = '$globalURL/conversations';
 }

@@ -8,6 +8,7 @@ import 'package:gens/src/feature/login/view/pages/login_page.dart';
 import 'package:gens/src/feature/nav_bar/controller/nav_bar_controller.dart';
 import 'package:gens/src/feature/nav_bar/view/partial_widget/custome_navbar.dart';
 import 'package:gens/src/feature/profile/view/page/profile_page.dart';
+import 'package:gens/src/feature/vendor_navbar.dart/view/widget/main_widget/vendor_navbar_page.dart';
 import 'package:get/get.dart';
 
 class NavBarPage extends StatefulWidget {
@@ -23,13 +24,17 @@ class _NavBarPageState extends State<NavBarPage> {
 
   @override
   void initState() {
-    controller.selectedIndex(0);
-    initialState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.selectedIndex(0);
+      initialState();
+    });
+
     super.initState();
   }
 
   Future<void> initialState() async {
     await user.loadToken();
+    // await user.loadVendorId();
   }
 
   @override
@@ -46,9 +51,9 @@ class _NavBarPageState extends State<NavBarPage> {
             child: LoginPage(),
           );
         } else {
-          if (user.userId.value == 0) {
+          if (user.userId.value == 0 && user.vendorId.value == 0) {
             return const LoginPage();
-          } else {
+          } else if (user.userId.value != 0) {
             return Obx(() {
               return Scaffold(
                 body: Stack(
@@ -226,6 +231,10 @@ class _NavBarPageState extends State<NavBarPage> {
                 ),
               );
             });
+          } else if (user.vendorId.value != 0) {
+            return const VendorNavBar();
+          } else {
+            return const LoginPage();
           }
         }
       },

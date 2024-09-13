@@ -24,7 +24,7 @@ void showPopupButtons(BuildContext context, ProfileController controller) {
               height: context.screenHeight * .01,
             ),
             profileImageButton(context, () {
-              controller.pickImages();
+              controller.pickImages(context);
             }, "library".tr, Icons.image_outlined),
             const Divider(),
             10.0.kH,

@@ -78,6 +78,18 @@ class DashboardText {
     );
   }
 
+  static ratingText(title) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 16,
+        color: AppTheme.lightAppColors.black.withOpacity(0.6),
+        fontWeight: FontWeight.w400, // Use FontWeight.bold for the bold variant
+      ),
+    );
+  }
+
   static containerText(title, isSelected) {
     return Text(
       title,
@@ -89,6 +101,52 @@ class DashboardText {
             ? AppTheme.lightAppColors.background
             : AppTheme.lightAppColors.primary,
         fontWeight: FontWeight.w600, // Use FontWeight.bold for the bold variant
+      ),
+    );
+  }
+
+  static reviewText(
+    title,
+  ) {
+    return Text(
+      title,
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 16,
+
+        color: AppTheme.lightAppColors.mainTextcolor,
+        fontWeight: FontWeight.w600, // Use FontWeight.bold for the bold variant
+      ),
+    );
+  }
+
+  static reviewSecText(
+    title,
+  ) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 14,
+
+        color: AppTheme.lightAppColors.mainTextcolor,
+        fontWeight: FontWeight.w400, // Use FontWeight.bold for the bold variant
+      ),
+    );
+  }
+
+  static reviewThText(
+    title,
+  ) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 14,
+
+        color: AppTheme.lightAppColors.mainTextcolor,
+        fontWeight: FontWeight.w500, // Use FontWeight.bold for the bold variant
       ),
     );
   }
