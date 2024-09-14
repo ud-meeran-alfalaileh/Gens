@@ -9,7 +9,7 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.lightAppColors.background,
-      body: const SafeArea(child: ProfileWidget()),
+      body: const ProfileWidget(),
     );
   }
 }

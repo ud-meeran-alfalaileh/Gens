@@ -80,6 +80,7 @@ class DoctorModelById {
   final int reviewCount;
   final String description;
   final String workingTime;
+  final String phone;
   final List<Review> reviews;
   final List<BusinessImages> businessImages;
 
@@ -95,6 +96,7 @@ class DoctorModelById {
     required this.workingTime,
     required this.reviews,
     required this.businessImages,
+    required this.phone,
   });
 
   factory DoctorModelById.fromJson(Map<String, dynamic> json) {
@@ -102,6 +104,7 @@ class DoctorModelById {
       vendorId: json['vendorId'],
       name: json['name'] ?? '',
       type: json['type'] ?? '',
+      phone: json['phone'] ?? '',
       location: json['location'] ?? '',
       pastBookings: json['pastBookings'] ?? 0,
       avgRating: json['avgRating'].toDouble(),

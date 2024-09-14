@@ -34,6 +34,7 @@ class DoctorController extends GetxController {
   RxList<Services> services = <Services>[].obs;
   RxInt srevice = 5.obs;
   RxString sreviceDescription = "".obs;
+  RxDouble servicePrice = 0.0.obs;
   RxBool showReview = false.obs;
 
   late Rx<DoctorModelById?> doctor;
@@ -55,7 +56,8 @@ class DoctorController extends GetxController {
             description: "description",
             reviews: [],
             businessImages: [],
-            workingTime: '')
+            workingTime: '',
+            phone: '')
         .obs;
     super.onInit();
   }
@@ -63,11 +65,25 @@ class DoctorController extends GetxController {
   RxList<Vendor> filteredDoctors = <Vendor>[].obs;
 
   void searchDoctors(String query) {
-    // Filter the doctors list based on the query
-    filteredDoctors.value = doctors
-        .where(
-            (vendor) => vendor.name.toLowerCase().contains(query.toLowerCase()))
-        .toList();
+    if (query == '') {
+      filteredDoctors.value = doctors;
+    } else {
+      filteredDoctors.value = doctors
+          .where((vendor) =>
+              vendor.name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    }
+  }
+
+  void searchDoctorsByType(String query) {
+    if (query == '') {
+      filteredDoctors.value = doctors;
+    } else {
+      filteredDoctors.value = doctors
+          .where((vendor) =>
+              vendor.type.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    }
   }
 
   Future<void> getVendors() async {
@@ -87,7 +103,7 @@ class DoctorController extends GetxController {
 
           List<Vendor> vendors =
               jsonData.map((json) => Vendor.fromJson(json)).toList();
-
+          searchDoctors('');
           doctors.value = vendors;
         } catch (e) {
           Get.snackbar(
@@ -123,6 +139,9 @@ class DoctorController extends GetxController {
           'Accept': 'application/json',
         },
       );
+      print("{{{{{{id}}}}}}");
+      print(id);
+      print("{{{{{{{{id}}}}}}}}");
 
       if (response.statusCode == StatusCode.ok) {
         try {

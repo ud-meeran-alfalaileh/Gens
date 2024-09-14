@@ -168,16 +168,33 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                                       "there is no services for this vendor")
                                   : _servicesList(context),
                               10.0.kH,
-                              Center(
-                                  child: Text(
-                                controller.sreviceDescription.value,
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontFamily: 'Inter',
-                                  color: AppTheme.lightAppColors.subTextcolor,
-                                ),
-                              )),
-                              // (context.screenHeight * .05).kH,
+                              Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  controller.services.isEmpty
+                                      ? const SizedBox.shrink()
+                                      : Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                                "Start from ${controller.servicePrice.value.toString()}JOD"),
+                                          ],
+                                        ),
+                                  Text(
+                                    controller.sreviceDescription.value,
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontFamily: 'Inter',
+                                      color:
+                                          AppTheme.lightAppColors.subTextcolor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              (context.screenHeight * .02).kH,
                               controller.doctor.value!.reviews.isEmpty
                                   ? const SizedBox.shrink()
                                   : Row(
@@ -187,14 +204,13 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                                         DoctorText.mainText("Reviews"),
                                         GestureDetector(
                                           onTap: () {
-                                            _showReviewsBottomSheet(
-                                                context); // Show bottom sheet on tap
+                                            _showReviewsBottomSheet(context);
                                           },
-                                          child: const Text(
+                                          child: Text(
                                             "See all",
                                             style: TextStyle(
-                                                color: Colors
-                                                    .blue), // Make it look clickable
+                                                color: AppTheme
+                                                    .lightAppColors.primary),
                                           ),
                                         )
                                       ],
@@ -260,6 +276,8 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                 controller.srevice.value = controller.services[index].serviceId;
                 controller.sreviceDescription.value =
                     controller.services[index].description;
+                controller.servicePrice.value =
+                    controller.services[index].price;
               },
               child: Obx(
                 () => Container(
@@ -337,6 +355,8 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                 children: [
                   DoctorText.secText(
                       controller.doctor.value!.reviews[index].userFirstName),
+                  DoctorText.secText(
+                      controller.doctor.value!.reviews[index].userFirstName),
                   5.0.kH,
                   Row(
                     children: [
@@ -388,26 +408,6 @@ class _DoctorWidgetState extends State<DoctorWidget> {
     return stars;
   }
 
-  Column doctorRowCircle(BuildContext context, image, number, title) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(15),
-          width: 65,
-          height: 60,
-          decoration: BoxDecoration(
-              shape: BoxShape.circle, color: AppTheme.lightAppColors.maincolor),
-          child: SvgPicture.asset(image),
-        ),
-        (context.screenHeight * .01).kH,
-        DoctorText.secText("$number"),
-        DoctorText.thirdText(title),
-      ],
-    );
-  }
-
   void _showReviewsBottomSheet(BuildContext context) {
     showModalBottomSheet(
       backgroundColor: AppTheme.lightAppColors.background,
@@ -456,4 +456,24 @@ class _DoctorWidgetState extends State<DoctorWidget> {
       },
     );
   }
+}
+
+Column doctorRowCircle(BuildContext context, image, number, title) {
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      Container(
+        padding: const EdgeInsets.all(15),
+        width: 65,
+        height: 60,
+        decoration: BoxDecoration(
+            shape: BoxShape.circle, color: AppTheme.lightAppColors.maincolor),
+        child: SvgPicture.asset(image),
+      ),
+      (context.screenHeight * .01).kH,
+      DoctorText.secText("$number"),
+      DoctorText.thirdText(title),
+    ],
+  );
 }

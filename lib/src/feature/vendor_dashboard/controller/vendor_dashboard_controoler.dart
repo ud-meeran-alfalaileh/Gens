@@ -14,11 +14,15 @@ import 'package:url_launcher/url_launcher.dart';
 class VendorDashboardController extends GetxController {
   RxBool isLaoding = false.obs;
   RxList<VendorBooking> vendorBooking = <VendorBooking>[].obs;
+  RxList<VendorBooking> allVendorBooking = <VendorBooking>[].obs;
   RxList<VendorBooking> todayVendorBooking = <VendorBooking>[].obs;
+  RxList<VendorBooking> filteredBooking = <VendorBooking>[].obs;
+
   User user = User();
   final NetworkInfo networkInfo =
       NetworkInfoImpl(connectionChecker: InternetConnectionChecker());
   RxBool statusUpadating = false.obs;
+  RxBool todaycontainer = false.obs;
 
   String getFormattedTodayDate() {
     DateTime today = DateTime.now();
@@ -27,11 +31,45 @@ class VendorDashboardController extends GetxController {
     return formattedDate;
   }
 
+  RxBool isFilterd = false.obs;
+  RxInt selectedIndex = 0.obs;
+  RxString searchValue = ''.obs;
+
+  void setSelectedIndex(int index) {
+    selectedIndex.value = index;
+  }
+
   @override
   void onInit() {
     user.loadToken();
     user.vendorId();
     super.onInit();
+  }
+
+  void filterBooking(String query) {
+    if (query == '') {
+      isFilterd.value = false;
+      todaycontainer.value = false;
+    } else if (query == 'Today') {
+      isFilterd.value = true;
+
+      filteredBooking.value = todayVendorBooking;
+      todaycontainer.value = true;
+    } else {
+      isFilterd.value = true;
+      todaycontainer.value = false;
+
+      filteredBooking.value = allVendorBooking
+          .where((vendor) => vendor.status.contains(query))
+          .toList();
+      for (var xx in allVendorBooking) {
+        print(xx.endTime);
+        print("xx.endTime");
+      }
+      print(allVendorBooking.length);
+      print(filteredBooking.length);
+      print(query);
+    }
   }
 
   Future<void> makePhoneCall(String phoneNumber) async {
@@ -61,24 +99,32 @@ class VendorDashboardController extends GetxController {
             'Accept': 'application/json',
           },
         );
+        print(response.body);
+        print(response.statusCode);
         if (response.statusCode == StatusCode.ok) {
           final List<dynamic> jsonData = json.decode(response.body);
 
           List<VendorBooking> servicesData =
               jsonData.map((json) => VendorBooking.fromJson(json)).toList();
 
-          vendorBooking.value = servicesData;
-          for (var xx in vendorBooking) {
+          allVendorBooking.value = servicesData;
+          print(allVendorBooking.length);
+          for (var xx in allVendorBooking) {
+            print(xx.status);
             if (xx.date == getFormattedTodayDate()) {
               todayVendorBooking.add(xx);
+            } else {
+              vendorBooking.add(xx);
             }
           }
           isLaoding.value = false;
         } else {
           vendorBooking.value = [];
+          isLaoding.value = false;
         }
       } catch (e) {
         print(e);
+        isLaoding.value = false;
       }
     } else {
       Get.snackbar(
@@ -95,6 +141,7 @@ class VendorDashboardController extends GetxController {
       try {
         statusUpadating.value = true;
         var body = jsonEncode(status);
+        await Future.delayed(const Duration(milliseconds: 600));
         final response = await http.post(
           Uri.parse("${EndPoints.postBooking}/$serviceId/status"),
           headers: {
@@ -103,6 +150,7 @@ class VendorDashboardController extends GetxController {
           },
           body: body,
         );
+        print(response.body);
         if (response.statusCode == StatusCode.ok) {
           // Create a new instance with updated status
           final updatedBooking = VendorBooking(

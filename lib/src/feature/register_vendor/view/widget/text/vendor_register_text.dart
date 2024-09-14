@@ -3,16 +3,13 @@ import 'package:gens/src/config/theme/theme.dart';
 
 class VendorRegisterText {
   static mainText(title) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 20.0),
-      child: Text(
-        title,
-        style: TextStyle(
-            color: AppTheme.lightAppColors.black,
-            fontWeight: FontWeight.w400,
-            fontSize: 17,
-            fontFamily: "Inter"),
-      ),
+    return Text(
+      title,
+      style: TextStyle(
+          color: AppTheme.lightAppColors.black,
+          fontWeight: FontWeight.w400,
+          fontSize: 17,
+          fontFamily: "Inter"),
     );
   }
 

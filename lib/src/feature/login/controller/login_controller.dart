@@ -59,7 +59,7 @@ class LoginController extends GetxController {
       isLoading.value = true;
       try {
         final body = jsonEncode({
-          "phone": "962791368189",
+          "phone": "962${removeLeadingZero(phoneNumber.text.trim())}",
           "password": password.text.trim(),
         });
         final response = await http.post(Uri.parse(EndPoints.login),
@@ -69,6 +69,7 @@ class LoginController extends GetxController {
               'Accept': 'application/json',
             },
             body: body);
+        print(body);
         if (response.statusCode == StatusCode.ok) {
           final jsonData = json.decode(response.body);
           final type = jsonData['userType'];

@@ -23,10 +23,12 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class VendorRegisterController extends GetxController {
   final name = TextEditingController();
-  final email = TextEditingController();
-  final phone = TextEditingController();
+  final userType = TextEditingController();
   final description = TextEditingController();
+  final phone = TextEditingController();
   final location = TextEditingController();
+
+  final email = TextEditingController();
   final password = TextEditingController();
   RxList<Schedule> schedules = <Schedule>[].obs;
   RxString jsonString = "".obs;
@@ -35,7 +37,6 @@ class VendorRegisterController extends GetxController {
   TextEditingController operHour = TextEditingController();
   final TextEditingController closeHour = TextEditingController();
   final confirmPassword = TextEditingController();
-  final userType = TextEditingController();
   final businessLicense = TextEditingController();
   RxString businessLicenseFile = "".obs;
   RxBool isUpdating = false.obs;

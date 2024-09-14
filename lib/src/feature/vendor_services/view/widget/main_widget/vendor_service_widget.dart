@@ -6,7 +6,7 @@ import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/core/utils/app_button.dart';
 import 'package:gens/src/core/utils/loading_page.dart';
 import 'package:gens/src/feature/doctor_profile/model/service_model.dart';
-import 'package:gens/src/feature/vendor_dashboard/view/widget/main_widget/vendor_dashboard_widget.dart';
+import 'package:gens/src/feature/vendor_dashboard/view/widget/collection/bednor_dashboard_collection.dart';
 import 'package:gens/src/feature/vendor_dashboard/view/widget/text/vendor_dashboard_text.dart';
 import 'package:gens/src/feature/vendor_services/controller/vendor_services_controller.dart';
 import 'package:gens/src/feature/vendor_services/view/widget/main_widget/add_service_widget.dart';
@@ -43,44 +43,41 @@ class _VendorServiceWidgetState extends State<VendorServiceWidget> {
                 children: [
                   vendorHeader(context),
                   Obx(
-                    () => controller.services.isEmpty
-                        ? Column(
+                    () => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              100.0.kH,
-                              Image.asset(
-                                'assets/image/empty-box.png',
-                                width: 200,
-                              ),
-                              10.0.kH,
-                              VendorDashboardText.emptyText(
-                                  "Currently, there are no bookings available for you"),
+                              VendorDashboardText.mainText("My Services"),
+                              GestureDetector(
+                                onTap: () {
+                                  Get.to(() => const AddServiceWidget(
+                                        type: 'add',
+                                      ));
+                                },
+                                child: ServicesText.mainText("Add services +"),
+                              )
                             ],
-                          )
-                        : Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 18.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                          ),
+                          20.0.kH,
+                          controller.services.isEmpty
+                              ? Column(
                                   children: [
-                                    VendorDashboardText.mainText("My Services"),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Get.to(() => const AddServiceWidget(
-                                              type: 'add',
-                                            ));
-                                      },
-                                      child: ServicesText.mainText(
-                                          "Add services +"),
-                                    )
+                                    100.0.kH,
+                                    Image.asset(
+                                      'assets/image/empty-box.png',
+                                      width: 200,
+                                    ),
+                                    10.0.kH,
+                                    VendorDashboardText.emptyText(
+                                        "Currently, there are no Services add for you"),
                                   ],
-                                ),
-                                20.0.kH,
-                                ListView.separated(
+                                )
+                              : ListView.separated(
                                   shrinkWrap: true,
                                   itemBuilder: (context, index) {
                                     final service = controller.services[index];
@@ -97,9 +94,9 @@ class _VendorServiceWidgetState extends State<VendorServiceWidget> {
                                   },
                                   itemCount: controller.services.length,
                                 )
-                              ],
-                            ),
-                          ),
+                        ],
+                      ),
+                    ),
                   )
                 ],
               ),

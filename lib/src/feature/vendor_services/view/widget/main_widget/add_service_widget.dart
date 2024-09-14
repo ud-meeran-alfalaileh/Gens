@@ -3,6 +3,7 @@ import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/core/utils/app_button.dart';
+import 'package:gens/src/core/utils/snack_bar.dart';
 import 'package:gens/src/feature/doctor_profile/model/service_model.dart';
 import 'package:gens/src/feature/login/model/login_form_model.dart';
 import 'package:gens/src/feature/login/view/widgte/collection/auth_form_widget.dart';
@@ -133,10 +134,20 @@ class _AddServiceWidgetState extends State<AddServiceWidget> {
                             // height: context.screenHeight * .05,
                             child: AppButton(
                                 onTap: () {
-                                  widget.type == 'edit'
-                                      ? controller.updateService(
-                                          widget.serviceId!.serviceId)
-                                      : controller.addService();
+                                  if (controller.serviceImage.value == '' ||
+                                      controller.description.text.isEmpty ||
+                                      controller.title.text.isEmpty ||
+                                      controller.price.text.isEmpty) {
+                                    showSnackBar(
+                                        "Error",
+                                        "Make sure all fields are filed ",
+                                        Colors.red);
+                                  } else {
+                                    widget.type == 'edit'
+                                        ? controller.updateService(
+                                            widget.serviceId!.serviceId)
+                                        : controller.addService();
+                                  }
                                 },
                                 title: widget.type == 'edit' ? "Edit" : "Add")),
                       )

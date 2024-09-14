@@ -113,7 +113,7 @@ class _DashboradWidgetState extends State<DashboradWidget> {
                                     child: Row(
                                       children: [
                                         DashboardText.thirdText(doctorController
-                                            .doctors.length
+                                            .filteredDoctors.length
                                             .toString()),
                                         DashboardText.secText(" founds".tr),
                                       ],
@@ -166,13 +166,13 @@ class _DashboradWidgetState extends State<DashboradWidget> {
                                               return doctorDashboardContainer(
                                                   context,
                                                   doctorController
-                                                      .doctors[index]);
+                                                      .filteredDoctors[index]);
                                             },
                                             separatorBuilder: (context, index) {
                                               return 20.0.kH;
                                             },
-                                            itemCount:
-                                                doctorController.doctors.length,
+                                            itemCount: doctorController
+                                                .filteredDoctors.length,
                                           ),
                                   )
                                 ],
@@ -261,7 +261,7 @@ class _DashboradWidgetState extends State<DashboradWidget> {
 
             Center(
               child: RatingBar.builder(
-                initialRating: 5,
+                initialRating: 1,
                 minRating: 1,
                 direction: Axis.horizontal,
                 allowHalfRating: true,
@@ -332,8 +332,13 @@ class _DashboradWidgetState extends State<DashboradWidget> {
                   width: context.screenWidth * .32,
                   child: AppButton(
                     onTap: () {
-                      doctorController.postReview(
-                          doctorController.reviewPinding.first.reviewId);
+                      if (doctorController.messageController.text.isEmpty ||
+                          doctorController.serviceImage.value == '') {
+                        null;
+                      } else {
+                        doctorController.postReview(
+                            doctorController.reviewPinding.first.reviewId);
+                      }
                     },
                     title: 'Submit',
                   ),
