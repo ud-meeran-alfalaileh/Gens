@@ -247,7 +247,7 @@ class RegisterController extends GetxController {
           'Accept': 'application/json',
         },
         body: body);
-
+    print(response.body);
     if (response.statusCode == StatusCode.ok) {
       final jsonData = json.decode(response.body);
       final otpId = jsonData['randomNumber'];

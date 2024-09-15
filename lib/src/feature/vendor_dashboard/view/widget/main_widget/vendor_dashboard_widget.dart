@@ -5,6 +5,7 @@ import 'package:gens/src/core/utils/loading_page.dart';
 import 'package:gens/src/feature/vendor_dashboard/controller/vendor_dashboard_controoler.dart';
 import 'package:gens/src/feature/vendor_dashboard/view/widget/collection/bednor_dashboard_collection.dart';
 import 'package:gens/src/feature/vendor_dashboard/view/widget/text/vendor_dashboard_text.dart';
+import 'package:gens/src/feature/vendor_profile/controller/vendor_profile_controller.dart';
 import 'package:gens/src/feature/vendor_services/view/widget/text/services_text.dart';
 import 'package:get/get.dart';
 
@@ -17,10 +18,12 @@ class VendorDashboardWidget extends StatefulWidget {
 
 class _VendorDashboardWidgetState extends State<VendorDashboardWidget> {
   final controller = Get.put(VendorDashboardController());
+  final vendorController = Get.put(VendorProfileController());
   @override
   void initState() {
     controller.getFormattedTodayDate();
     controller.getVendorBoooking(context);
+    vendorController.getVendorsById();
     super.initState();
   }
 
@@ -44,7 +47,7 @@ class _VendorDashboardWidgetState extends State<VendorDashboardWidget> {
                         Center(child: vendorDashboardContainerRow(controller)),
                   ),
                   Obx(
-                    () => controller.vendorBooking.isEmpty
+                    () => controller.allVendorBooking.isEmpty
                         ? Column(
                             children: [
                               100.0.kH,
@@ -61,32 +64,48 @@ class _VendorDashboardWidgetState extends State<VendorDashboardWidget> {
                         /////Filteredlist
                         Obx(
                             () => controller.isFilterd.value
-                                ? SizedBox(
-                                    child: ListView.separated(
-                                        physics:
-                                            const NeverScrollableScrollPhysics(),
-                                        shrinkWrap: true,
-                                        itemBuilder: (context, index) {
-                                          return controller.todaycontainer.value
-                                              ? vendorBookingContainerToday(
-                                                  context,
-                                                  index,
-                                                  controller
-                                                      .filteredBooking[index],
-                                                )
-                                              : vendorBookingContainer(
-                                                  context,
-                                                  index,
-                                                  controller
-                                                      .filteredBooking[index],
-                                                );
-                                        },
-                                        separatorBuilder: (context, index) {
-                                          return 15.0.kH;
-                                        },
-                                        itemCount:
-                                            controller.filteredBooking.length),
-                                  )
+                                ? controller.filteredBooking.isEmpty
+                                    ? Column(
+                                        children: [
+                                          100.0.kH,
+                                          Image.asset(
+                                            'assets/image/empty-box.png',
+                                            width: 200,
+                                          ),
+                                          10.0.kH,
+                                          VendorDashboardText.emptyText(
+                                              "Currently, there are no bookings available for you"),
+                                        ],
+                                      )
+                                    : SizedBox(
+                                        child: ListView.separated(
+                                            physics:
+                                                const NeverScrollableScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemBuilder: (context, index) {
+                                              return controller
+                                                      .todaycontainer.value
+                                                  ? vendorBookingContainerToday(
+                                                      context,
+                                                      index,
+                                                      controller
+                                                              .filteredBooking[
+                                                          index],
+                                                    )
+                                                  : vendorBookingContainer(
+                                                      context,
+                                                      index,
+                                                      controller
+                                                              .filteredBooking[
+                                                          index],
+                                                    );
+                                            },
+                                            separatorBuilder: (context, index) {
+                                              return 15.0.kH;
+                                            },
+                                            itemCount: controller
+                                                .filteredBooking.length),
+                                      )
                                 : Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment:

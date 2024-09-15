@@ -12,7 +12,7 @@ import 'package:gens/src/feature/register_vendor/model/schaduale_model.dart';
 import 'package:gens/src/feature/register_vendor/model/vendor_register_model.dart';
 import 'package:gens/src/feature/register_vendor/view/widget/collection/register_page_four.dart';
 import 'package:gens/src/feature/register_vendor/view/widget/main_widget/otp_vendor_widget.dart';
-import 'package:gens/src/feature/vendor_dashboard/view/page/vendor_dashboard.dart';
+import 'package:gens/src/feature/vendor_navbar.dart/view/widget/main_widget/vendor_navbar_page.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -348,7 +348,7 @@ class VendorRegisterController extends GetxController {
         await Future.delayed(const Duration(milliseconds: 500));
       }
       isUpdating.value = false;
-      Get.to(() => const VendorDashboard());
+      Get.to(() => const VendorNavBar());
     }
   }
 
@@ -382,11 +382,12 @@ class VendorRegisterController extends GetxController {
 
   Future<void> checklOtp(String verificationCode, context) async {
     await user.loadOtp();
-    isLoading.value = true;
+    isLoading.value = false;
     if (user.otpCode.value == verificationCode) {
       vendorRegister();
     } else {
       isLoading.value = false;
+
       showTopSnackBar(
         Overlay.of(context),
         const CustomSnackBar.error(
@@ -421,7 +422,7 @@ class VendorRegisterController extends GetxController {
           'Accept': 'application/json',
         },
         body: body);
-
+    print(response.body);
     if (response.statusCode == StatusCode.ok) {
       final jsonData = json.decode(response.body);
       final otpId = jsonData['randomNumber'];

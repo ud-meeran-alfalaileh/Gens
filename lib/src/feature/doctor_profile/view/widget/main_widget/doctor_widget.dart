@@ -11,6 +11,7 @@ import 'package:gens/src/feature/doctor_profile/controller/doctor_controller.dar
 import 'package:gens/src/feature/doctor_profile/view/widget/collection/doctor_container.dart';
 import 'package:gens/src/feature/doctor_profile/view/widget/text/doctor_text.dart';
 import 'package:get/get.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class DoctorWidget extends StatefulWidget {
   const DoctorWidget({super.key, required this.model});
@@ -22,6 +23,7 @@ class DoctorWidget extends StatefulWidget {
 
 class _DoctorWidgetState extends State<DoctorWidget> {
   final controller = Get.put(DoctorController());
+  final PageController _pageController = PageController();
 
   @override
   void initState() {
@@ -68,8 +70,9 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                             40.0.kW
                           ],
                         ),
-                        (context.screenHeight * .02).kH,
-                        doctorContainer(context, controller.doctor.value!),
+                        vendorHeader(
+                          context,
+                        ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 25),
                           child: Column(
@@ -454,6 +457,82 @@ class _DoctorWidgetState extends State<DoctorWidget> {
           },
         );
       },
+    );
+  }
+
+  vendorHeader(
+    BuildContext context,
+  ) {
+    return SizedBox(
+      height: context.screenHeight * .35,
+      child: Stack(
+        children: [
+          // Image slider
+          controller.imagesUrl.isNotEmpty
+              ? SizedBox(
+                  height: context.screenHeight * .3,
+                  child: PageView.builder(
+                    controller: _pageController, // Attach PageController
+                    itemCount: controller.imagesUrl.length,
+                    itemBuilder: (context, index) {
+                      return SizedBox(
+                        child: Container(
+                          width: context.screenWidth,
+                          height: context.screenHeight * .13,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: NetworkImage(controller.imagesUrl[index]),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                )
+              : const Center(child: Text("No images available")),
+
+          // Page Indicator (Dots)
+          Container(
+            width: context.screenWidth,
+            height: context.screenHeight * .05,
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: AppTheme.lightAppColors.black.withOpacity(0.2),
+                  spreadRadius: 2,
+                  blurRadius: 10,
+                  offset: const Offset(0, 1),
+                ),
+              ],
+            ),
+          ),
+          Align(
+            alignment: Alignment.topLeft,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0), // Adjust bottom padding
+              child: SmoothPageIndicator(
+                controller: _pageController, // Same PageController
+                count: controller.imagesUrl.length,
+                effect: ExpandingDotsEffect(
+                  dotHeight: 8,
+                  dotWidth: 8,
+                  activeDotColor:
+                      AppTheme.lightAppColors.primary, // Active dot color
+                  dotColor:
+                      AppTheme.lightAppColors.maincolor, // Inactive dot color
+                  expansionFactor: 3, // Expands active dot
+                  spacing: 8, // Spacing between dots
+                ),
+              ),
+            ),
+          ),
+          Align(
+              alignment: Alignment.bottomCenter,
+              child: doctorContainer(context, controller.doctor.value!)),
+          // Bottom overlay with vendor info and rating
+        ],
+      ),
     );
   }
 }

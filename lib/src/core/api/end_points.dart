@@ -25,6 +25,7 @@ class EndPoints {
   static const String ediSvendorServices = '${baseUrl}Service';
   static const String getPendingReview = '${baseUrl}Review/pending/user';
   static const String postReview = '${baseUrl}Review';
+  static const String postFav = '${baseUrl}Favorite';
   static const String timeslotsForDay =
       '${baseUrl}Schedule/generate-timeslotsForDay';
 

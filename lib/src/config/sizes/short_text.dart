@@ -22,7 +22,7 @@ String vendorShortText(String text, {int maxLength = 12}) {
   }
 }
 
-String vendorNShortText(String text, {int maxLength = 15}) {
+String vendorNShortText(String text, {int maxLength = 25}) {
   if (text.length <= maxLength) {
     return text;
   } else {

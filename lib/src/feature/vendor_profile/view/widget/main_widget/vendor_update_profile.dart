@@ -8,6 +8,7 @@ import 'package:gens/src/feature/login/view/widgte/collection/auth_form_widget.d
 import 'package:gens/src/feature/profile/view/widget/text/profile_text.dart';
 import 'package:gens/src/feature/register_vendor/view/widget/text/vendor_register_text.dart';
 import 'package:gens/src/feature/vendor_profile/controller/vendor_profile_controller.dart';
+import 'package:gens/src/feature/vendor_profile/view/widget/main_widget/edit_image.dart';
 import 'package:get/get.dart';
 
 class VendorUpdateProfile extends StatelessWidget {
@@ -45,15 +46,41 @@ class VendorUpdateProfile extends StatelessWidget {
                   ],
                 ),
                 20.0.kH,
-                Container(
-                  width: context.screenWidth,
-                  height: context.screenHeight * .2,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(controller.image.text),
-                      )),
+                GestureDetector(
+                  onTap: () {
+                    Get.to(() => const EditImagesPage());
+                  },
+                  child: SizedBox(
+                    width: context.screenWidth,
+                    height: context.screenHeight * .21,
+                    child: Stack(
+                      children: [
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            width: context.screenWidth,
+                            height: context.screenHeight * .2,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: NetworkImage(controller.image.text),
+                                )),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: CircleAvatar(
+                              backgroundColor:
+                                  AppTheme.lightAppColors.maincolor,
+                              child: Icon(
+                                Icons.edit,
+                                color: AppTheme.lightAppColors.primary,
+                              )),
+                        )
+                      ],
+                    ),
+                  ),
                 ),
                 20.0.kH,
                 VendorRegisterText.mainText("Name"),
@@ -117,24 +144,28 @@ class VendorUpdateProfile extends StatelessWidget {
                 //   ),
                 // ),
                 // 20.0.kH,
-                VendorRegisterText.mainText("Specialty"),
-                AuthForm(
-                  formModel: FormModel(
-                      icon: Icons.add_business_outlined,
-                      controller: controller.userType,
-                      enableText: false,
-                      hintText: "Specialty".tr,
-                      invisible: false,
-                      validator: null,
-                      type: TextInputType.text,
-                      inputFormat: [],
-                      onTap: () {}),
-                ),
+                // VendorRegisterText.mainText("Specialty"),
+                // AuthForm(
+                //   formModel: FormModel(
+                //       icon: Icons.add_business_outlined,
+                //       controller: controller.userType,
+                //       enableText: false,
+                //       hintText: "Specialty".tr,
+                //       invisible: false,
+                //       validator: null,
+                //       type: TextInputType.text,
+                //       inputFormat: [],
+                //       onTap: () {}),
+                // ),
                 20.0.kH,
                 Center(
                   child: SizedBox(
                       width: context.screenWidth * .7,
-                      child: AppButton(onTap: () {}, title: "Update")),
+                      child: AppButton(
+                          onTap: () {
+                            controller.updateUser(context);
+                          },
+                          title: "Update")),
                 )
               ],
             ),

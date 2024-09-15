@@ -23,7 +23,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   User user = User();
   @override
   void initState() {
-    // initalState(context);
+    initalState(context);
     super.initState();
   }
 

@@ -5,11 +5,14 @@ import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/feature/dashboard/view/widget/text/dashboard_text.dart';
+import 'package:gens/src/feature/doctor_profile/controller/doctor_controller.dart';
 import 'package:gens/src/feature/doctor_profile/model/doctor_model.dart';
 import 'package:gens/src/feature/doctor_profile/view/page/doctor_page.dart';
 import 'package:get/get.dart';
 
-doctorDashboardContainer(BuildContext context, Vendor model) {
+doctorDashboardContainer(
+    BuildContext context, Vendor model, DoctorController controller) {
+  Rx<int?> isFav = model.fav.obs;
   return GestureDetector(
     onTap: () {
       Get.to(() => DoctorPage(
@@ -56,12 +59,30 @@ doctorDashboardContainer(BuildContext context, Vendor model) {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    DashboardText.mainText(vendorShortText(model.name)),
-                    const Icon(Icons.favorite_outline)
-                  ],
+                Obx(
+                  () => GestureDetector(
+                    onTap: () {
+                      if (isFav.value == 0) {
+                        isFav.value = 1;
+                        controller.addFav(model.vendorId);
+                      } else {
+                        isFav.value = 0;
+                        controller.removeFav(model.vendorId);
+                      }
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        DashboardText.mainText(vendorShortText(model.name)),
+                        Image.asset(
+                          isFav.value == 0
+                              ? "assets/image/heart.png"
+                              : "assets/image/lover.png",
+                          height: 20,
+                        )
+                      ],
+                    ),
+                  ),
                 ),
                 7.0.kH,
                 Container(

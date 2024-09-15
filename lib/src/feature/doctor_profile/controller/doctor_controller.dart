@@ -23,6 +23,7 @@ class DoctorController extends GetxController {
     isExpanded.value = !isExpanded.value;
   }
 
+  RxList<String> imagesUrl = <String>[].obs;
   RxDouble userRating = 0.0.obs; // Initial rating
   TextEditingController messageController = TextEditingController();
   User user = User();
@@ -75,6 +76,42 @@ class DoctorController extends GetxController {
     }
   }
 
+  Future<void> addFav(vendorId) async {
+    if (await networkInfo.isConnected) {
+      var body = jsonEncode({
+        "userId": user.userId.value,
+        "vendorId": vendorId,
+        "isFav": true,
+      });
+      final response = await http.post(Uri.parse(EndPoints.postFav),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: body);
+      print(response.body);
+      print(response.statusCode);
+    }
+  }
+
+  Future<void> removeFav(vendorId) async {
+    if (await networkInfo.isConnected) {
+      var body = jsonEncode({
+        "userId": user.userId.value,
+        "vendorId": vendorId,
+        "isFav": false,
+      });
+      final response = await http.post(Uri.parse(EndPoints.postFav),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: body);
+      print(response.body);
+      print(response.statusCode);
+    }
+  }
+
   void searchDoctorsByType(String query) {
     if (query == '') {
       filteredDoctors.value = doctors;
@@ -105,6 +142,9 @@ class DoctorController extends GetxController {
               jsonData.map((json) => Vendor.fromJson(json)).toList();
           searchDoctors('');
           doctors.value = vendors;
+          for (var xx in doctors) {
+            xx.fav == 0;
+          }
         } catch (e) {
           Get.snackbar(
             "Error",
@@ -148,6 +188,10 @@ class DoctorController extends GetxController {
           final dynamic jsonData = json.decode(response.body);
 
           doctor.value = DoctorModelById.fromJson(jsonData);
+          imagesUrl.clear();
+          imagesUrl.add(doctor.value!.businessImages.first.imgUrl1);
+          imagesUrl.add(doctor.value!.businessImages.first.imgUrl2);
+          imagesUrl.add(doctor.value!.businessImages.first.imgUrl3);
           isLoadingVendor.value = false;
         } catch (e) {
           Get.snackbar(

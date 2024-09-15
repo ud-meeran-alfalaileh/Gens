@@ -7,6 +7,7 @@ class Vendor {
   final String type;
   final int reviewCount;
   final int numberOfBooking;
+  int? fav;
   final List<BusinessImages> images;
 
   Vendor({

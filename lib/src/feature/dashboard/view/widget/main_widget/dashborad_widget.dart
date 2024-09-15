@@ -166,7 +166,8 @@ class _DashboradWidgetState extends State<DashboradWidget> {
                                               return doctorDashboardContainer(
                                                   context,
                                                   doctorController
-                                                      .filteredDoctors[index]);
+                                                      .filteredDoctors[index],
+                                                  doctorController);
                                             },
                                             separatorBuilder: (context, index) {
                                               return 20.0.kH;
@@ -196,7 +197,8 @@ class _DashboradWidgetState extends State<DashboradWidget> {
                                               ? doctorController
                                                   .filteredDoctors[index]
                                               : doctorController
-                                                  .filteredDoctors[index]);
+                                                  .filteredDoctors[index],
+                                          doctorController);
                                     },
                                     separatorBuilder: (context, iindex) {
                                       return 20.0.kH;

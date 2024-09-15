@@ -77,7 +77,9 @@ vendorBookingContainerToday(BuildContext context, index, VendorBooking model) {
               CircleAvatar(
                 backgroundColor: AppTheme.lightAppColors.maincolor,
                 radius: 30,
-                backgroundImage: NetworkImage(model.userImage),
+                backgroundImage: model.userImage == ""
+                    ? const AssetImage("assets/image/profileIcon.png")
+                    : NetworkImage(model.userImage),
               ),
               10.0.kW,
               VendorDashboardText.secText(model.userName),
@@ -139,10 +141,10 @@ vendorBookingContainerToday(BuildContext context, index, VendorBooking model) {
                                   "Done", "Done"),
                               5.0.kH,
                               statusWidgetToday(model, statusUpadating, context,
-                                  "Didn'tShow", "Didn't show"),
+                                  "Didn'tShow", "Absent"),
                             ],
                           )
-                        : Text("remove this from here")
+                        : const Text("remove this from here")
           ])
         ],
       ),
@@ -214,7 +216,9 @@ vendorBookingContainer(BuildContext context, index, VendorBooking model) {
               CircleAvatar(
                 backgroundColor: AppTheme.lightAppColors.maincolor,
                 radius: 30,
-                backgroundImage: NetworkImage(model.userImage),
+                backgroundImage: model.userImage == ""
+                    ? const AssetImage("assets/image/profileIcon.png")
+                    : NetworkImage(model.userImage),
               ),
               10.0.kW,
               VendorDashboardText.secText(model.userName),

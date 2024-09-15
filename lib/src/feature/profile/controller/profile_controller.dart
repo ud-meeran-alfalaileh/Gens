@@ -7,6 +7,7 @@ import 'package:gens/src/core/api/end_points.dart';
 import 'package:gens/src/core/api/netwok_info.dart';
 import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
+import 'package:gens/src/core/utils/snack_bar.dart';
 import 'package:gens/src/feature/login/view/pages/login_page.dart';
 import 'package:gens/src/feature/profile/model/user_model.dart';
 import 'package:get/get.dart';
@@ -124,10 +125,10 @@ class ProfileController extends GetxController {
                   'Content-Type': 'application/json',
                 },
                 body: body);
-
+        print(response.body);
         if (response.statusCode == StatusCode.ok) {
           isLoading.value = false;
-
+          showSnackBar("Success", "Data Updated Successfully", Colors.green);
           getUser(user.userId, context);
         } else {}
       } catch (e) {

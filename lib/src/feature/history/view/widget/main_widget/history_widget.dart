@@ -171,7 +171,14 @@ class _HistoryWidgetState extends State<HistoryWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            children: [Text(history.day), 10.0.kW, Text(history.date)],
+            children: [
+              Text(history.day),
+              10.0.kW,
+              Text(history.date),
+              const Spacer(),
+              DashboardText.locationText(
+                  locationShortText("At ${history.time} "))
+            ],
           ),
           const Divider(),
           Row(
@@ -218,7 +225,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                         ),
                         // 5.0.kW,
                         DashboardText.locationText(
-                            locationShortText(history.vendorLocation))
+                            locationShortText(history.vendorLocation)),
                       ],
                     ),
                     10.0.kH,

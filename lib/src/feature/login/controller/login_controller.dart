@@ -70,10 +70,11 @@ class LoginController extends GetxController {
             },
             body: body);
         print(body);
+        print(response.body);
         if (response.statusCode == StatusCode.ok) {
           final jsonData = json.decode(response.body);
           final type = jsonData['userType'];
-          if (type == 'string') {
+          if (type == 'User') {
             final token = jsonData['userId'];
             await user.saveId(token);
             user.userId.value = token;
