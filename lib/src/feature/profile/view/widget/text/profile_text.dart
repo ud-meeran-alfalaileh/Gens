@@ -5,10 +5,9 @@ class ProfileText {
   static mainText(title) {
     return Text(
       title,
-      textAlign: TextAlign.center,
       style: TextStyle(
         fontFamily: 'Inter',
-        fontSize: 16,
+        fontSize: 20,
         color: AppTheme.lightAppColors.black,
         fontWeight: FontWeight.w800, // Use FontWeight.bold for the bold variant
       ),
@@ -21,7 +20,21 @@ class ProfileText {
       style: TextStyle(
         fontFamily: 'Inter',
         fontSize: 14,
-        color: AppTheme.lightAppColors.black,
+        color: AppTheme.lightAppColors.black.withOpacity(0.5),
+        fontWeight: FontWeight.w500, // Use FontWeight.bold for the bold variant
+      ),
+    );
+  }
+
+  static containerText(title, isSelected) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 14,
+        color: isSelected
+            ? AppTheme.lightAppColors.primary
+            : AppTheme.lightAppColors.subTextcolor.withOpacity(.5),
         fontWeight: FontWeight.w500, // Use FontWeight.bold for the bold variant
       ),
     );

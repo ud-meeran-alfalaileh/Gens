@@ -96,7 +96,7 @@ class HistoryController extends GetxController {
       );
       if (response.statusCode == StatusCode.noContent) {
         Get.back();
-        filteredList.remove(index);
+        filteredList.removeAt(index);
 
         showSnackBar("Success",
             "The reservation has been successfully deleted.", Colors.green);

@@ -9,8 +9,10 @@ import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/core/utils/snack_bar.dart';
 import 'package:gens/src/feature/login/view/pages/login_page.dart';
+import 'package:gens/src/feature/profile/model/question_model.dart';
 import 'package:gens/src/feature/profile/model/user_model.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -25,12 +27,13 @@ class ProfileController extends GetxController {
   RxInt userId = 0.obs;
   final passwordFromKey = GlobalKey<FormState>();
   RxString errorText = "".obs;
-
+  Rx<SkinCareModel?> question = Rx<SkinCareModel?>(null);
   Rx<String?> imagefile = "".obs;
   RxBool isUpdating = false.obs;
   final email = TextEditingController();
   final phoneNumber = TextEditingController();
   final password = TextEditingController();
+  final dateOfBirth = TextEditingController();
 
   final oldPassword = TextEditingController();
   final newPassword = TextEditingController();
@@ -41,10 +44,12 @@ class ProfileController extends GetxController {
   RxBool isLoadingImg = false.obs;
   Rx<String?> selectedGender = Rx<String?>(null);
   final List<String> genderOptions = ['Male', 'Female', 'Prefer not to say'];
+  RxInt selectedIndex = 0.obs;
+  RxBool buildProfile = false.obs;
 
   Rx<UserModel?> userData = UserModel(
           userId: 0,
-          password: "password",
+          dateOfBirth: "password",
           email: "email",
           fName: "fName",
           secName: "secName",
@@ -62,10 +67,15 @@ class ProfileController extends GetxController {
     return input;
   }
 
+  void setSelectedIndex(int index) {
+    selectedIndex.value = index;
+  }
+
   @override
   void onInit() async {
     await user.loadToken();
     userId.value = user.userId.value;
+    getQuestionDetails();
     super.onInit();
   }
 
@@ -82,12 +92,14 @@ class ProfileController extends GetxController {
 
         if (response.statusCode == StatusCode.ok) {
           isLoading.value = false;
-
           final data = jsonDecode(response.body);
           final responseData = UserModel.fromJson(data);
+          final date = calculateAge(responseData.dateOfBirth);
+
           userData.value = responseData;
           email.text = responseData.email;
           name.text = responseData.fName;
+          dateOfBirth.text = date.toString();
           secName.text = responseData.secName;
           phoneNumber.text = responseData.phone;
           // selectedGender.value = responseData.g
@@ -105,6 +117,20 @@ class ProfileController extends GetxController {
         ),
       );
     }
+  }
+
+  int calculateAge(String dateOfBirth) {
+    DateTime birthDate = DateTime.parse(dateOfBirth);
+    DateTime today = DateTime.now();
+    int age = today.year - birthDate.year;
+
+    // Adjust the age if the birthday hasn't occurred yet this year
+    if (today.month < birthDate.month ||
+        (today.month == birthDate.month && today.day < birthDate.day)) {
+      age--;
+    }
+
+    return age;
   }
 
   Future<void> updateUser(context) async {
@@ -309,7 +335,46 @@ class ProfileController extends GetxController {
   }
 
   void logout() async {
+    var body = jsonEncode({""});
+    final response = http.post(Uri.parse(EndPoints.login),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: body);
+
     await user.clearId();
     Get.off(() => const LoginPage());
+  }
+
+  Future<void> getQuestionDetails() async {
+    if (await networkInfo.isConnected) {
+      isLoading.value = true;
+      try {
+        final response = await http.get(
+          Uri.parse(
+              "https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/Questionnaire/${user.userId}"),
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        );
+        print(response.body);
+        print(response.statusCode);
+        if (response.statusCode == StatusCode.ok) {
+          final data = jsonDecode(response.body);
+          question.value = SkinCareModel.fromJson(data);
+        } else {
+          final data = jsonDecode(response.body)['message'];
+          if (data == "Questionnaire not found for the given user.") {
+            buildProfile.value = true;
+          }
+        }
+
+        isLoading.value = F;
+      } catch (e) {
+        print(e);
+      }
+    }
   }
 }

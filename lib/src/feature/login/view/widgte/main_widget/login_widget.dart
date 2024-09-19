@@ -11,7 +11,6 @@ import 'package:gens/src/feature/login/model/login_form_model.dart';
 import 'package:gens/src/feature/login/view/widgte/collection/auth_form_widget.dart';
 import 'package:gens/src/feature/login/view/widgte/text/login_text.dart';
 import 'package:gens/src/feature/register/view/pages/register_main_page.dart';
-import 'package:gens/src/feature/vendor_login/view/page/vendor_login_page.dart';
 import 'package:get/get.dart';
 
 class LoginWidget extends StatefulWidget {
@@ -166,18 +165,6 @@ class _LoginWidgetState extends State<LoginWidget> {
                               Get.to(() => const RegisterMainPage());
                             }),
                           )),
-                      TextButton(
-                        onPressed: () {
-                          Get.to(() => const VendorLoginPage());
-                        },
-                        child: Text(
-                          "Login As Vendor",
-                          style: TextStyle(
-                            fontFamily: "Inter",
-                            color: AppTheme.lightAppColors.primary,
-                          ),
-                        ),
-                      )
                     ],
                   ),
                 ),

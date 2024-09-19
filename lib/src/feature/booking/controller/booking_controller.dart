@@ -117,8 +117,8 @@ class BookingController extends GetxController {
     workingHors.clear();
     if (await networkInfo.isConnected) {
       isLoading.value = true;
-      final response = await http
-          .get(Uri.parse("${EndPoints.timeslotsForDay}/$vendorId/$day"));
+      final response = await http.get(Uri.parse(
+          "${EndPoints.timeslotsForDay}/$vendorId/$day/${dateFormat.format(focusedDay.value)}"));
       if (response.statusCode == StatusCode.ok) {
         final List<dynamic> jsonData = json.decode(response.body)['timeSlots'];
 

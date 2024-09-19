@@ -10,6 +10,7 @@ import 'package:gens/src/feature/login/view/widgte/collection/auth_form_widget.d
 import 'package:gens/src/feature/login/view/widgte/text/login_text.dart';
 import 'package:gens/src/feature/register/controller/register_controller.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 RxString errorText = "".obs;
 RxString errorTextPageTwo = "".obs;
@@ -196,6 +197,7 @@ class RegisterWidget extends StatelessWidget {
                   onTap: () {},
                 ),
               ),
+
               (15.5).kH,
               AuthForm(
                 formModel: FormModel(
@@ -280,6 +282,37 @@ class RegisterWidget extends StatelessWidget {
     );
   }
 
+  Future<void> selectDate(
+      BuildContext context, RegisterController controller) async {
+    DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1950),
+      lastDate: DateTime(2101),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            primaryColor: AppTheme.lightAppColors.primary, // Custom color
+            colorScheme:
+                ColorScheme.light(primary: AppTheme.lightAppColors.primary),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (selectedDate != null) {
+      DateTime dateOnly =
+          DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
+
+      // Format the date as YYYY-MM-DD
+      String formattedDate = DateFormat('yyyy-MM-dd').format(dateOnly);
+
+      controller.dateOfBirth.text = formattedDate;
+      print("Selected date: $formattedDate");
+    }
+  }
+
   registerPageTwo(BuildContext context, RegisterController controller) {
     return Form(
       key: controller.fromKeyTwo,
@@ -323,7 +356,7 @@ class RegisterWidget extends StatelessWidget {
                 inputFormat: [],
                 onTap: () {}),
           ),
-          (20.5).kH,
+          (17.0).kH,
           AuthForm(
             formModel: FormModel(
                 icon: Icons.lock_outline,
@@ -336,7 +369,7 @@ class RegisterWidget extends StatelessWidget {
                 inputFormat: [],
                 onTap: () {}),
           ),
-          (20.5).kH,
+          (17.0).kH,
           AuthForm(
             formModel: FormModel(
                 icon: Icons.lock_outline,
@@ -349,6 +382,34 @@ class RegisterWidget extends StatelessWidget {
                 inputFormat: [],
                 onTap: () {}),
           ),
+          (17.0).kH,
+          Stack(
+            children: [
+              AuthForm(
+                formModel: FormModel(
+                    icon: Icons.calendar_month_outlined,
+                    controller: controller.dateOfBirth,
+                    enableText: true,
+                    hintText: "Date of Birth".tr,
+                    invisible: false,
+                    validator: null,
+                    type: TextInputType.text,
+                    inputFormat: [],
+                    onTap: () {}),
+              ),
+              GestureDetector(
+                onTap: () {
+                  selectDate(context, controller);
+                },
+                child: Container(
+                  width: context.screenWidth,
+                  height: context.screenHeight * .05,
+                  color: Colors.transparent,
+                ),
+              )
+            ],
+          ),
+
           const Spacer(),
           // SizedBox(
           //   width: context.screenWidth * .25,

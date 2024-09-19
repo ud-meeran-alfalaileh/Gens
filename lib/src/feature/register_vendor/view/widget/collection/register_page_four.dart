@@ -242,8 +242,6 @@ class RegisterPageFour extends StatelessWidget {
 
                                   // Clear schedules before adding
                                   controller.schedules.clear();
-                                  final DateFormat formatter =
-                                      DateFormat('HH:mm:ss');
 
                                   for (String day in controller.allDays) {
                                     String openTime =
@@ -254,20 +252,6 @@ class RegisterPageFour extends StatelessWidget {
                                         controller.selectedDays.contains(day)
                                             ? controller.closeHour.text
                                             : "00:00:00";
-
-                                    try {
-                                      // Parsing the input and formatting
-                                      DateTime openDateTime =
-                                          DateFormat('HH:mm').parse(openTime);
-                                      DateTime closeDateTime =
-                                          DateFormat('HH:mm').parse(closeTime);
-                                      openTime = formatter.format(openDateTime);
-                                      closeTime =
-                                          formatter.format(closeDateTime);
-                                    } catch (e) {
-                                      openTime = "00:00:00";
-                                      closeTime = "00:00:00";
-                                    }
 
                                     User user = User();
                                     await user.loadVendorId();

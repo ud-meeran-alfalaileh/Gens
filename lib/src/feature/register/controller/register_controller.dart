@@ -38,6 +38,7 @@ class RegisterController extends GetxController {
   final phoneNumber = TextEditingController();
   final password = TextEditingController();
   final confirmPassword = TextEditingController();
+  final dateOfBirth = TextEditingController();
   final DioConsumer dioConsumer = sl<DioConsumer>();
   final NetworkInfo networkInfo =
       NetworkInfoImpl(connectionChecker: InternetConnectionChecker());
@@ -186,6 +187,7 @@ class RegisterController extends GetxController {
         "secName": secName.text.trim(),
         "phone": "962${removeLeadingZero(phoneNumber.text.trim())}",
         "gender": selectedGender.value,
+        "dateOfBirth": dateOfBirth.text.trim(),
         "userType": "User",
         "logined": true,
         "disable": true,
@@ -199,6 +201,7 @@ class RegisterController extends GetxController {
             'Accept': 'application/json',
           },
           body: body);
+      print(response.body);
       try {
         if (response.statusCode == StatusCode.ok ||
             response.statusCode == StatusCode.created) {
@@ -219,6 +222,7 @@ class RegisterController extends GetxController {
           password.clear();
         } else {}
       } catch (error) {
+        print(error);
         showTopSnackBar(
           Overlay.of(context),
           CustomSnackBar.error(

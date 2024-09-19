@@ -9,7 +9,7 @@ import 'package:gens/src/feature/vendor_dashboard/controller/vendor_dashboard_co
 import 'package:gens/src/feature/vendor_dashboard/view/widget/text/vendor_dashboard_text.dart';
 import 'package:get/get.dart';
 
-final controller = Get.put(VendorDashboardController());
+final vendorGController = Get.put(VendorDashboardController());
 
 Container vendorHeader(BuildContext context) {
   return Container(
@@ -86,7 +86,7 @@ vendorBookingContainerToday(BuildContext context, index, VendorBooking model) {
               const Spacer(),
               IconButton(
                   onPressed: () {
-                    controller.makePhoneCall(model.userPhoneNumber);
+                    vendorGController.makePhoneCall(model.userPhoneNumber);
                   },
                   icon: Icon(
                     Icons.phone,
@@ -157,7 +157,7 @@ GestureDetector statusWidgetToday(VendorBooking model, RxBool statusUpadating,
   return GestureDetector(
     onTap: () {
       print(status);
-      controller.updateBookingStatus(
+      vendorGController.updateBookingStatus(
           '$status', model.id, model, statusUpadating);
       // model.status = "Upcoming";
     },
@@ -225,7 +225,7 @@ vendorBookingContainer(BuildContext context, index, VendorBooking model) {
               const Spacer(),
               IconButton(
                   onPressed: () {
-                    controller.makePhoneCall(model.userPhoneNumber);
+                    vendorGController.makePhoneCall(model.userPhoneNumber);
                   },
                   icon: Icon(
                     Icons.phone,
@@ -288,7 +288,7 @@ GestureDetector statusWidget(VendorBooking model, RxBool statusUpadating,
     onTap: () {
       status == 'Waiting'
           ? null
-          : controller.updateBookingStatus(
+          : vendorGController.updateBookingStatus(
               '$status', model.id, model, statusUpadating);
       // model.status = "Upcoming";
     },

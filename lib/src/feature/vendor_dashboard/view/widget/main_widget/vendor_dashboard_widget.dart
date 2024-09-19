@@ -23,7 +23,7 @@ class _VendorDashboardWidgetState extends State<VendorDashboardWidget> {
   void initState() {
     controller.getFormattedTodayDate();
     controller.getVendorBoooking(context);
-    vendorController.getVendorsById();
+    // vendorController.getVendorsById();
     super.initState();
   }
 
@@ -183,11 +183,11 @@ class _VendorDashboardWidgetState extends State<VendorDashboardWidget> {
                                             itemCount: controller
                                                 .vendorBooking.length),
                                       ),
-                                      60.0.kH,
                                     ],
                                   ),
                           ),
-                  )
+                  ),
+                  80.0.kH
                 ],
               ),
               controller.isLaoding.value

@@ -154,7 +154,7 @@ class VendorDashboardController extends GetxController {
         if (response.statusCode == StatusCode.ok) {
           // Create a new instance with updated status
           final updatedBooking = VendorBooking(
-            status: status.replaceAll('"', ''),
+            status: status.replaceAll('"', status),
             userName: booking.userName,
             userImage: booking.userImage,
             userPhoneNumber: booking.userPhoneNumber,
@@ -182,6 +182,20 @@ class VendorDashboardController extends GetxController {
     if (index != -1) {
       vendorBooking[index] = updatedBooking;
       vendorBooking.refresh(); // Refresh the list to update the UI
+    }
+    int todayIndex = todayVendorBooking
+        .indexWhere((booking) => booking.id == updatedBooking.id);
+    if (todayIndex != -1) {
+      todayVendorBooking[todayIndex] = updatedBooking;
+      todayVendorBooking.refresh(); // Refresh the list to update the UI
+    }
+
+    // Update all bookings list
+    int allIndex = allVendorBooking
+        .indexWhere((booking) => booking.id == updatedBooking.id);
+    if (allIndex != -1) {
+      allVendorBooking[allIndex] = updatedBooking;
+      allVendorBooking.refresh(); // Refresh the list to update the UI
     }
   }
 }

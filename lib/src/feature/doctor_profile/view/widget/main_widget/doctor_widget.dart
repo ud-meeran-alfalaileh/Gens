@@ -52,23 +52,43 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            IconButton(
-                                onPressed: () {
-                                  Get.back();
-                                },
-                                icon: Icon(
-                                  Icons.arrow_back_ios,
-                                  color: AppTheme.lightAppColors.black
-                                      .withOpacity(.8),
-                                )),
-                            const Spacer(),
-                            DoctorText.mainText("Details"),
-                            const Spacer(),
-                            40.0.kW
-                          ],
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              IconButton(
+                                  onPressed: () {
+                                    Get.back();
+                                  },
+                                  icon: Icon(
+                                    Icons.arrow_back_ios,
+                                    color: AppTheme.lightAppColors.black
+                                        .withOpacity(.8),
+                                  )),
+                              DoctorText.mainText("Details"),
+                              GestureDetector(
+                                // onTap: () {
+                                //   if (isFav.value == 0) {
+                                //     isFav.value = 1;
+                                //     controller.addFav(model.vendorId);
+                                //   } else {
+                                //     isFav.value = 0;
+                                //     controller.removeFav(model.vendorId);
+                                //   }
+                                // },
+
+                                child: Image.asset(
+                                  // isFav.value == 0
+                                  //     ? "assets/image/heart.png"
+                                  //     :
+
+                                  "assets/image/lover.png",
+                                  height: 20,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                         vendorHeader(
                           context,

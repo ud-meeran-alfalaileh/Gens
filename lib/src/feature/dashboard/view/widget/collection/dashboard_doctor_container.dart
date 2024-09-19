@@ -12,7 +12,6 @@ import 'package:get/get.dart';
 
 doctorDashboardContainer(
     BuildContext context, Vendor model, DoctorController controller) {
-  Rx<int?> isFav = model.fav.obs;
   return GestureDetector(
     onTap: () {
       Get.to(() => DoctorPage(
@@ -59,30 +58,11 @@ doctorDashboardContainer(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Obx(
-                  () => GestureDetector(
-                    onTap: () {
-                      if (isFav.value == 0) {
-                        isFav.value = 1;
-                        controller.addFav(model.vendorId);
-                      } else {
-                        isFav.value = 0;
-                        controller.removeFav(model.vendorId);
-                      }
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        DashboardText.mainText(vendorShortText(model.name)),
-                        Image.asset(
-                          isFav.value == 0
-                              ? "assets/image/heart.png"
-                              : "assets/image/lover.png",
-                          height: 20,
-                        )
-                      ],
-                    ),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    DashboardText.mainText(vendorShortText(model.name)),
+                  ],
                 ),
                 7.0.kH,
                 Container(

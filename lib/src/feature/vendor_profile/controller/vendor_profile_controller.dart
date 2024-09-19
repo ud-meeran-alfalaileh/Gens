@@ -9,6 +9,8 @@ import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/core/utils/snack_bar.dart';
 import 'package:gens/src/feature/doctor_profile/model/doctor_model.dart';
+import 'package:gens/src/feature/login/view/pages/login_page.dart';
+import 'package:gens/src/feature/vendor_profile/model/vendor_image.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -50,13 +52,13 @@ class VendorProfileController extends GetxController {
           phone: "phone")
       .obs;
   RxList<File?> updatedImages = List<File?>.filled(3, null).obs;
-  RxList<String> imageUrls =
-      <String>[].obs; // For storing URLs (both from API and Firebase)
+  RxList<String> imageUrls = <String>[].obs;
   RxBool isLoading = false.obs;
   User user = User();
   @override
-  void onInit() {
-    user.loadVendorId();
+  Future<void> onInit() async {
+    await user.loadVendorId();
+    await getVendorsById();
 
     super.onInit();
   }
@@ -73,9 +75,9 @@ class VendorProfileController extends GetxController {
             'Accept': 'application/json',
           },
         );
-        print("{{{{{{id}}}}}}");
-        print(user.vendorId);
-        print("{{{{{{{{id}}}}}}}}");
+        // print("{{{{{{id}}}}}}");
+        // print(user.vendorId);
+        // print("{{{{{{{{id}}}}}}}}");
 
         if (response.statusCode == StatusCode.ok) {
           try {
@@ -95,8 +97,9 @@ class VendorProfileController extends GetxController {
             imageUrls.add(vendor.value.businessImages.first.imgUrl2);
             imageUrls.add(vendor.value.businessImages.first.imgUrl3);
             // vendor.value.businessImages.map((img) => img.imgUrl1).toList();
-
+            print(isLoading.value);
             isLoading.value = false;
+            print(isLoading.value);
           } catch (e) {
             Get.snackbar(
               "Error",
@@ -104,6 +107,7 @@ class VendorProfileController extends GetxController {
               snackPosition: SnackPosition.BOTTOM,
             );
           }
+          isLoading.value = false;
         } else {
           Get.snackbar(
             "Error",
@@ -111,6 +115,7 @@ class VendorProfileController extends GetxController {
             snackPosition: SnackPosition.BOTTOM,
           );
         }
+        isLoading.value = false;
       } catch (e) {
         print(e);
       }
@@ -121,6 +126,11 @@ class VendorProfileController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
       );
     }
+  }
+
+  void logout() async {
+    await user.clearVendorId();
+    Get.off(() => const LoginPage());
   }
 
   Future<void> updateUser(context) async {
@@ -183,16 +193,17 @@ class VendorProfileController extends GetxController {
         // Upload the image to Firebase and get the download URL
         String downloadUrl = await _uploadImageToFirebase(updatedImages[i]!);
         newImageUrls.add(downloadUrl);
+        print(downloadUrl);
       } else {
+        print(imageUrls[i]);
         newImageUrls.add(imageUrls[i]);
       }
     }
 
     imageUrls.value = newImageUrls;
-    isLoading.value = false;
 
     // Call the API with the new image URLs
-    await _sendImagesToApi(imageUrls);
+    await sendImagesToApi(imageUrls);
   }
 
   Future<String> _uploadImageToFirebase(File image) async {
@@ -212,9 +223,40 @@ class VendorProfileController extends GetxController {
     }
   }
 
-  Future<void> _sendImagesToApi(List<String> imageUrls) async {
-    // Send the list of image URLs to the API
-    // Replace this with your actual API request
-    print("Images uploaded: $imageUrls");
+  Future<void> sendImagesToApi(List<String> imageUrls) async {
+    final String apiUrl =
+        'https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/Vendor/${user.vendorId}/business-images';
+
+    // Create a list of UpdateBusinessImageDTO objects from the imageUrls list
+    List<UpdateBusinessImageDTO> imageDTOList = [];
+
+    for (int i = 0; i < imageUrls.length; i += 3) {
+      imageDTOList.add(UpdateBusinessImageDTO(
+        imgUrl1: imageUrls.length > i ? imageUrls[i] : '',
+        imgUrl2: imageUrls.length > i + 1 ? imageUrls[i + 1] : '',
+        imgUrl3: imageUrls.length > i + 2 ? imageUrls[i + 2] : '',
+      ));
+    }
+
+    // Convert the list of DTOs to JSON
+    List<Map<String, dynamic>> jsonDTOList =
+        imageDTOList.map((dto) => dto.toJson()).toList();
+
+    final response = await http.put(
+      Uri.parse(apiUrl),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: jsonEncode(jsonDTOList), // Send the list directly as the body
+    );
+    isLoading.value = false;
+
+    if (response.statusCode == 200) {
+      print('Images uploaded successfully');
+    } else {
+      print('Failed to upload images: ${response.statusCode}');
+      print('Response body: ${response.body}');
+    }
   }
 }

@@ -53,16 +53,16 @@ class _VendorPationtState extends State<VendorPationt> {
                 doctorRowCircle(
                     context,
                     "assets/image/profile-2.svg",
-                    controller.vendor.value!.pastBookings.toString(),
+                    controller.vendor.value.pastBookings.toString(),
                     "patients"),
                 doctorRowCircle(
                     context,
                     "assets/image/review.svg",
                     storyShortenText(
-                        controller.vendor.value!.avgRating.toString()),
+                        controller.vendor.value.avgRating.toString()),
                     "rating"),
                 doctorRowCircle(context, "assets/image/messages.svg",
-                    controller.vendor.value!.reviewCount.toString(), "reviews"),
+                    controller.vendor.value.reviewCount.toString(), "reviews"),
               ],
             ),
             30.0.kH,
@@ -85,7 +85,7 @@ class _VendorPationtState extends State<VendorPationt> {
                   );
                 },
                 itemCount: controller
-                    .vendor.value!.reviews.length, // Display all reviews
+                    .vendor.value.reviews.length, // Display all reviews
               ),
             ),
           ],
@@ -106,14 +106,14 @@ class _VendorPationtState extends State<VendorPationt> {
               CircleAvatar(
                 backgroundColor: AppTheme.lightAppColors.maincolor,
                 backgroundImage:
-                    controller.vendor.value!.reviews[index].userImage == "" ||
-                            controller.vendor.value!.reviews[index].userImage ==
+                    controller.vendor.value.reviews[index].userImage == "" ||
+                            controller.vendor.value.reviews[index].userImage ==
                                 'string'
                         ? const AssetImage(
                             "assets/image/profileIcon.png",
                           )
                         : NetworkImage(
-                            controller.vendor.value!.reviews[index].userImage),
+                            controller.vendor.value.reviews[index].userImage),
                 radius: 30,
               ),
               10.0.kW,
@@ -122,19 +122,19 @@ class _VendorPationtState extends State<VendorPationt> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   DoctorText.secText(
-                      controller.vendor.value!.reviews[index].userFirstName),
+                      controller.vendor.value.reviews[index].userFirstName),
                   DoctorText.secText(
-                      controller.vendor.value!.reviews[index].userFirstName),
+                      controller.vendor.value.reviews[index].userFirstName),
                   5.0.kH,
                   Row(
                     children: [
                       DoctorText.thirdText(controller
-                          .vendor.value!.reviews[index].rating
+                          .vendor.value.reviews[index].rating
                           .toString()),
                       7.0.kW,
                       Row(
                         children: _buildStars(controller
-                            .vendor.value!.reviews[index].rating
+                            .vendor.value.reviews[index].rating
                             .toDouble()),
                       ),
                       5.0.kW, // Adding some space between stars and number
@@ -146,9 +146,9 @@ class _VendorPationtState extends State<VendorPationt> {
           ),
           10.0.kH,
           DoctorText.reviewDesText(
-              controller.vendor.value!.reviews[index].description),
-          controller.vendor.value!.reviews[index].imgUrl == ''
-              ? SizedBox.shrink()
+              controller.vendor.value.reviews[index].description),
+          controller.vendor.value.reviews[index].imgUrl == ''
+              ? const SizedBox.shrink()
               : GestureDetector(
                   onTap: () {
                     showDialog(
@@ -161,7 +161,7 @@ class _VendorPationtState extends State<VendorPationt> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(20),
                             child: Image.network(
-                              controller.vendor.value!.reviews[index].imgUrl,
+                              controller.vendor.value.reviews[index].imgUrl,
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -170,7 +170,7 @@ class _VendorPationtState extends State<VendorPationt> {
                     );
                   },
                   child: Image.network(
-                    controller.vendor.value!.reviews[index].imgUrl,
+                    controller.vendor.value.reviews[index].imgUrl,
                     height: 50,
                   ),
                 )

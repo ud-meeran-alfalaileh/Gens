@@ -9,9 +9,9 @@ import 'package:gens/src/core/user.dart';
 import 'package:gens/src/core/utils/app_button.dart';
 import 'package:gens/src/feature/login/model/login_form_model.dart';
 import 'package:gens/src/feature/login/view/widgte/collection/auth_form_widget.dart';
-import 'package:gens/src/feature/register_vendor/controller/vendor_register_controller.dart';
 import 'package:gens/src/feature/register_vendor/model/schaduale_model.dart';
 import 'package:gens/src/feature/register_vendor/view/widget/text/vendor_register_text.dart';
+import 'package:gens/src/feature/vendor_profile/controller/update_time_controller.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -20,7 +20,7 @@ class VendorUpdateTime extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(VendorRegisterController());
+    final controller = Get.put(UpdateTimeController());
     return Scaffold(
       backgroundColor: AppTheme.lightAppColors.background,
       body: Obx(
@@ -242,8 +242,6 @@ class VendorUpdateTime extends StatelessWidget {
 
                                   // Clear schedules before adding
                                   controller.schedules.clear();
-                                  final DateFormat formatter =
-                                      DateFormat('HH:mm:ss');
 
                                   for (String day in controller.allDays) {
                                     String openTime =
@@ -254,20 +252,6 @@ class VendorUpdateTime extends StatelessWidget {
                                         controller.selectedDays.contains(day)
                                             ? controller.closeHour.text
                                             : "00:00:00";
-
-                                    try {
-                                      // Parsing the input and formatting
-                                      DateTime openDateTime =
-                                          DateFormat('HH:mm').parse(openTime);
-                                      DateTime closeDateTime =
-                                          DateFormat('HH:mm').parse(closeTime);
-                                      openTime = formatter.format(openDateTime);
-                                      closeTime =
-                                          formatter.format(closeDateTime);
-                                    } catch (e) {
-                                      openTime = "00:00:00";
-                                      closeTime = "00:00:00";
-                                    }
 
                                     User user = User();
                                     await user.loadVendorId();

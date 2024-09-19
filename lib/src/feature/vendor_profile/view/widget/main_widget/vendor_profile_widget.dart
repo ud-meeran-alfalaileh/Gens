@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gens/src/config/sizes/short_text.dart';
 import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/core/utils/loading_page.dart';
 import 'package:gens/src/feature/doctor_profile/model/doctor_model.dart';
+import 'package:gens/src/feature/vendor_history/view/page/vendor_history_page.dart';
 import 'package:gens/src/feature/vendor_profile/controller/vendor_profile_controller.dart';
 import 'package:gens/src/feature/vendor_profile/view/widget/main_widget/vendor_pationt.dart';
 import 'package:gens/src/feature/vendor_profile/view/widget/main_widget/vendor_update_profile.dart';
+import 'package:gens/src/feature/vendor_profile/view/widget/main_widget/vendor_update_time.dart';
 import 'package:gens/src/feature/vendor_profile/view/widget/text/vendor_profile_text.dart';
 import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -32,21 +35,17 @@ class _VendorProfileWidgetState extends State<VendorProfileWidget> {
   }
 
   Future<void> initail() async {
-    await controller.getVendorsById();
     Future.delayed(const Duration(seconds: 1));
   }
 
   @override
   Widget build(BuildContext context) {
     final user = controller.vendor.value;
-    String timeRange = user.workingTime;
 
 // Split the string at " - "
-    List<String> times = timeRange.split(" - ");
 
 // Access the start and end times
-    String startTime = "times[0];"; // "10:00"
-    String endTime = " times[1]"; // "17:00"
+
     return SafeArea(
       child: controller.isLoading.value
           ? loadingPage(context)
@@ -75,6 +74,11 @@ class _VendorProfileWidgetState extends State<VendorProfileWidget> {
                               }),
                             ],
                           ),
+                          TextButton(
+                              onPressed: () {
+                                controller.logout();
+                              },
+                              child: Text("child")),
                           20.0.kH,
                           Container(
                             padding: const EdgeInsets.all(18),
@@ -86,14 +90,13 @@ class _VendorProfileWidgetState extends State<VendorProfileWidget> {
                             child: Column(
                               children: [
                                 20.0.kW,
-                                VendorProfileText.timeText(
-                                    'Starts at $startTime and ends at $endTime'),
+                                VendorProfileText.timeText(user.workingTime),
                                 10.0.kH,
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 20),
                                   child: VendorProfileText.thirdText(
-                                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ...'),
+                                      user.description),
                                 ),
                               ],
                             ),
@@ -105,10 +108,14 @@ class _VendorProfileWidgetState extends State<VendorProfileWidget> {
                               vendorProfileContainer(
                                   context,
                                   'assets/image/back-in-time.png',
-                                  "Working Hours",
-                                  () {}),
-                              vendorProfileContainer(context,
-                                  'assets/image/back-in-time.png', "", () {}),
+                                  "Working Hours", () {
+                                Get.to(() => const VendorHistoryPage());
+                              }),
+                              vendorProfileContainer(
+                                  context, 'assets/image/back-in-time.png', "",
+                                  () {
+                                Get.to(() => const VendorUpdateTime());
+                              }),
                             ],
                           ),
                           60.0.kH,
@@ -148,26 +155,13 @@ class _VendorProfileWidgetState extends State<VendorProfileWidget> {
             : const Center(child: Text("No images available")),
 
         // Page Indicator (Dots)
-        Container(
-          width: context.screenWidth,
-          height: context.screenHeight * .05,
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: AppTheme.lightAppColors.black.withOpacity(0.2),
-                spreadRadius: 2,
-                blurRadius: 10,
-                offset: const Offset(0, 1),
-              ),
-            ],
-          ),
-        ),
+
         Align(
           alignment: Alignment.topLeft,
           child: Padding(
             padding: const EdgeInsets.all(20.0), // Adjust bottom padding
             child: SmoothPageIndicator(
-              controller: _pageController, // Same PageController
+              controller: _pageController,
               count: controller.imageUrls.length,
               effect: ExpandingDotsEffect(
                 dotHeight: 8,
@@ -191,6 +185,14 @@ class _VendorProfileWidgetState extends State<VendorProfileWidget> {
             width: context.screenWidth * .8,
             height: context.screenHeight * .1,
             decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: AppTheme.lightAppColors.black.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 10,
+                  offset: const Offset(0, 1),
+                ),
+              ],
               borderRadius: BorderRadius.circular(15),
               color: AppTheme.lightAppColors.background,
             ),
@@ -198,14 +200,15 @@ class _VendorProfileWidgetState extends State<VendorProfileWidget> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                VendorProfileText.mainText('Israa Elshebli'),
+                VendorProfileText.mainText(user.name),
                 const Spacer(),
                 SvgPicture.asset(
                   "assets/image/ratingStar.svg",
                   height: 16,
                 ),
-                SizedBox(width: 5),
-                VendorProfileText.ratingText(user.avgRating.toString()),
+                const SizedBox(width: 5),
+                VendorProfileText.ratingText(
+                    storyShortenText(user.avgRating.toString())),
               ],
             ),
           ),

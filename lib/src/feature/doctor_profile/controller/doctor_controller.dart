@@ -23,6 +23,7 @@ class DoctorController extends GetxController {
     isExpanded.value = !isExpanded.value;
   }
 
+  RxBool isAbsent = false.obs;
   RxList<String> imagesUrl = <String>[].obs;
   RxDouble userRating = 0.0.obs; // Initial rating
   TextEditingController messageController = TextEditingController();
@@ -89,8 +90,6 @@ class DoctorController extends GetxController {
             'Accept': 'application/json',
           },
           body: body);
-      print(response.body);
-      print(response.statusCode);
     }
   }
 
@@ -145,6 +144,7 @@ class DoctorController extends GetxController {
           for (var xx in doctors) {
             xx.fav == 0;
           }
+          isLoading.value = false;
         } catch (e) {
           Get.snackbar(
             "Error",
@@ -152,12 +152,14 @@ class DoctorController extends GetxController {
             snackPosition: SnackPosition.BOTTOM,
           );
         }
+        isLoading.value = false;
       } else {
         Get.snackbar(
           "Error",
           "Failed to fetch vendors",
           snackPosition: SnackPosition.BOTTOM,
         );
+        isLoading.value = false;
       }
     } else {
       Get.snackbar(
@@ -165,6 +167,7 @@ class DoctorController extends GetxController {
         "Please check your network settings",
         snackPosition: SnackPosition.BOTTOM,
       );
+      isLoading.value = false;
     }
   }
 
@@ -271,6 +274,8 @@ class DoctorController extends GetxController {
             'Accept': 'application/json',
           },
         );
+        print(response.body);
+        print(response.statusCode);
         if (response.statusCode == StatusCode.ok) {
           final List<dynamic> jsonData = json.decode(response.body);
 
@@ -281,7 +286,9 @@ class DoctorController extends GetxController {
             showReview.value = true;
           }
         }
-      } catch (e) {}
+      } catch (e) {
+        print(e);
+      }
     }
   }
 
@@ -328,13 +335,13 @@ class DoctorController extends GetxController {
     }
   }
 
-  Future<void> postReview(reviewId) async {
+  Future<void> postReview(reviewId, status) async {
     if (await networkInfo.isConnected) {
       try {
         var body = jsonEncode({
           "description": messageController.text.trim(),
           "imgUrl": serviceImage.value,
-          "status": 'Done',
+          "status": status,
           "reviewRate": userRating.value.toInt()
         });
 
@@ -346,6 +353,8 @@ class DoctorController extends GetxController {
               'Accept': 'application/json',
             },
             body: body);
+        print(response.body);
+        print(response.statusCode);
         if (response.statusCode == StatusCode.ok) {
           reviewPinding.clear();
           serviceImage.value = "";
@@ -355,6 +364,16 @@ class DoctorController extends GetxController {
       } catch (e) {
         print(e);
       }
+    }
+  }
+
+  Future<void> deleteReview(reviewId) async {
+    if (await networkInfo.isConnected) {
+      final response =
+          await http.delete(Uri.parse("${EndPoints.postReview}/$reviewId"));
+
+      Get.back();
+      getPendingReview();
     }
   }
 }
