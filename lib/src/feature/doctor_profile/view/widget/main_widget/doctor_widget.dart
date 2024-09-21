@@ -11,7 +11,6 @@ import 'package:gens/src/feature/doctor_profile/controller/doctor_controller.dar
 import 'package:gens/src/feature/doctor_profile/view/widget/collection/doctor_container.dart';
 import 'package:gens/src/feature/doctor_profile/view/widget/text/doctor_text.dart';
 import 'package:get/get.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class DoctorWidget extends StatefulWidget {
   const DoctorWidget({super.key, required this.model});
@@ -33,6 +32,7 @@ class _DoctorWidgetState extends State<DoctorWidget> {
 
   Future<void> init() async {
     await controller.getVendorsById(widget.model);
+    controller.srevice.value = 0;
     await controller.getVendorServices(widget.model);
   }
 
@@ -68,22 +68,34 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                                   )),
                               DoctorText.mainText("Details"),
                               GestureDetector(
-                                // onTap: () {
-                                //   if (isFav.value == 0) {
-                                //     isFav.value = 1;
-                                //     controller.addFav(model.vendorId);
-                                //   } else {
-                                //     isFav.value = 0;
-                                //     controller.removeFav(model.vendorId);
-                                //   }
-                                // },
+                                onTap: () async {
+                                  if (controller.isFavString.value == 'null') {
+                                    controller.isFav.value = true;
+                                    controller.isFavString.value = "True";
+                                    controller.addFav(widget.model);
+                                  } else {
+                                    if (controller.isFavString.value ==
+                                        "False") {
+                                      controller.isFav.value = true;
+                                      controller.isFavString.value = "True";
 
+                                      controller.addFav(widget.model);
+                                    } else if (controller.isFavString.value ==
+                                        "False") {}
+                                  }
+
+                                  if (controller.isFav.value == true) {
+                                    controller.isFav.value = false;
+                                    // controller.addFav(model.vendorId);
+                                  } else {
+                                    controller.isFav.value = true;
+                                    // controller.removeFav(model.vendorId);
+                                  }
+                                },
                                 child: Image.asset(
-                                  // isFav.value == 0
-                                  //     ? "assets/image/heart.png"
-                                  //     :
-
-                                  "assets/image/lover.png",
+                                  controller.isFav.value == false
+                                      ? "assets/image/heart.png"
+                                      : "assets/image/lover.png",
                                   height: 20,
                                 ),
                               )
@@ -117,12 +129,17 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                                           .doctor.value!.avgRating
                                           .toString()),
                                       "rating"),
-                                  doctorRowCircle(
-                                      context,
-                                      "assets/image/messages.svg",
-                                      controller.doctor.value!.reviewCount
-                                          .toString(),
-                                      "reviews"),
+                                  GestureDetector(
+                                    onTap: () {
+                                      _showReviewsBottomSheet(context);
+                                    },
+                                    child: doctorRowCircle(
+                                        context,
+                                        "assets/image/messages.svg",
+                                        controller.doctor.value!.reviewCount
+                                            .toString(),
+                                        "reviews"),
+                                  ),
                                 ],
                               ),
                               (context.screenHeight * .03).kH,
@@ -188,7 +205,7 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                               (context.screenHeight * .01).kH,
                               controller.services.isEmpty
                                   ? const Text(
-                                      "there is no services for this vendor")
+                                      'There is no services for this vendor')
                                   : _servicesList(context),
                               10.0.kH,
                               Column(
@@ -268,6 +285,8 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                                         : Get.to(() => BookingPage(
                                               vendorId: controller
                                                   .doctor.value!.vendorId,
+                                              type: 'New',
+                                              bookId: 1,
                                             ));
                                   },
                                   title: "Book Appointment".tr)
@@ -287,65 +306,68 @@ class _DoctorWidgetState extends State<DoctorWidget> {
     );
   }
 
-  SizedBox _servicesList(BuildContext context) {
+  _servicesList(BuildContext context) {
     return SizedBox(
-      height: context.screenHeight * .1,
       width: context.screenWidth,
-      child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                controller.srevice.value = controller.services[index].serviceId;
-                controller.sreviceDescription.value =
-                    controller.services[index].description;
-                controller.servicePrice.value =
-                    controller.services[index].price;
-              },
-              child: Obx(
-                () => Container(
-                    width: context.screenWidth * .4,
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            color: AppTheme.lightAppColors.maincolor),
-                        borderRadius: BorderRadius.circular(20),
-                        color: controller.srevice.value ==
-                                controller.services[index].serviceId
-                            ? AppTheme.lightAppColors.maincolor
-                            : AppTheme.lightAppColors.background),
-                    child: Center(
-                        child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        10.0.kW,
-                        controller.services[index].imageUrl == ''
-                            ? const SizedBox.shrink()
-                            : Container(
-                                width: context.screenWidth * .12,
-                                height: context.screenHeight * .08,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                        controller.services[index].imageUrl,
-                                      ),
-                                      fit: BoxFit.cover,
-                                    )),
-                              ),
-                        10.0.kW,
-                        SizedBox(
-                            width: 80.0,
-                            child: Text(controller.services[index].title)),
-                      ],
-                    ))),
-              ),
-            );
-          },
-          separatorBuilder: (context, index) {
-            return 10.0.kW;
-          },
-          itemCount: controller.services.length),
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () {
+              controller.srevice.value = controller.services[index].serviceId;
+              controller.sreviceDescription.value =
+                  controller.services[index].description;
+              controller.servicePrice.value = controller.services[index].price;
+            },
+            child: Obx(
+              () => Container(
+                  decoration: BoxDecoration(
+                      border:
+                          Border.all(color: AppTheme.lightAppColors.maincolor),
+                      borderRadius: BorderRadius.circular(20),
+                      color: controller.srevice.value ==
+                              controller.services[index].serviceId
+                          ? AppTheme.lightAppColors.maincolor
+                          : AppTheme.lightAppColors.background),
+                  child: Center(
+                      child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      controller.services[index].imageUrl == ''
+                          ? const SizedBox.shrink()
+                          : Container(
+                              width: context.screenWidth * .18,
+                              height: context.screenHeight * .08,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  image: DecorationImage(
+                                    image: NetworkImage(
+                                      controller.services[index].imageUrl,
+                                    ),
+                                    fit: BoxFit.cover,
+                                  )),
+                            ),
+                      5.0.kH,
+                      SizedBox(
+                          width: 80.0,
+                          child: Text(
+                            controller.services[index].title,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontFamily: "Inter",
+                                color: AppTheme.lightAppColors.mainTextcolor),
+                          )),
+                    ],
+                  ))),
+            ),
+          );
+        },
+        itemCount: controller.services.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3, crossAxisSpacing: 20, mainAxisSpacing: 20),
+      ),
     );
   }
 
@@ -489,64 +511,20 @@ class _DoctorWidgetState extends State<DoctorWidget> {
         children: [
           // Image slider
           controller.imagesUrl.isNotEmpty
-              ? SizedBox(
+              ? Container(
+                  width: context.screenWidth,
                   height: context.screenHeight * .3,
-                  child: PageView.builder(
-                    controller: _pageController, // Attach PageController
-                    itemCount: controller.imagesUrl.length,
-                    itemBuilder: (context, index) {
-                      return SizedBox(
-                        child: Container(
-                          width: context.screenWidth,
-                          height: context.screenHeight * .13,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(controller.imagesUrl[index]),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(controller.imagesUrl[0]),
+                    ),
                   ),
                 )
               : const Center(child: Text("No images available")),
 
           // Page Indicator (Dots)
-          Container(
-            width: context.screenWidth,
-            height: context.screenHeight * .05,
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: AppTheme.lightAppColors.black.withOpacity(0.2),
-                  spreadRadius: 2,
-                  blurRadius: 10,
-                  offset: const Offset(0, 1),
-                ),
-              ],
-            ),
-          ),
-          Align(
-            alignment: Alignment.topLeft,
-            child: Padding(
-              padding: const EdgeInsets.all(20.0), // Adjust bottom padding
-              child: SmoothPageIndicator(
-                controller: _pageController, // Same PageController
-                count: controller.imagesUrl.length,
-                effect: ExpandingDotsEffect(
-                  dotHeight: 8,
-                  dotWidth: 8,
-                  activeDotColor:
-                      AppTheme.lightAppColors.primary, // Active dot color
-                  dotColor:
-                      AppTheme.lightAppColors.maincolor, // Inactive dot color
-                  expansionFactor: 3, // Expands active dot
-                  spacing: 8, // Spacing between dots
-                ),
-              ),
-            ),
-          ),
+
           Align(
               alignment: Alignment.bottomCenter,
               child: doctorContainer(context, controller.doctor.value!)),

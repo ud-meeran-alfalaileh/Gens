@@ -124,7 +124,7 @@ class _AddServiceWidgetState extends State<AddServiceWidget> {
                               hintText: "Price",
                               invisible: false,
                               validator: null,
-                              type: TextInputType.text,
+                              type: TextInputType.number,
                               inputFormat: [],
                               onTap: () {})),
                       20.0.kH,

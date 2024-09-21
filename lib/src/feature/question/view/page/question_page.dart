@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
+import 'package:gens/src/feature/profile/controller/profile_controller.dart';
 import 'package:gens/src/feature/question/controller/first_question_controller.dart';
 import 'package:gens/src/feature/question/view/widget/main_widget/first_qustion_widget.dart';
 import 'package:gens/src/feature/question/view/widget/main_widget/fourth_question_page.dart';
@@ -24,6 +25,8 @@ class _QuestionPageState extends State<QuestionPage> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(FirstQuestionController());
+    final profileController = Get.put(ProfileController());
+
     return Scaffold(
       backgroundColor: AppTheme.lightAppColors.background,
       body: Obx(
@@ -83,38 +86,108 @@ class _QuestionPageState extends State<QuestionPage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                sectionButton(context, "Skin Type", () {
-                                  Get.to(() => FirstQuestionPageView(
-                                        gender: widget.gender,
-                                      ));
-                                }, 50),
-                                sectionButton(context, "Hermonal & GI", () {
-                                  Get.to(() => SecondQuestionPageView(
-                                        gender: widget.gender,
-                                      ));
-                                }, 100),
+                                Obx(
+                                  () => Stack(
+                                    children: [
+                                      sectionButton(context, "Skin Type", () {
+                                        Get.to(() => FirstQuestionPageView(
+                                              gender: widget.gender,
+                                            ));
+                                      }, 50),
+                                      profileController
+                                              .isFirstDataIncomplete.value
+                                          ? const Icon(
+                                              Icons.error,
+                                              color: Colors.red,
+                                            )
+                                          : const SizedBox.shrink()
+                                    ],
+                                  ),
+                                ),
+                                Obx(
+                                  () => Stack(
+                                    children: [
+                                      sectionButton(
+                                          context,
+                                          profileController
+                                              .isSecDataIncomplete.value
+                                              .toString(), () {
+                                        Get.to(() => SecondQuestionPageView(
+                                              gender: widget.gender,
+                                            ));
+                                      }, 100),
+                                      !profileController
+                                              .isSecDataIncomplete.value
+                                          ? const Icon(
+                                              Icons.error,
+                                              color: Colors.red,
+                                            )
+                                          : const SizedBox.shrink()
+                                    ],
+                                  ),
+                                )
                               ],
                             ),
                             20.0.kH,
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                sectionButton(context, "Life Style", () {
-                                  Get.to(() => const ThirdQuestionPageView());
-                                }, 150),
-                                sectionButton(context, "History cheack", () {
-                                  Get.to(() => const FourthQuestionPageView());
-                                }, 250),
+                                Obx(
+                                  () => Stack(
+                                    children: [
+                                      sectionButton(context, "Life Style", () {
+                                        Get.to(() =>
+                                            const ThirdQuestionPageView());
+                                      }, 150),
+                                      profileController
+                                              .isThirdDataIncomplete.value
+                                          ? const Icon(
+                                              Icons.error,
+                                              color: Colors.red,
+                                            )
+                                          : const SizedBox.shrink()
+                                    ],
+                                  ),
+                                ),
+                                Obx(
+                                  () => Stack(
+                                    children: [
+                                      sectionButton(context, "History cheack",
+                                          () {
+                                        Get.to(() =>
+                                            const FourthQuestionPageView());
+                                      }, 250),
+                                      profileController
+                                              .isFifthDataIncomplete.value
+                                          ? const Icon(
+                                              Icons.error,
+                                              color: Colors.red,
+                                            )
+                                          : const SizedBox.shrink()
+                                    ],
+                                  ),
+                                )
                               ],
                             ),
                             20.0.kH,
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                sectionButton(context, "Skin Goals", () {
-                                  Get.to(
-                                      () => const SkinQoalQuestionPageView());
-                                }, 200),
+                                Stack(
+                                  children: [
+                                    sectionButton(context, "Skin Goals", () {
+                                      Get.to(() =>
+                                          const SkinQoalQuestionPageView());
+                                    }, 200),
+                                    profileController
+                                            .isFourthDataIncomplete.value
+                                        ? const Icon(
+                                            Icons.error,
+                                            color: Colors.red,
+                                          )
+                                        : const SizedBox.shrink()
+                                  ],
+                                ),
                                 sectionButton(context, "Skin Type", () {}, 300),
                               ],
                             ),

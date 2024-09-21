@@ -59,7 +59,7 @@ class BookingController extends GetxController {
   }
 
   User user = User();
-  Future<void> postBooking(serviceId, vendorId, context) async {
+  Future<void> postBooking(serviceId, vendorId, context, type, bookId) async {
     if (await networkInfo.isConnected) {
       try {
         // Parse the selected start time
@@ -89,6 +89,9 @@ class BookingController extends GetxController {
             body: body);
 
         if (response.statusCode == StatusCode.created) {
+          if (type == "reschadule") {
+            await deleteBooking(context, bookId);
+          }
           successBookingDialog(context, focusedDay.value, hourSelected.value);
         } else {
           Get.snackbar(
@@ -100,6 +103,48 @@ class BookingController extends GetxController {
       } catch (e) {
         Get.snackbar(
           "Error Accure While Booking",
+          "Try again later",
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } else {
+      Get.snackbar(
+        "No Internet Connection",
+        "Please check your network settings",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  Future<void> deleteBooking(context, id) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final response = await http.delete(
+          Uri.parse("${EndPoints.postBooking}/$id"),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        );
+        print("iddddd $id");
+        print(response.statusCode);
+        if (response.statusCode == StatusCode.created) {
+          print(response.body);
+
+          successBookingDialog(context, focusedDay.value, hourSelected.value);
+        } else {
+          print(response.body);
+
+          Get.snackbar(
+            "Error Accure While Deleting",
+            "Try again later",
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+      } catch (e) {
+        print(e);
+        Get.snackbar(
+          "Error Accure While Deleting",
           "Try again later",
           snackPosition: SnackPosition.BOTTOM,
         );

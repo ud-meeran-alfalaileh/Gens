@@ -9,7 +9,8 @@ class QuestionCard extends StatelessWidget {
   final void Function(bool?)? onCheckboxChanged;
   final bool isSingleChoice;
 
-  QuestionCard({
+  const QuestionCard({
+    super.key,
     required this.answer,
     required this.isSelected,
     this.onRadioChanged,

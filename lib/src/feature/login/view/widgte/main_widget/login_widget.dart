@@ -45,6 +45,7 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   @override
   Widget build(BuildContext context) {
+    RxBool showPassword = true.obs;
     return Obx(
       () => Stack(
         children: [
@@ -105,7 +106,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                   hintText: 'phone'.tr,
                                   invisible: false,
                                   validator: null,
-                                  type: TextInputType.text,
+                                  type: TextInputType.phone,
                                   inputFormat: [
                                     LengthLimitingTextInputFormatter(10),
                                     FilteringTextInputFormatter.digitsOnly,
@@ -113,17 +114,39 @@ class _LoginWidgetState extends State<LoginWidget> {
                                   onTap: () {}),
                             ),
                             (20.5).kH,
-                            AuthForm(
-                              formModel: FormModel(
-                                  icon: Icons.lock_outline,
-                                  controller: controller.password,
-                                  enableText: false,
-                                  hintText: 'loginPassword'.tr,
-                                  invisible: true,
-                                  validator: null,
-                                  type: TextInputType.text,
-                                  inputFormat: [],
-                                  onTap: () {}),
+                            Stack(
+                              children: [
+                                AuthForm(
+                                  formModel: FormModel(
+                                      icon: Icons.lock_outline,
+                                      controller: controller.password,
+                                      enableText: false,
+                                      hintText: 'loginPassword'.tr,
+                                      invisible: showPassword.value,
+                                      validator: null,
+                                      type: TextInputType.text,
+                                      inputFormat: [],
+                                      onTap: () {}),
+                                ),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: IconButton(
+                                      onPressed: () {
+                                        showPassword.value =
+                                            !showPassword.value;
+                                      },
+                                      icon: Padding(
+                                        padding: const EdgeInsets.only(top: 5),
+                                        child: Icon(
+                                          !showPassword.value
+                                              ? Icons.remove_red_eye_outlined
+                                              : Icons.remove_red_eye,
+                                          color:
+                                              AppTheme.lightAppColors.primary,
+                                        ),
+                                      )),
+                                )
+                              ],
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,

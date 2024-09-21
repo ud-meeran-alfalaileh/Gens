@@ -10,10 +10,8 @@ import 'package:gens/src/feature/vendor_history/view/page/vendor_history_page.da
 import 'package:gens/src/feature/vendor_profile/controller/vendor_profile_controller.dart';
 import 'package:gens/src/feature/vendor_profile/view/widget/main_widget/vendor_pationt.dart';
 import 'package:gens/src/feature/vendor_profile/view/widget/main_widget/vendor_update_profile.dart';
-import 'package:gens/src/feature/vendor_profile/view/widget/main_widget/vendor_update_time.dart';
 import 'package:gens/src/feature/vendor_profile/view/widget/text/vendor_profile_text.dart';
 import 'package:get/get.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class VendorProfileWidget extends StatefulWidget {
   const VendorProfileWidget({super.key});
@@ -46,83 +44,81 @@ class _VendorProfileWidgetState extends State<VendorProfileWidget> {
 
 // Access the start and end times
 
-    return SafeArea(
-      child: controller.isLoading.value
-          ? loadingPage(context)
-          : SingleChildScrollView(
-              child: Obx(
-                () => controller.isLoading.value
-                    ? loadingPage(context)
-                    : Column(
-                        children: [
-                          SizedBox(
-                              height: context.screenHeight * .35,
-                              child: vendorHeader(context, user)),
-                          20.0.kH,
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              vendorProfileContainer(
-                                  context,
-                                  'assets/image/information.png',
-                                  "Information", () {
-                                Get.to(() => const VendorUpdateProfile());
-                              }),
-                              vendorProfileContainer(context,
-                                  'assets/image/people.png', "Patients", () {
-                                Get.to(() => const VendorPationt());
-                              }),
-                            ],
-                          ),
-                          TextButton(
-                              onPressed: () {
-                                controller.logout();
-                              },
-                              child: Text("child")),
-                          20.0.kH,
-                          Container(
-                            padding: const EdgeInsets.all(18),
-                            width: context.screenWidth * .9,
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: AppTheme.lightAppColors.maincolor),
-                                borderRadius: BorderRadius.circular(20)),
-                            child: Column(
+    return Obx(
+      () => SafeArea(
+        child: controller.isLoading.value
+            ? loadingPage(context)
+            : SingleChildScrollView(
+                child: Obx(
+                  () => controller.isLoading.value
+                      ? loadingPage(context)
+                      : Column(
+                          children: [
+                            SizedBox(
+                                height: context.screenHeight * .35,
+                                child: vendorHeader(context, user)),
+                            20.0.kH,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                20.0.kW,
-                                VendorProfileText.timeText(user.workingTime),
-                                10.0.kH,
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20),
-                                  child: VendorProfileText.thirdText(
-                                      user.description),
-                                ),
+                                vendorProfileContainer(
+                                    context,
+                                    'assets/image/information.png',
+                                    "Information", () {
+                                  Get.to(() => const VendorUpdateProfile());
+                                }),
+                                vendorProfileContainer(context,
+                                    'assets/image/people.png', "Patients", () {
+                                  Get.to(() => const VendorPationt());
+                                }),
                               ],
                             ),
-                          ),
-                          20.0.kH,
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              vendorProfileContainer(
-                                  context,
-                                  'assets/image/back-in-time.png',
-                                  "Working Hours", () {
-                                Get.to(() => const VendorHistoryPage());
-                              }),
-                              vendorProfileContainer(
-                                  context, 'assets/image/back-in-time.png', "",
-                                  () {
-                                Get.to(() => const VendorUpdateTime());
-                              }),
-                            ],
-                          ),
-                          60.0.kH,
-                        ],
-                      ),
+                            20.0.kH,
+                            Container(
+                              padding: const EdgeInsets.all(18),
+                              width: context.screenWidth * .9,
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: AppTheme.lightAppColors.maincolor),
+                                  borderRadius: BorderRadius.circular(20)),
+                              child: Column(
+                                children: [
+                                  20.0.kW,
+                                  VendorProfileText.timeText(user.workingTime),
+                                  10.0.kH,
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    child: VendorProfileText.thirdText(
+                                        user.description),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            20.0.kH,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                vendorProfileContainer(
+                                    context,
+                                    'assets/image/back-in-time.png',
+                                    "History", () {
+                                  Get.to(() => const VendorHistoryPage());
+                                }),
+                                vendorProfileContainer(
+                                    context,
+                                    'assets/image/back-in-time.png',
+                                    "Working Hours", () {
+                                  Get.to(() => const VendorHistoryPage());
+                                }),
+                              ],
+                            ),
+                            100.0.kH,
+                          ],
+                        ),
+                ),
               ),
-            ),
+      ),
     );
   }
 
@@ -133,49 +129,31 @@ class _VendorProfileWidgetState extends State<VendorProfileWidget> {
         controller.imageUrls.isNotEmpty
             ? SizedBox(
                 height: context.screenHeight * .3,
-                child: PageView.builder(
-                  controller: _pageController, // Attach PageController
-                  itemCount: controller.imageUrls.length,
-                  itemBuilder: (context, index) {
-                    return SizedBox(
-                      child: Container(
-                        width: context.screenWidth,
-                        height: context.screenHeight * .13,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(controller.imageUrls[index]),
-                          ),
-                        ),
+                child: SizedBox(
+                  child: Container(
+                    width: context.screenWidth,
+                    height: context.screenHeight * .13,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: NetworkImage(controller.imageUrls[0]),
                       ),
-                    );
-                  },
-                ),
-              )
+                    ),
+                  ),
+                ))
             : const Center(child: Text("No images available")),
-
-        // Page Indicator (Dots)
-
         Align(
-          alignment: Alignment.topLeft,
-          child: Padding(
-            padding: const EdgeInsets.all(20.0), // Adjust bottom padding
-            child: SmoothPageIndicator(
-              controller: _pageController,
-              count: controller.imageUrls.length,
-              effect: ExpandingDotsEffect(
-                dotHeight: 8,
-                dotWidth: 8,
-                activeDotColor:
-                    AppTheme.lightAppColors.primary, // Active dot color
-                dotColor:
-                    AppTheme.lightAppColors.maincolor, // Inactive dot color
-                expansionFactor: 3, // Expands active dot
-                spacing: 8, // Spacing between dots
-              ),
-            ),
-          ),
+          alignment: Alignment.topRight,
+          child: IconButton(
+              onPressed: () {
+                controller.logout();
+              },
+              icon: Icon(
+                Icons.login_outlined,
+                color: AppTheme.lightAppColors.primary,
+              )),
         ),
+        // Page Indicator (Dots)
 
         // Bottom overlay with vendor info and rating
         Align(

@@ -161,9 +161,9 @@ class _VendorNavBarState extends State<VendorNavBar> {
                                                       .withOpacity(.9),
                                               BlendMode.srcIn,
                                             ),
-                                            child: SvgPicture.asset(
-                                              'assets/image/calendar.svg',
-                                              height: 30,
+                                            child: Image.asset(
+                                              'assets/image/add.png',
+                                              height: 23,
                                             ),
                                           ),
                                         ),

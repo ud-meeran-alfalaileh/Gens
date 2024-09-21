@@ -54,7 +54,7 @@ class UpdateProfile extends StatelessWidget {
               hintText: "000 000 0000",
               invisible: false,
               validator: null,
-              type: TextInputType.text,
+              type: TextInputType.phone,
               inputFormat: [
                 LengthLimitingTextInputFormatter(10),
                 FilteringTextInputFormatter.digitsOnly,

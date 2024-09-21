@@ -26,9 +26,11 @@ class _EditImagesPageState extends State<EditImagesPage> {
           ? Container(
               width: context.screenWidth,
               height: context.screenHeight,
-              color: Colors.black.withOpacity(0.1),
-              child: CircularProgressIndicator(
-                color: AppTheme.lightAppColors.primary,
+              color: AppTheme.lightAppColors.background,
+              child: Center(
+                child: CircularProgressIndicator(
+                  color: AppTheme.lightAppColors.primary,
+                ),
               ),
             )
           : WillPopScope(

@@ -49,15 +49,15 @@ class _DashboradWidgetState extends State<DashboradWidget> {
                               horizontal: 10, vertical: 25),
                           child: Row(
                             children: [
-                              Builder(
-                                builder: (context) => GestureDetector(
-                                    onTap: () =>
-                                        Scaffold.of(context).openDrawer(),
-                                    child: const Icon(
-                                      Icons.menu,
-                                      size: 30,
-                                    )),
-                              ),
+                              // Builder(
+                              //   builder: (context) => GestureDetector(
+                              //       onTap: () =>
+                              //           Scaffold.of(context).openDrawer(),
+                              //       child: const Icon(
+                              //         Icons.menu,
+                              //         size: 30,
+                              //       )),
+                              // ),
                               const Spacer(),
                               Image.asset(
                                 "assets/image/Logo2 2.png",

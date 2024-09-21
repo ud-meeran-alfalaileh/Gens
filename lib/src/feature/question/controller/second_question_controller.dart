@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'package:gens/src/core/api/end_points.dart';
 import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
+import 'package:gens/src/feature/profile/controller/profile_controller.dart';
 import 'package:gens/src/feature/question/model/question_model.dart';
-import 'package:gens/src/feature/question/view/widget/main_widget/third_question_page.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class SecondQuestionController extends GetxController {
+  final profileController = Get.put(ProfileController());
+
   RxInt currentPage = 0.obs;
   User user = User();
   @override
@@ -203,7 +205,9 @@ class SecondQuestionController extends GetxController {
       print('Response: ${response.body}');
       print('Status Code: ${response.statusCode}');
       if (response.statusCode == StatusCode.ok) {
-        Get.offAll(() => const ThirdQuestionPageView());
+        await profileController.getQuestionDetails();
+        Get.back();
+        Get.back();
       }
     } catch (e) {
       print(e);

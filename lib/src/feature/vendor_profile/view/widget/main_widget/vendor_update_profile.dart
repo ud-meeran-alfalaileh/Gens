@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
@@ -20,6 +21,7 @@ class VendorUpdateProfile extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppTheme.lightAppColors.background,
       body: SafeArea(
+        bottom: false,
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: SingleChildScrollView(
@@ -126,24 +128,24 @@ class VendorUpdateProfile extends StatelessWidget {
                       onTap: () {}),
                 ),
                 20.0.kH,
-                // VendorRegisterText.mainText("Phone Number"),
-                // AuthForm(
-                //   formModel: FormModel(
-                //     icon: Icons.phone,
-                //     controller: controller.phone,
-                //     enableText: false,
-                //     hintText: 'phone'.tr,
-                //     invisible: false,
-                //     validator: null,
-                //     type: TextInputType.text,
-                //     inputFormat: [
-                //       LengthLimitingTextInputFormatter(10),
-                //       FilteringTextInputFormatter.digitsOnly,
-                //     ],
-                //     onTap: () {},
-                //   ),
-                // ),
-                // 20.0.kH,
+                VendorRegisterText.mainText("Phone Number"),
+                AuthForm(
+                  formModel: FormModel(
+                    icon: Icons.phone,
+                    controller: controller.phone,
+                    enableText: false,
+                    hintText: 'phone'.tr,
+                    invisible: false,
+                    validator: null,
+                    type: TextInputType.phone,
+                    inputFormat: [
+                      LengthLimitingTextInputFormatter(10),
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
+                    onTap: () {},
+                  ),
+                ),
+                20.0.kH,
                 // VendorRegisterText.mainText("Specialty"),
                 // AuthForm(
                 //   formModel: FormModel(

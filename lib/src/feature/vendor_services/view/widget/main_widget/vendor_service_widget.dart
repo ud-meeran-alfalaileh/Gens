@@ -65,20 +65,23 @@ class _VendorServiceWidgetState extends State<VendorServiceWidget> {
                           ),
                           20.0.kH,
                           controller.services.isEmpty
-                              ? Column(
-                                  children: [
-                                    100.0.kH,
-                                    Image.asset(
-                                      'assets/image/empty-box.png',
-                                      width: 200,
-                                    ),
-                                    10.0.kH,
-                                    VendorDashboardText.emptyText(
-                                        "Currently, there are no Services add for you"),
-                                  ],
+                              ? SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      100.0.kH,
+                                      Image.asset(
+                                        'assets/image/empty-box.png',
+                                        width: 200,
+                                      ),
+                                      10.0.kH,
+                                      VendorDashboardText.emptyText(
+                                          "Currently, there are no Services add for you"),
+                                    ],
+                                  ),
                                 )
                               : ListView.separated(
                                   shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
                                     final service = controller.services[index];
                                     return GestureDetector(
@@ -93,11 +96,12 @@ class _VendorServiceWidgetState extends State<VendorServiceWidget> {
                                     return 15.0.kH;
                                   },
                                   itemCount: controller.services.length,
-                                )
+                                ),
                         ],
                       ),
                     ),
-                  )
+                  ),
+                  100.0.kH
                 ],
               ),
             ),

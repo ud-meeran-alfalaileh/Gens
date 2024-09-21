@@ -38,7 +38,7 @@ class ResultsPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               Obx(() => Container(
-                    padding: EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(20),
                     width: context.screenWidth,
                     // height: context.screenHeight * .3,
                     decoration: BoxDecoration(

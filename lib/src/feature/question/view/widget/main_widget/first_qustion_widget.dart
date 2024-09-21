@@ -274,6 +274,11 @@ class _FirstQuestionPageViewState extends State<FirstQuestionPageView> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        IconButton(
+            onPressed: () {
+              Get.back();
+            },
+            icon: const Icon(Icons.arrow_back_ios)),
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(

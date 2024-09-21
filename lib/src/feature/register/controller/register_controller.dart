@@ -80,7 +80,7 @@ class RegisterController extends GetxController {
   validUserName(String name) {
     if (name.isEmpty) {
       return "nameValidation".tr;
-    } else if (name.length < 5) {
+    } else if (name.length < 2) {
       return "nameValidation".tr;
     }
     return null;
@@ -89,7 +89,7 @@ class RegisterController extends GetxController {
   validsecName(String name) {
     if (name.isEmpty) {
       return "secNameValidation".tr;
-    } else if (name.length < 5) {
+    } else if (name.length < 2) {
       return "secNameValidation".tr;
     }
     return null;
@@ -178,7 +178,7 @@ class RegisterController extends GetxController {
 
   Future<void> register(context) async {
     // Check if the context is still mounted before showing any SnackBars
-
+    isLoading.value = true;
     if (await networkInfo.isConnected) {
       var body = jsonEncode({
         "password": password.text.trim(),
@@ -220,8 +220,22 @@ class RegisterController extends GetxController {
           Get.offAll(const MainAppPage());
           phoneNumber.clear();
           password.clear();
-        } else {}
+        } else {
+          final jsonData = json.decode(response.body);
+
+          showTopSnackBar(
+            Overlay.of(context),
+            CustomSnackBar.error(
+              message: jsonData,
+            ),
+          );
+          isLoading.value = false;
+          Get.back();
+          Get.back();
+        } //0879288828
       } catch (error) {
+        isLoading.value = true;
+
         print(error);
         showTopSnackBar(
           Overlay.of(context),

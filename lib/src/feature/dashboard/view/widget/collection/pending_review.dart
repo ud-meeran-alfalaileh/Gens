@@ -45,7 +45,7 @@ Container pendingReviewContainer(
         10.0.kH,
         Row(
           children: [
-            DashboardText.reviewSecText('On '),
+            DashboardText.reviewSecText('On'),
             DashboardText.reviewThText('${review.bookedDate} '),
             DashboardText.reviewSecText(' at '),
             DashboardText.reviewThText(review.bookedTime)

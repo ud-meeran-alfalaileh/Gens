@@ -53,6 +53,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
             crossAxisAlignment: CrossAxisAlignment.center,
             // mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              10.0.kH,
               HistoryText.headerText("My Bookings"),
               (context.screenHeight * .03).kH,
               Row(
@@ -154,7 +155,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       width: context.screenWidth,
-      height: 250,
+      height: context.screenHeight * .3,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
@@ -239,7 +240,11 @@ class _HistoryWidgetState extends State<HistoryWidget> {
           GestureDetector(
             onTap: () {
               doctorController.srevice.value = history.serviceId;
-              Get.to(() => BookingPage(vendorId: history.vendorId));
+              Get.to(() => BookingPage(
+                    vendorId: history.vendorId,
+                    type: 'reschadule',
+                    bookId: history.id,
+                  ));
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

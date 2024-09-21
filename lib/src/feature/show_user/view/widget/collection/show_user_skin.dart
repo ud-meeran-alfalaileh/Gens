@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
-import 'package:gens/src/feature/profile/controller/profile_controller.dart';
 import 'package:gens/src/feature/profile/model/question_model.dart';
 import 'package:gens/src/feature/profile/view/widget/text/profile_text.dart';
 import 'package:gens/src/feature/profile/view/widget/text/skin_text.dart';
 import 'package:gens/src/feature/question/view/page/question_page.dart';
+import 'package:gens/src/feature/show_user/controller/show_user_controller.dart';
 import 'package:get/get.dart';
 
-class SkinDetailsPage extends StatelessWidget {
+class ShowUserSkin extends StatelessWidget {
   final String gender;
 
-  const SkinDetailsPage({super.key, required this.gender});
+  const ShowUserSkin({super.key, required this.gender});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ProfileController());
+    final controller = Get.put(ShowUserController());
     // final data = controller.question.value;
     RxBool isDataIncomplete = RxBool([
       controller.question.value!.skinTypeMorning,
@@ -35,78 +35,68 @@ class SkinDetailsPage extends StatelessWidget {
       controller.question.value!.b12Pills
     ].any((field) => field == ""));
 
-    return Container(
-      color: const Color(0xfff5f5f5),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Obx(
-          () => SingleChildScrollView(
-            physics: const NeverScrollableScrollPhysics(),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                !isDataIncomplete.value
-                    ? questionButton(context, gender)
-                    : SizedBox.shrink(),
-                20.0.kH,
-                skinDetailsContainer(
+    return Obx(
+      () => SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            20.0.kH,
+            skinDetailsContainer(
+                controller.question.value!,
+                context,
+                'Skin Type',
+                controller.question.value?.skinTypeMorning,
+                "assets/image/perfect-skin.png"),
+            controller.question.value!.skinConcerns == ""
+                ? const SizedBox.shrink()
+                : skinDetailsContainer(
+                    controller.question.value,
+                    context,
+                    'Skin concern',
+                    controller.question.value!.skinConcerns,
+                    "assets/image/concern.png"),
+            controller.question.value!.acneMedication == ""
+                ? const SizedBox.shrink()
+                : skinDetailsContainer(
                     controller.question.value!,
                     context,
-                    'Skin Type',
-                    controller.question.value?.skinTypeMorning,
-                    "assets/image/perfect-skin.png"),
-                controller.question.value!.skinConcerns == ""
-                    ? const SizedBox.shrink()
-                    : skinDetailsContainer(
-                        controller.question.value,
-                        context,
-                        'Skin concern',
-                        controller.question.value!.skinConcerns,
-                        "assets/image/concern.png"),
-                controller.question.value!.acneMedication == ""
-                    ? const SizedBox.shrink()
-                    : skinDetailsContainer(
-                        controller.question.value!,
-                        context,
-                        'Isotretinoin Use',
-                        controller.question.value!.acneMedication,
-                        "assets/image/capsules.png"),
-                lifeStyle(context, controller.question.value!),
-                10.0.kH,
-                controller.question.value!.foodConsume == ""
-                    ? const SizedBox.shrink()
-                    : skinDetailsContainer(
-                        controller.question.value!,
-                        context,
-                        'Dietary Habits',
-                        controller.question.value!.foodConsume,
-                        "assets/image/bibimbap.png"),
-                controller.question.value!.b12Pills == ""
-                    ? const SizedBox.shrink()
-                    : skinDetailsContainer(
-                        controller.question.value!,
-                        context,
-                        'Vitamin B12',
-                        controller.question.value!.b12Pills,
-                        "assets/image/vitamin-b12.png"),
-                controller.question.value!.manageStress == ""
-                    ? const SizedBox.shrink()
-                    : skinDetailsContainer(
-                        controller.question.value!,
-                        context,
-                        'Stress Mange',
-                        controller.question.value!.manageStress,
-                        "assets/image/stress.png"),
-                30.0.kH,
-                gender == "Female"
-                    ? femaleRelatedContainer(
-                        context, controller.question.value!)
-                    : const SizedBox.shrink(),
-                150.0.kH,
-              ],
-            ),
-          ),
+                    'Isotretinoin Use',
+                    controller.question.value!.acneMedication,
+                    "assets/image/capsules.png"),
+            lifeStyle(context, controller.question.value!),
+            10.0.kH,
+            controller.question.value!.foodConsume == ""
+                ? const SizedBox.shrink()
+                : skinDetailsContainer(
+                    controller.question.value!,
+                    context,
+                    'Dietary Habits',
+                    controller.question.value!.foodConsume,
+                    "assets/image/bibimbap.png"),
+            controller.question.value!.b12Pills == ""
+                ? const SizedBox.shrink()
+                : skinDetailsContainer(
+                    controller.question.value!,
+                    context,
+                    'Vitamin B12',
+                    controller.question.value!.b12Pills,
+                    "assets/image/vitamin-b12.png"),
+            controller.question.value!.manageStress == ""
+                ? const SizedBox.shrink()
+                : skinDetailsContainer(
+                    controller.question.value!,
+                    context,
+                    'Stress Mange',
+                    controller.question.value!.manageStress,
+                    "assets/image/stress.png"),
+            30.0.kH,
+            gender == "Female"
+                ? femaleRelatedContainer(context, controller.question.value!)
+                : const SizedBox.shrink(),
+            150.0.kH,
+          ],
         ),
       ),
     );

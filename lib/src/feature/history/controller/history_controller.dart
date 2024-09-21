@@ -61,11 +61,8 @@ class HistoryController extends GetxController {
           bookings.value = servicesData;
           isLaoding.value = false;
         } else {
-          Get.snackbar(
-            "Error Accure While Booking",
-            "Try again later",
-            snackPosition: SnackPosition.BOTTOM,
-          );
+          bookings.value = [];
+          isLaoding.value = false;
         }
       } catch (e) {
         Get.snackbar(

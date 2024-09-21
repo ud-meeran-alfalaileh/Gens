@@ -23,6 +23,13 @@ class DoctorController extends GetxController {
     isExpanded.value = !isExpanded.value;
   }
 
+  final ImagePicker _picker = ImagePicker();
+
+  final imageUrl = TextEditingController();
+  RxString serviceImage = "".obs;
+  RxBool isUpdating = false.obs;
+  RxBool addingImage = false.obs;
+
   RxBool isAbsent = false.obs;
   RxList<String> imagesUrl = <String>[].obs;
   RxDouble userRating = 0.0.obs; // Initial rating
@@ -38,6 +45,8 @@ class DoctorController extends GetxController {
   RxString sreviceDescription = "".obs;
   RxDouble servicePrice = 0.0.obs;
   RxBool showReview = false.obs;
+  RxBool isFav = false.obs;
+  RxString isFavString = "".obs;
 
   late Rx<DoctorModelById?> doctor;
   RxList<ReviewPending> reviewPinding = <ReviewPending>[].obs;
@@ -67,13 +76,16 @@ class DoctorController extends GetxController {
   RxList<Vendor> filteredDoctors = <Vendor>[].obs;
 
   void searchDoctors(String query) {
-    if (query == '') {
+    if (query.isEmpty) {
       filteredDoctors.value = doctors;
     } else {
-      filteredDoctors.value = doctors
-          .where((vendor) =>
-              vendor.name.toLowerCase().contains(query.toLowerCase()))
-          .toList();
+      filteredDoctors.value = doctors.where((vendor) {
+        final nameMatches =
+            vendor.name.toLowerCase().contains(query.toLowerCase());
+        final locationMatches =
+            vendor.address.toLowerCase().contains(query.toLowerCase());
+        return nameMatches || locationMatches;
+      }).toList();
     }
   }
 
@@ -90,17 +102,18 @@ class DoctorController extends GetxController {
             'Accept': 'application/json',
           },
           body: body);
+      print(response);
     }
   }
 
-  Future<void> removeFav(vendorId) async {
+  Future<void> putFav(vendorId, value) async {
     if (await networkInfo.isConnected) {
       var body = jsonEncode({
         "userId": user.userId.value,
         "vendorId": vendorId,
-        "isFav": false,
+        "isFav": value,
       });
-      final response = await http.post(Uri.parse(EndPoints.postFav),
+      final response = await http.put(Uri.parse(EndPoints.postFav),
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
@@ -108,6 +121,30 @@ class DoctorController extends GetxController {
           body: body);
       print(response.body);
       print(response.statusCode);
+    }
+  }
+
+  Future<void> getFav(id) async {
+    final response = await http.get(
+      Uri.parse("${EndPoints.getFav}${user.userId}/$id"),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    );
+    print(response.body);
+    print(response.statusCode);
+    if (response.statusCode == StatusCode.ok) {
+      final data = jsonDecode(response.body);
+      if (data == "True") {
+        isFavString.value = data;
+        isFav.value = true;
+        print(isFav.value);
+      } else {
+        isFavString.value = data;
+        isFav.value = false;
+        print(isFav.value);
+      }
     }
   }
 
@@ -182,6 +219,7 @@ class DoctorController extends GetxController {
           'Accept': 'application/json',
         },
       );
+
       print("{{{{{{id}}}}}}");
       print(id);
       print("{{{{{{{{id}}}}}}}}");
@@ -195,6 +233,8 @@ class DoctorController extends GetxController {
           imagesUrl.add(doctor.value!.businessImages.first.imgUrl1);
           imagesUrl.add(doctor.value!.businessImages.first.imgUrl2);
           imagesUrl.add(doctor.value!.businessImages.first.imgUrl3);
+
+          await getFav(id);
           isLoadingVendor.value = false;
         } catch (e) {
           Get.snackbar(
@@ -291,13 +331,6 @@ class DoctorController extends GetxController {
       }
     }
   }
-
-  final ImagePicker _picker = ImagePicker();
-
-  final imageUrl = TextEditingController();
-  RxString serviceImage = "".obs;
-  RxBool isUpdating = false.obs;
-  RxBool addingImage = false.obs;
 
   Future<void> pickImages(context) async {
     final XFile? selectedImages =

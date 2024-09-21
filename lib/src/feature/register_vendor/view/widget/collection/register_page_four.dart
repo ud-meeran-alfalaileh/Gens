@@ -244,13 +244,18 @@ class RegisterPageFour extends StatelessWidget {
                                   controller.schedules.clear();
 
                                   for (String day in controller.allDays) {
+                                    print(day);
                                     String openTime =
                                         controller.selectedDays.contains(day)
-                                            ? controller.operHour.text
+                                            ? DateFormat('HH:mm:ss').format(
+                                                DateFormat('HH:mm').parse(
+                                                    controller.operHour.text))
                                             : "00:00:00";
                                     String closeTime =
                                         controller.selectedDays.contains(day)
-                                            ? controller.closeHour.text
+                                            ? DateFormat('HH:mm:ss').format(
+                                                DateFormat('HH:mm').parse(
+                                                    controller.closeHour.text))
                                             : "00:00:00";
 
                                     User user = User();

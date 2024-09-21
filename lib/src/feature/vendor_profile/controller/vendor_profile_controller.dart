@@ -130,14 +130,14 @@ class VendorProfileController extends GetxController {
 
   void logout() async {
     await user.clearVendorId();
-    Get.off(() => const LoginPage());
+    Get.offAll(() => const LoginPage());
   }
 
   Future<void> updateUser(context) async {
     if (await networkInfo.isConnected) {
       isLoading.value = true;
       var body = jsonEncode({
-        "email": "string",
+        "email": email.text.trim(),
         "name": name.text.trim(),
         "address": location.text.trim(),
         "description": description.text.trim(),
@@ -145,7 +145,8 @@ class VendorProfileController extends GetxController {
       });
       try {
         final response = await http.put(
-            Uri.parse("${EndPoints.getUser}/${user.vendorId.value}"),
+            Uri.parse(
+                "https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/Vendor/${user.vendorId.value}/basic-info"),
             headers: {
               'Accept': 'application/json',
               'Content-Type': 'application/json',
@@ -253,6 +254,7 @@ class VendorProfileController extends GetxController {
     isLoading.value = false;
 
     if (response.statusCode == 200) {
+      getVendorsById();
       print('Images uploaded successfully');
     } else {
       print('Failed to upload images: ${response.statusCode}');

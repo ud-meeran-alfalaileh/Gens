@@ -163,6 +163,7 @@ class VendorDashboardController extends GetxController {
             startTime: booking.startTime,
             endTime: booking.endTime,
             id: booking.id,
+            userId: booking.userId,
           );
 
           // Update the booking list in the controller

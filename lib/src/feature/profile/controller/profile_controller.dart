@@ -75,7 +75,6 @@ class ProfileController extends GetxController {
   void onInit() async {
     await user.loadToken();
     userId.value = user.userId.value;
-    getQuestionDetails();
     super.onInit();
   }
 
@@ -94,15 +93,15 @@ class ProfileController extends GetxController {
           isLoading.value = false;
           final data = jsonDecode(response.body);
           final responseData = UserModel.fromJson(data);
-          final date = calculateAge(responseData.dateOfBirth);
+          final ageDate = calculateAge(responseData.dateOfBirth);
 
           userData.value = responseData;
           email.text = responseData.email;
           name.text = responseData.fName;
-          dateOfBirth.text = date.toString();
+          dateOfBirth.text = ageDate.toString();
           secName.text = responseData.secName;
           phoneNumber.text = responseData.phone;
-          // selectedGender.value = responseData.g
+          selectedGender.value = responseData.gender;
         } else {}
       } catch (e) {
         isLoading.value = false;
@@ -335,18 +334,15 @@ class ProfileController extends GetxController {
   }
 
   void logout() async {
-    var body = jsonEncode({""});
-    final response = http.post(Uri.parse(EndPoints.login),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: body);
-
     await user.clearId();
     Get.off(() => const LoginPage());
   }
 
+  RxBool isFirstDataIncomplete = false.obs;
+  RxBool isSecDataIncomplete = false.obs;
+  RxBool isThirdDataIncomplete = false.obs;
+  RxBool isFourthDataIncomplete = false.obs;
+  RxBool isFifthDataIncomplete = false.obs;
   Future<void> getQuestionDetails() async {
     if (await networkInfo.isConnected) {
       isLoading.value = true;
@@ -364,6 +360,27 @@ class ProfileController extends GetxController {
         if (response.statusCode == StatusCode.ok) {
           final data = jsonDecode(response.body);
           question.value = SkinCareModel.fromJson(data);
+          isFirstDataIncomplete = ((question.value == null) ||
+                  question.value!.skinTypeMorning.isEmpty ||
+                  question.value!.skinConcerns == "" ||
+                  question.value!.skinIssue == "")
+              .obs;
+          isSecDataIncomplete = ((question.value == null) ||
+                  question.value!.maritalStatus.isEmpty ||
+                  question.value!.foodConsume.isEmpty ||
+                  question.value!.issuesFrequentlyExperience.isEmpty)
+              .obs;
+          isThirdDataIncomplete = ((question.value == null) ||
+                  question.value!.waterConsume == "" ||
+                  question.value!.exerciseRoutine == "" ||
+                  question.value!.stressLevel == "" ||
+                  question.value!.manageStress == "")
+              .obs;
+          isFourthDataIncomplete = ((question.value == null) ||
+                  question.value!.mainSkincareGoals == "")
+              .obs;
+          isFifthDataIncomplete =
+              ((question.value == null) || question.value!.b12Pills == "").obs;
         } else {
           final data = jsonDecode(response.body)['message'];
           if (data == "Questionnaire not found for the given user.") {

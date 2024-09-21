@@ -30,6 +30,7 @@ class EndPoints {
   static const String getPendingReview = '${baseUrl}Review/pending/user';
   static const String postReview = '${baseUrl}Review';
   static const String postFav = '${baseUrl}Favorite';
+  static const String getFav = '${baseUrl}Favorite/check-favorite-status/';
   static const String getQuestion = '${baseUrl}Questionnaire';
   static const String skinGoals =
       '${baseUrl}Questionnaire/PostMainSkincareGoalsByUserId/';

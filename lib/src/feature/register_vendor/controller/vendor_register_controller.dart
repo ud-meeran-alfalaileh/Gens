@@ -47,8 +47,12 @@ class VendorRegisterController extends GetxController {
   final RxInt currentPageIndex = 0.obs;
   RxBool isLoading = false.obs;
 
+////
+  final List<String> typeOption = ['Freelance', 'Centers'];
+  Rx<String?> selectType = Rx<String?>(null);
+
   //pick three image
-  RxList<String>? imageFiles = <String>[].obs;
+  RxString imageFiles = "".obs;
 
   final ImagePicker _picker = ImagePicker();
   @override
@@ -62,7 +66,7 @@ class VendorRegisterController extends GetxController {
 //validation
 
   vaildPassword(String? password) {
-    if (!GetUtils.isLengthGreaterOrEqual(password, 8)) {
+    if (!GetUtils.isLengthGreaterOrEqual(password, 6)) {
       return "PasswordValidation".tr;
     }
     return null;
@@ -112,11 +116,9 @@ class VendorRegisterController extends GetxController {
     return null;
   }
 
-  validImageList(List<String> list) {
+  validImageList(String list) {
     if (list.isEmpty) {
       return "please Pick image".tr;
-    } else if (list.length < 3) {
-      return "please pick three image".tr;
     }
     return null;
   }
@@ -166,9 +168,9 @@ class VendorRegisterController extends GetxController {
     RxList<String?> errors = <String>[].obs;
 
     // Validate each form field and collect errors
-    final imageError = validImageList(imageFiles!);
+    final imageError = validImageList(imageFiles.value);
     final descriptinError = validDescription(description.text);
-    final specialityError = validVendorType(userType.text);
+    final specialityError = validVendorType(selectType.value!);
 
     if (imageError != null) errors.add("- $imageError");
     if (descriptinError != null) errors.add("- $descriptinError");
@@ -207,35 +209,35 @@ class VendorRegisterController extends GetxController {
 
 // Pick multiple images
   Future<void> pickImages(context) async {
-    imageFiles?.clear();
-    final List<XFile> selectedImages = await _picker.pickMultiImage();
-    isUpdating.value = true;
-    for (var img in selectedImages) {
-      String? firebaseImage =
-          await uploadImageToFirebase(File(img.path), context);
-      imageFiles?.add(firebaseImage!);
-    }
-    isUpdating.value = false;
+    imageFiles.value = "";
+    try {
+      final XFile? selectedImages =
+          await _picker.pickImage(source: ImageSource.gallery);
+      isUpdating.value = true;
 
+      String? firebaseImage =
+          await uploadImageToFirebase(File(selectedImages!.path), context);
+      imageFiles.value = firebaseImage!;
+
+      isUpdating.value = false;
+    } catch (e) {
+      isUpdating.value = false;
+
+      print(e);
+    }
     // imageFiles.value = (File(selectedImages.take(3)).toList());
   }
 
   //license image
   Future<void> pickLicenseImages(context) async {
     try {
-      PermissionStatus status = await Permission.storage.request();
+      final pickedFile =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        File image = File(pickedFile.path);
+        isUpdating.value = true;
 
-      if (status.isGranted) {
-        final pickedFile =
-            await ImagePicker().pickImage(source: ImageSource.gallery);
-        if (pickedFile != null) {
-          File image = File(pickedFile.path);
-          isUpdating.value = true;
-
-          await uploadImageToFirebase(image, context);
-        }
-      } else if (status.isDenied || status.isPermanentlyDenied) {
-        openAppSettings();
+        await secUploadImageToFirebase(image, context);
       }
     } catch (e) {
       if (Get.isDialogOpen ?? false) {
@@ -249,6 +251,31 @@ class VendorRegisterController extends GetxController {
   }
 
   Future<String?> uploadImageToFirebase(File pickedFile, context) async {
+    try {
+      // Create a reference to Firebase Storage
+      final storageRef = FirebaseStorage.instance
+          .ref()
+          .child('business_license/${pickedFile.path.split('/').last}');
+
+      await storageRef.putFile(pickedFile);
+
+      // Get download URL
+      String downloadURL = await storageRef.getDownloadURL();
+
+      businessLicenseFile.value = downloadURL;
+
+      // await updateUserImage(downloadURL, context);
+      isUpdating.value = false;
+
+      return downloadURL;
+    } catch (e) {
+      isUpdating.value = false;
+
+      return null;
+    }
+  }
+
+  Future<String?> secUploadImageToFirebase(File pickedFile, context) async {
     try {
       // Create a reference to Firebase Storage
       final storageRef = FirebaseStorage.instance
@@ -329,6 +356,7 @@ class VendorRegisterController extends GetxController {
   Future<void> postSchedule() async {
     isUpdating.value = true;
     if (await networkInfo.isConnected) {
+      print(schedules.length);
       for (var schedule in schedules) {
         // Convert Schedule object to JSON string
         String jsonString = jsonEncode(schedule.toJson());
@@ -344,6 +372,7 @@ class VendorRegisterController extends GetxController {
         );
 
         // Print response
+        print(response.body);
 
         await Future.delayed(const Duration(milliseconds: 500));
       }
@@ -407,7 +436,7 @@ class VendorRegisterController extends GetxController {
   }
 
   Future<void> sendEmail(context) async {
-    isLoading.value = true;
+    isUpdating.value = true;
 
     await user.clearOtp();
     var body = jsonEncode({
@@ -428,11 +457,11 @@ class VendorRegisterController extends GetxController {
       final otpId = jsonData['randomNumber'];
       await user.saveOtp(otpId.toString());
       await user.loadOtp();
-      isLoading.value = false;
+      isUpdating.value = false;
 
       Get.to(() => const OtpVendorWidget());
     } else {
-      isLoading.value = false;
+      isUpdating.value = false;
 
       showTopSnackBar(
         Overlay.of(context),
@@ -440,7 +469,7 @@ class VendorRegisterController extends GetxController {
           message: 'Something went wrong.',
         ),
       );
-      isLoading.value = false;
+      isUpdating.value = false;
     }
   }
 
@@ -449,9 +478,9 @@ class VendorRegisterController extends GetxController {
     if (await networkInfo.isConnected) {
       try {
         var businessImage = BusinessImages(
-          imgUrl1: imageFiles![0],
-          imgUrl2: imageFiles![1],
-          imgUrl3: imageFiles![2],
+          imgUrl1: imageFiles.value,
+          imgUrl2: imageFiles.value,
+          imgUrl3: imageFiles.value,
         );
         final body = jsonEncode(VendorRegisterModel(
             email: email.text.trim(),
@@ -459,7 +488,7 @@ class VendorRegisterController extends GetxController {
             password: password.text.trim(),
             description: description.text.trim(),
             phone: "962${removeLeadingZero(phone.text.trim())}",
-            userType: userType.text.trim(),
+            userType: selectType.value!,
             businessLicense: businessLicense.text.trim(),
             status: true,
             address: location.text.trim(),

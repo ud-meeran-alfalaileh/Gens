@@ -21,146 +21,143 @@ class VendorRegisterWidget extends StatelessWidget {
     final controller = Get.put(VendorRegisterController());
     return Stack(
       children: [
-        Column(
-          children: [
-            Row(
-              children: [
-                IconButton(
-                    onPressed: () {
-                      Get.back();
-                    },
-                    icon: Icon(Icons.arrow_back_ios_new,
-                        color: AppTheme.lightAppColors.black))
-              ],
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    children: [
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                            height: 80,
-                            width: context.screenWidth * .9,
-                            decoration: const BoxDecoration(),
-                            child: ListView.separated(
-                                scrollDirection: Axis.horizontal,
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) {
-                                  return Obx(() => registerCircle(
-                                      context, controller, index));
-                                },
-                                separatorBuilder: (context, index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 39.0),
-                                    child: Container(
-                                      width: 100.0,
-                                      height: 1,
-                                      color: AppTheme.lightAppColors.maincolor,
+        SingleChildScrollView(
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  IconButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      icon: Icon(Icons.arrow_back_ios_new,
+                          color: AppTheme.lightAppColors.black))
+                ],
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: SizedBox(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      children: [
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                              height: 80,
+                              width: context.screenWidth * .9,
+                              decoration: const BoxDecoration(),
+                              child: ListView.separated(
+                                  scrollDirection: Axis.horizontal,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    return Obx(() => registerCircle(
+                                        context, controller, index));
+                                  },
+                                  separatorBuilder: (context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 39.0),
+                                      child: Container(
+                                        width: 100.0,
+                                        height: 1,
+                                        color:
+                                            AppTheme.lightAppColors.maincolor,
+                                      ),
+                                    );
+                                  },
+                                  itemCount: 3)),
+                        ),
+                        Text(
+                          "Enter your basic information to create your account",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: AppTheme.lightAppColors.primary),
+                        ),
+                        Obx(() {
+                          return errorText.value != "" &&
+                                  errorText.value != "valid"
+                              ? Column(
+                                  children: [
+                                    (context.screenHeight * .03).kH,
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 10.0),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            errorText.value,
+                                            style: const TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 14.0),
+                                            textAlign: TextAlign.start,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  );
-                                },
-                                itemCount: 3)),
-                      ),
-                      Text(
-                        "Enter your basic information to create your account",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: AppTheme.lightAppColors.primary),
-                      ),
-                      Obx(() {
-                        return errorText.value != "" &&
-                                errorText.value != "valid"
-                            ? Column(
-                                children: [
-                                  (context.screenHeight * .03).kH,
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.only(bottom: 10.0),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          errorText.value,
-                                          style: const TextStyle(
-                                              color: Colors.red,
-                                              fontSize: 14.0),
-                                          textAlign: TextAlign.start,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : (context.screenHeight * .03).kH;
-                      }),
-                      Container(
-                          // padding: const EdgeInsets.symmetric(horizontal: 20),
-                          width: context.screenWidth,
-                          height: context.screenHeight * .58,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50)),
-                          child: PageView(
-                            // physics: const NeverScrollableScrollPhysics(),
-                            controller: controller.pageController,
-                            onPageChanged: (index) {
-                              controller.currentPageIndex.value = index;
-                            },
-                            children: [
-                              registerPageOne(context, controller),
-                              registerPageTwo(context, controller),
-                              registerPageThird(context, controller),
-                              // registerPagefour(context, controller),
-                            ],
-                          )),
-                      SizedBox(
-                        width: context.screenWidth * .8,
-                        child: AppButton(
-                            onTap: () {
-                              // if (controller.currentPageIndex.value == 2) {
-                              //   // controller.vendorRegister();
-                              // }
-                              errorText.value =
-                                  controller.pageOneValidateAllFields()!;
+                                  ],
+                                )
+                              : (context.screenHeight * .03).kH;
+                        }),
+                        Container(
+                            width: context.screenWidth,
+                            height:
+                                context.screenHeight * .55, // Adjusted height
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50)),
+                            child: PageView(
+                              controller: controller.pageController,
+                              onPageChanged: (index) {
+                                controller.currentPageIndex.value = index;
+                              },
+                              children: [
+                                registerPageOne(context, controller),
+                                registerPageTwo(context, controller),
+                                registerPageThird(context, controller),
+                              ],
+                            )),
+                        SizedBox(
+                          width: context.screenWidth * .8,
+                          child: AppButton(
+                              onTap: () {
+                                errorText.value =
+                                    controller.pageOneValidateAllFields()!;
 
-                              if (controller.currentPageIndex.value == 0) {
-                                if (errorText.value == "valid") {
-                                  errorText.value = "";
-                                  controller.nextPage();
+                                if (controller.currentPageIndex.value == 0) {
+                                  if (errorText.value == "valid") {
+                                    errorText.value = "";
+                                    controller.nextPage();
+                                  }
+                                } else if (controller.currentPageIndex.value ==
+                                    1) {
+                                  errorText.value =
+                                      controller.pageTowValidateAllFields()!;
+                                  if (errorText.value == "valid") {
+                                    errorText.value = "";
+                                    controller.nextPage();
+                                  }
+                                } else if (controller.currentPageIndex.value ==
+                                    2) {
+                                  errorText.value =
+                                      controller.pageThreeValidateAllFields()!;
+                                  if (errorText.value == "valid") {
+                                    errorText.value = "";
+                                    controller.sendEmail(context);
+                                  }
                                 }
-                              } else if (controller.currentPageIndex.value ==
-                                  1) {
-                                errorText.value =
-                                    controller.pageTowValidateAllFields()!;
-                                if (errorText.value == "valid") {
-                                  errorText.value = "";
-                                  controller.nextPage();
-                                }
-                              } else if (controller.currentPageIndex.value ==
-                                  2) {
-                                errorText.value =
-                                    controller.pageThreeValidateAllFields()!;
-                                if (errorText.value == "valid") {
-                                  errorText.value = "";
-                                  // Get.to(() => const OtpWidget());
-                                  controller.sendEmail(context);
-                                }
-                              }
-                            },
-                            title: "Register"),
-                      )
-                    ],
+                              },
+                              title: "Register"),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
         Obx(() => controller.isUpdating.value
             ? loadingPage(context)
@@ -204,6 +201,8 @@ class VendorRegisterWidget extends StatelessWidget {
   }
 
   registerPageOne(BuildContext context, VendorRegisterController controller) {
+    RxBool showPassword = true.obs;
+    RxBool showCPassword = true.obs;
     return SingleChildScrollView(
       child: IntrinsicHeight(
         child: Form(
@@ -246,37 +245,77 @@ class VendorRegisterWidget extends StatelessWidget {
               (20.5).kH,
               VendorRegisterText.mainText("Password"),
 
-              AuthForm(
-                formModel: FormModel(
-                    icon: Icons.lock_outline,
-                    controller: controller.password,
-                    enableText: false,
-                    hintText: "loginPassword".tr,
-                    invisible: true,
-                    validator: null,
-                    type: TextInputType.text,
-                    inputFormat: [],
-                    onTap: () {}),
+              Obx(
+                () => Stack(
+                  children: [
+                    AuthForm(
+                      formModel: FormModel(
+                          icon: Icons.lock_outline,
+                          controller: controller.password,
+                          enableText: false,
+                          hintText: "loginPassword".tr,
+                          invisible: showPassword.value,
+                          validator: null,
+                          type: TextInputType.text,
+                          inputFormat: [],
+                          onTap: () {}),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: IconButton(
+                          onPressed: () {
+                            showPassword.value = !showPassword.value;
+                          },
+                          icon: Padding(
+                            padding: const EdgeInsets.only(top: 5),
+                            child: Icon(
+                              !showPassword.value
+                                  ? Icons.remove_red_eye_outlined
+                                  : Icons.remove_red_eye,
+                              color: AppTheme.lightAppColors.primary,
+                            ),
+                          )),
+                    )
+                  ],
+                ),
               ),
               (20.5).kH,
               VendorRegisterText.mainText("Confirm Password"),
 
-              AuthForm(
-                formModel: FormModel(
-                    icon: Icons.lock_outline,
-                    controller: controller.confirmPassword,
-                    enableText: false,
-                    hintText: "confirmPassword".tr,
-                    invisible: true,
-                    validator: null,
-                    type: TextInputType.text,
-                    inputFormat: [],
-                    onTap: () {}),
+              Obx(
+                () => Stack(
+                  children: [
+                    AuthForm(
+                      formModel: FormModel(
+                          icon: Icons.lock_outline,
+                          controller: controller.confirmPassword,
+                          enableText: false,
+                          hintText: "confirmPassword".tr,
+                          invisible: showCPassword.value,
+                          validator: null,
+                          type: TextInputType.text,
+                          inputFormat: [],
+                          onTap: () {}),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: IconButton(
+                          onPressed: () {
+                            showCPassword.value = !showCPassword.value;
+                          },
+                          icon: Padding(
+                            padding: const EdgeInsets.only(top: 5),
+                            child: Icon(
+                              !showCPassword.value
+                                  ? Icons.remove_red_eye_outlined
+                                  : Icons.remove_red_eye,
+                              color: AppTheme.lightAppColors.primary,
+                            ),
+                          )),
+                    )
+                  ],
+                ),
               ),
-
-              (25.5).kH,
-
-              const Spacer(),
             ],
           ),
         ),
@@ -301,7 +340,7 @@ class VendorRegisterWidget extends StatelessWidget {
                   hintText: 'phone'.tr,
                   invisible: false,
                   validator: null,
-                  type: TextInputType.text,
+                  type: TextInputType.phone,
                   inputFormat: [
                     LengthLimitingTextInputFormatter(10),
                     FilteringTextInputFormatter.digitsOnly,
@@ -377,16 +416,23 @@ class VendorRegisterWidget extends StatelessWidget {
                 child: Center(
                   child: Obx(
                     () => Container(
-                        padding: const EdgeInsets.all(10),
                         width: context.screenWidth * .9,
-                        height: controller.imageFiles!.isEmpty
+                        height: controller.imageFiles.value == ""
                             ? context.screenHeight * .2
                             : context.screenHeight * .15,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
+                            image: controller.imageFiles.value == ""
+                                ? null // No image if the value is empty
+                                : DecorationImage(
+                                    image: NetworkImage(controller.imageFiles
+                                        .value), // Assign NetworkImage
+                                    fit: BoxFit
+                                        .cover, // You can customize the fit
+                                  ),
                             border: Border.all(
                                 color: AppTheme.lightAppColors.primary)),
-                        child: controller.imageFiles!.isEmpty
+                        child: controller.imageFiles.value == ""
                             ? Center(
                                 child: Icon(
                                   Icons.upload_file_outlined,
@@ -394,32 +440,7 @@ class VendorRegisterWidget extends StatelessWidget {
                                   color: AppTheme.lightAppColors.primary,
                                 ),
                               )
-                            : ListView.separated(
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  return Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "- Image ${index + 1}",
-                                            style: TextStyle(
-                                                color: AppTheme
-                                                    .lightAppColors.black,
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 16),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  );
-                                },
-                                separatorBuilder:
-                                    (BuildContext context, int index) {
-                                  return 10.0.kH;
-                                },
-                                itemCount: controller.imageFiles!.length,
-                              )),
+                            : null),
                   ),
                 ),
               ),
@@ -442,18 +463,63 @@ class VendorRegisterWidget extends StatelessWidget {
               (20.5).kH,
               VendorRegisterText.mainText("Specialty"),
 
-              AuthForm(
-                formModel: FormModel(
-                    icon: Icons.add_business_outlined,
-                    controller: controller.userType,
-                    enableText: false,
-                    hintText: "Specialty".tr,
-                    invisible: F,
-                    validator: null,
-                    type: TextInputType.text,
-                    inputFormat: [],
-                    onTap: () {}),
+              Center(
+                child: DropdownButtonFormField<String>(
+                  value: controller.selectType.value,
+                  hint: Text('Select a Specialty'.tr),
+                  items: controller.typeOption.map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(
+                        value,
+                        style: const TextStyle(
+                          fontFamily: "Inter",
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black,
+                          fontSize: 14,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (newValue) {
+                    controller.selectType.value = newValue!;
+                  },
+                  iconEnabledColor: AppTheme.lightAppColors.primary,
+                  icon: const Icon(
+                    Icons.arrow_drop_down,
+                  ),
+                  focusColor: Colors.black,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.person_2_outlined,
+                        color: AppTheme.lightAppColors.primary),
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: AppTheme.lightAppColors.primary,
+                      ),
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: AppTheme.lightAppColors.primary,
+                        width: 1.0,
+                      ),
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: AppTheme.lightAppColors.primary,
+                      ),
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                  style: const TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.black,
+                  ),
+                  dropdownColor: Colors.white,
+                ),
               ),
+
               (20.5).kH,
 
               (25.5).kH,

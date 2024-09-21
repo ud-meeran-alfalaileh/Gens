@@ -38,6 +38,14 @@ String locationShortText(String text, {int maxLength = 22}) {
   }
 }
 
+String nameShortText(String text, {int maxLength = 20}) {
+  if (text.length <= maxLength) {
+    return text;
+  } else {
+    return '${text.substring(0, maxLength)}..';
+  }
+}
+
 String serviceShortText(String text, {int maxLength = 90}) {
   if (text.length <= maxLength) {
     return text;

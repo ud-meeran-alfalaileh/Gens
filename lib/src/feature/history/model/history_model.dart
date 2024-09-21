@@ -47,6 +47,7 @@ class VendorBooking {
   final int id;
   final String userName;
   final String userImage;
+  final int userId;
   final String userPhoneNumber;
   final String serviceTitle;
   final String date;
@@ -58,6 +59,7 @@ class VendorBooking {
     required this.id,
     required this.userName,
     required this.userImage,
+    required this.userId,
     required this.userPhoneNumber,
     required this.serviceTitle,
     required this.date,
@@ -71,6 +73,7 @@ class VendorBooking {
     return VendorBooking(
       id: json['bookingId'] ?? 1,
       userName: json['userName'] ?? '',
+      userId: json['userId'] ?? '',
       userImage: json['userImage'] ?? '',
       userPhoneNumber: json['userPhoneNumber'] ?? '',
       serviceTitle: json['serviceTitle'] ?? '',

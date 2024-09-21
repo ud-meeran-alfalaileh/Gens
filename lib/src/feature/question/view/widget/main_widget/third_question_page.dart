@@ -52,6 +52,20 @@ class _ThirdQuestionPageViewState extends State<ThirdQuestionPageView> {
     }
   }
 
+  void lastPage() {
+    if (_isCurrentPageAnswered()) {
+      Get.to(() => const ThirdDisplayPage());
+    } else {
+      Get.snackbar(
+        'Incomplete',
+        'Please answer the question before proceeding.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
   void previousPage() {
     if (controller.currentPage.value > 0) {
       controller.currentPage.value--;
@@ -175,8 +189,7 @@ class _ThirdQuestionPageViewState extends State<ThirdQuestionPageView> {
             width: context.screenWidth * .3,
             child: AppButton(
               onTap: () {
-                // controller.debugPrintAnswers();
-                Get.to(() => const ThirdDisplayPage());
+                lastPage();
               },
               title: 'Finish',
             ),

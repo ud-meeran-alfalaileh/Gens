@@ -206,6 +206,7 @@ class VendorServicesController extends GetxController {
 
   Future<void> addService() async {
     if (await networkInfo.isConnected) {
+      isUpdating.value = true;
       try {
         var body = jsonEncode({
           "vendorId": user.vendorId.value,
@@ -229,12 +230,14 @@ class VendorServicesController extends GetxController {
             await getVendorServices();
 
             clearServiceData();
+            isUpdating.value = false;
           } catch (e) {
             Get.snackbar(
               "Error",
               '$e',
               snackPosition: SnackPosition.BOTTOM,
             );
+            isUpdating.value = false;
           }
         } else {
           Get.snackbar(
@@ -242,9 +245,11 @@ class VendorServicesController extends GetxController {
             "Failed to fetch vendors",
             snackPosition: SnackPosition.BOTTOM,
           );
+          isUpdating.value = false;
         }
       } catch (e) {
         print("Error while getting vendor services $e");
+        isUpdating.value = false;
       }
     }
   }

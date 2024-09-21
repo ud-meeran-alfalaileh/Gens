@@ -27,7 +27,7 @@ class _AuthFormState extends State<AuthForm> {
           child: TextFormField(
               maxLines: widget.maxLine ?? 1,
               minLines: widget.maxLine ?? 1,
-              autofocus: true,
+              // autofocus: true,
               cursorHeight: 15,
               textInputAction: TextInputAction.done,
               cursorColor: AppTheme.lightAppColors.black,

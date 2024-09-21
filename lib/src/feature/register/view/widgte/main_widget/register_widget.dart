@@ -75,13 +75,14 @@ class RegisterWidget extends StatelessWidget {
                         onTap: () {
                           errorText.value =
                               controller.pageOneValidateAllFields()!;
-                          errorTextPageTwo.value =
-                              controller.validateAllFields()!;
+
                           if (controller.currentPageIndex.value == 0) {
                             if (errorText.value == "valid") {
                               controller.nextPage();
                             }
                           } else {
+                            errorTextPageTwo.value =
+                                controller.validateAllFields()!;
                             if (errorTextPageTwo.value == 'valid') {
                               controller.sendEmail(context);
                               // Get.to(() => const OtpWidget());
@@ -96,36 +97,36 @@ class RegisterWidget extends StatelessWidget {
                     ),
                   ),
                   (context.screenWidth * .06).kH,
-                  SizedBox(
-                    height: context.screenHeight * .02,
-                    child: Stack(
-                      children: [
-                        const Divider(),
-                        Align(
-                          alignment: Alignment.center,
-                          child: Container(
-                            width: context.screenWidth * .1,
-                            color: AppTheme.lightAppColors.background,
-                            child: const Center(child: Text("Or")),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                          height: context.screenHeight * .03,
-                          width: context.screenWidth,
-                          decoration: BoxDecoration(
-                              color: AppTheme.lightAppColors.background,
-                              borderRadius: const BorderRadius.vertical(
-                                  top: Radius.circular(30))),
-                          child: Center(
-                            child: LoginText.dontHaveAccount(() {
-                              Get.back();
-                            }),
-                          )))
+                  // SizedBox(
+                  //   height: context.screenHeight * .02,
+                  //   child: Stack(
+                  //     children: [
+                  //       const Divider(),
+                  //       Align(
+                  //         alignment: Alignment.center,
+                  //         child: Container(
+                  //           width: context.screenWidth * .1,
+                  //           color: AppTheme.lightAppColors.background,
+                  //           child: const Center(child: Text("Or")),
+                  //         ),
+                  //       )
+                  //     ],
+                  //   ),
+                  // ),
+                  // Align(
+                  //     alignment: Alignment.bottomCenter,
+                  //     child: Container(
+                  //         height: context.screenHeight * .03,
+                  //         width: context.screenWidth,
+                  //         decoration: BoxDecoration(
+                  //             color: AppTheme.lightAppColors.background,
+                  //             borderRadius: const BorderRadius.vertical(
+                  //                 top: Radius.circular(30))),
+                  //         child: Center(
+                  //           child: LoginText.dontHaveAccount(() {
+                  //             Get.back();
+                  //           }),
+                  //         )))
                 ],
               ),
             ),
@@ -207,7 +208,7 @@ class RegisterWidget extends StatelessWidget {
                   hintText: "000 000 0000",
                   invisible: false,
                   validator: (value) => controller.validatePhoneNumber(value!),
-                  type: TextInputType.text,
+                  type: TextInputType.phone,
                   inputFormat: [
                     LengthLimitingTextInputFormatter(10),
                     FilteringTextInputFormatter.digitsOnly,
@@ -314,6 +315,9 @@ class RegisterWidget extends StatelessWidget {
   }
 
   registerPageTwo(BuildContext context, RegisterController controller) {
+    RxBool showPassword = true.obs;
+    RxBool showCPassword = true.obs;
+
     return Form(
       key: controller.fromKeyTwo,
       child: Column(
@@ -357,30 +361,74 @@ class RegisterWidget extends StatelessWidget {
                 onTap: () {}),
           ),
           (17.0).kH,
-          AuthForm(
-            formModel: FormModel(
-                icon: Icons.lock_outline,
-                controller: controller.password,
-                enableText: false,
-                hintText: "loginPassword".tr,
-                invisible: true,
-                validator: null,
-                type: TextInputType.text,
-                inputFormat: [],
-                onTap: () {}),
+          Obx(
+            () => Stack(
+              children: [
+                AuthForm(
+                  formModel: FormModel(
+                      icon: Icons.lock_outline,
+                      controller: controller.password,
+                      enableText: false,
+                      hintText: 'loginPassword'.tr,
+                      invisible: showPassword.value,
+                      validator: null,
+                      type: TextInputType.text,
+                      inputFormat: [],
+                      onTap: () {}),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: IconButton(
+                      onPressed: () {
+                        showPassword.value = !showPassword.value;
+                      },
+                      icon: Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: Icon(
+                          !showPassword.value
+                              ? Icons.remove_red_eye_outlined
+                              : Icons.remove_red_eye,
+                          color: AppTheme.lightAppColors.primary,
+                        ),
+                      )),
+                )
+              ],
+            ),
           ),
           (17.0).kH,
-          AuthForm(
-            formModel: FormModel(
-                icon: Icons.lock_outline,
-                controller: controller.confirmPassword,
-                enableText: false,
-                hintText: "confirmPassword".tr,
-                invisible: true,
-                validator: null,
-                type: TextInputType.text,
-                inputFormat: [],
-                onTap: () {}),
+          Obx(
+            () => Stack(
+              children: [
+                AuthForm(
+                  formModel: FormModel(
+                      icon: Icons.lock_outline,
+                      controller: controller.confirmPassword,
+                      enableText: false,
+                      hintText: "confirmPassword".tr,
+                      invisible: showCPassword.value,
+                      validator: null,
+                      type: TextInputType.text,
+                      inputFormat: [],
+                      onTap: () {}),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: IconButton(
+                      onPressed: () {
+                        showCPassword.value = !showCPassword.value;
+                      },
+                      icon: Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: Icon(
+                          !showCPassword.value
+                              ? Icons.remove_red_eye_outlined
+                              : Icons.remove_red_eye,
+                          color: AppTheme.lightAppColors.primary,
+                        ),
+                      )),
+                )
+              ],
+            ),
           ),
           (17.0).kH,
           Stack(

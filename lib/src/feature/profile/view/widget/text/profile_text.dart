@@ -7,7 +7,7 @@ class ProfileText {
       title,
       style: TextStyle(
         fontFamily: 'Inter',
-        fontSize: 20,
+        fontSize: 16,
         color: AppTheme.lightAppColors.black,
         fontWeight: FontWeight.w800, // Use FontWeight.bold for the bold variant
       ),

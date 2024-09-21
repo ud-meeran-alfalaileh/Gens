@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 class ForgetPasswordController extends GetxController {
   final email = TextEditingController();
+  final password = TextEditingController();
   final fromKey = GlobalKey<FormState>();
   String? pageOneValidateAllFields() {
     RxList<String?> errors = <String>[].obs;
@@ -25,4 +26,8 @@ class ForgetPasswordController extends GetxController {
   }
 
   RxString errorText = "".obs;
+
+  // Future<void> updatePassword ()async{
+  //   final response  = await http.post(url)
+  // }
 }

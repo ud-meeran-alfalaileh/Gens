@@ -13,7 +13,13 @@ import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class BookingWidget extends StatelessWidget {
-  const BookingWidget({super.key, required this.vendorId});
+  const BookingWidget(
+      {super.key,
+      required this.vendorId,
+      required this.type,
+      required this.bookId});
+  final int? bookId;
+  final String type;
   final int vendorId;
 
   @override
@@ -113,7 +119,7 @@ class BookingWidget extends StatelessWidget {
                           );
                         } else {
                           controller.postBooking(doctorController.srevice.value,
-                              vendorId, context);
+                              vendorId, context, type, bookId);
                         }
                       },
                       title: "Book Appointment".tr)

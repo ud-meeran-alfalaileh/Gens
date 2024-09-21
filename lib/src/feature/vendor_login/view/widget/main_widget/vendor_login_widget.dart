@@ -101,7 +101,7 @@ class _VendorLoginWidgetState extends State<VendorLoginWidget> {
                                   hintText: 'phone'.tr,
                                   invisible: false,
                                   validator: null,
-                                  type: TextInputType.text,
+                                  type: TextInputType.phone,
                                   inputFormat: [],
                                   onTap: () {}),
                             ),

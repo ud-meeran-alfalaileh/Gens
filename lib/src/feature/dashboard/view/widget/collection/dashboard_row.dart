@@ -29,7 +29,7 @@ SingleChildScrollView dashboardContainerRow(DashboardController controller) {
           DashboardContainer(
             model: DashboardFilterModel(
                 onTap: () {
-                  doctorController.searchDoctorsByType("string");
+                  doctorController.searchDoctorsByType("Centers");
                   controller.setSelectedIndex(1);
                 },
                 isSelected: controller.selectedIndex.value == 1,

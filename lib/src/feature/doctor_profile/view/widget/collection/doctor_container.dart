@@ -32,8 +32,7 @@ doctorContainer(BuildContext context, DoctorModelById model) {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              DashboardText.mainText(
-                  vendorNShortText("model.namemodel.namemodel.name")),
+              DashboardText.mainText(vendorNShortText(model.name)),
             ],
           ),
           7.0.kH,
