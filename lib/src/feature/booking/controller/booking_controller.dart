@@ -21,6 +21,7 @@ class BookingController extends GetxController {
       DateFormat('yyyy-MM-dd'); // For date format: yyyy-MM-dd
   DateFormat timeFormat = DateFormat('HH:mm:ss'); // For time format: HH:mm:ss
   RxBool isLoading = false.obs;
+  RxBool isBooking = false.obs;
   RxString hourSelected = "".obs;
   final NetworkInfo networkInfo =
       NetworkInfoImpl(connectionChecker: InternetConnectionChecker());
@@ -92,6 +93,7 @@ class BookingController extends GetxController {
           if (type == "reschadule") {
             await deleteBooking(context, bookId);
           }
+          isBooking.value = false;
           successBookingDialog(context, focusedDay.value, hourSelected.value);
         } else {
           Get.snackbar(
@@ -126,15 +128,10 @@ class BookingController extends GetxController {
             'Accept': 'application/json',
           },
         );
-        print("iddddd $id");
-        print(response.statusCode);
-        if (response.statusCode == StatusCode.created) {
-          print(response.body);
 
+        if (response.statusCode == 204) {
           successBookingDialog(context, focusedDay.value, hourSelected.value);
         } else {
-          print(response.body);
-
           Get.snackbar(
             "Error Accure While Deleting",
             "Try again later",
@@ -142,7 +139,6 @@ class BookingController extends GetxController {
           );
         }
       } catch (e) {
-        print(e);
         Get.snackbar(
           "Error Accure While Deleting",
           "Try again later",

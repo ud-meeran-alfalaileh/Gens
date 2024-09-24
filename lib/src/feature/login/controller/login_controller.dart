@@ -69,8 +69,7 @@ class LoginController extends GetxController {
               'Accept': 'application/json',
             },
             body: body);
-        print(body);
-        print(response.body);
+
         if (response.statusCode == StatusCode.ok) {
           final jsonData = json.decode(response.body);
           final type = jsonData['userType'];

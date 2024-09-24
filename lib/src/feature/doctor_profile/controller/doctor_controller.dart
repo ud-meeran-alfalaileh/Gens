@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gens/src/core/api/end_points.dart';
 import 'package:gens/src/core/api/netwok_info.dart';
@@ -45,7 +46,9 @@ class DoctorController extends GetxController {
   RxString sreviceDescription = "".obs;
   RxDouble servicePrice = 0.0.obs;
   RxBool showReview = false.obs;
+  Rx<Favourite?> favourite = Rx<Favourite?>(null);
   RxBool isFav = false.obs;
+
   RxString isFavString = "".obs;
 
   late Rx<DoctorModelById?> doctor;
@@ -96,54 +99,70 @@ class DoctorController extends GetxController {
         "vendorId": vendorId,
         "isFav": true,
       });
-      final response = await http.post(Uri.parse(EndPoints.postFav),
+      await http.post(Uri.parse(EndPoints.postFav),
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
           },
           body: body);
-      print(response);
+      getFav(vendorId);
     }
   }
 
-  Future<void> putFav(vendorId, value) async {
+  Future<void> putFav(vendorId, value, favId) async {
     if (await networkInfo.isConnected) {
-      var body = jsonEncode({
-        "userId": user.userId.value,
-        "vendorId": vendorId,
-        "isFav": value,
-      });
-      final response = await http.put(Uri.parse(EndPoints.postFav),
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          body: body);
-      print(response.body);
-      print(response.statusCode);
+      try {
+        var body = jsonEncode({
+          "id": favId,
+          "userId": user.userId.value,
+          "vendorId": vendorId,
+          "isFav": value,
+        });
+
+        await http.put(Uri.parse("${EndPoints.postFav}/$favId"),
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: body);
+
+        getFav(vendorId);
+      } catch (e) {
+        if (kDebugMode) {
+          print(e);
+        }
+      }
     }
   }
 
   Future<void> getFav(id) async {
-    final response = await http.get(
-      Uri.parse("${EndPoints.getFav}${user.userId}/$id"),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-    );
-    print(response.body);
-    print(response.statusCode);
-    if (response.statusCode == StatusCode.ok) {
-      final data = jsonDecode(response.body);
-      if (data == "True") {
-        isFavString.value = data;
-        isFav.value = true;
-        print(isFav.value);
-      } else {
-        isFavString.value = data;
-        isFav.value = false;
-        print(isFav.value);
+    try {
+      final response = await http.get(
+        Uri.parse("${EndPoints.getFav}${user.userId}/$id"),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      );
+
+      if (response.statusCode == StatusCode.ok) {
+        final data = jsonDecode(response.body);
+        if (data != "null") {
+          favourite.value = Favourite.fromJson(data);
+          if (favourite.value?.isFav == true) {
+            isFavString.value = favourite.value!.isFav.toString();
+            isFav.value = true;
+          } else {
+            isFavString.value = favourite.value!.isFav.toString();
+            isFav.value = false;
+          }
+        } else {
+          isFavString.value = 'null';
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
       }
     }
   }
@@ -219,10 +238,6 @@ class DoctorController extends GetxController {
           'Accept': 'application/json',
         },
       );
-
-      print("{{{{{{id}}}}}}");
-      print(id);
-      print("{{{{{{{{id}}}}}}}}");
 
       if (response.statusCode == StatusCode.ok) {
         try {
@@ -314,8 +329,7 @@ class DoctorController extends GetxController {
             'Accept': 'application/json',
           },
         );
-        print(response.body);
-        print(response.statusCode);
+
         if (response.statusCode == StatusCode.ok) {
           final List<dynamic> jsonData = json.decode(response.body);
 
@@ -386,8 +400,7 @@ class DoctorController extends GetxController {
               'Accept': 'application/json',
             },
             body: body);
-        print(response.body);
-        print(response.statusCode);
+
         if (response.statusCode == StatusCode.ok) {
           reviewPinding.clear();
           serviceImage.value = "";
@@ -395,18 +408,34 @@ class DoctorController extends GetxController {
           await getPendingReview();
         }
       } catch (e) {
-        print(e);
+        if (kDebugMode) {
+          print(e);
+        }
       }
     }
   }
 
   Future<void> deleteReview(reviewId) async {
     if (await networkInfo.isConnected) {
-      final response =
-          await http.delete(Uri.parse("${EndPoints.postReview}/$reviewId"));
+      await http.delete(Uri.parse("${EndPoints.postReview}/$reviewId"));
 
       Get.back();
       getPendingReview();
     }
+  }
+}
+
+class Favourite {
+  int favoriteId;
+  bool isFav;
+  Favourite({
+    required this.favoriteId,
+    required this.isFav,
+  });
+  factory Favourite.fromJson(Map<String, dynamic> json) {
+    return Favourite(
+      favoriteId: json['favoriteId'] ?? 0,
+      isFav: json['isFav'] ?? false,
+    );
   }
 }

@@ -32,6 +32,10 @@ class EndPoints {
   static const String postFav = '${baseUrl}Favorite';
   static const String getFav = '${baseUrl}Favorite/check-favorite-status/';
   static const String getQuestion = '${baseUrl}Questionnaire';
+
+  static const String getAllFav = '${baseUrl}Favorite/user/Favorites/';
+  static const String addImage = '${baseUrl}UserImages/create';
+
   static const String skinGoals =
       '${baseUrl}Questionnaire/PostMainSkincareGoalsByUserId/';
   static const String firstPage = '${baseUrl}Questionnaire/post-skin-section';

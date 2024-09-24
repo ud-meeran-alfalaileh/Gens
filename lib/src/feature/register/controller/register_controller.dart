@@ -201,7 +201,6 @@ class RegisterController extends GetxController {
             'Accept': 'application/json',
           },
           body: body);
-      print(response.body);
       try {
         if (response.statusCode == StatusCode.ok ||
             response.statusCode == StatusCode.created) {

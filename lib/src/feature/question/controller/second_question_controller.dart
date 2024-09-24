@@ -127,6 +127,9 @@ class SecondQuestionController extends GetxController {
 
   // Method to format answers for API
   Map<String, dynamic> formatAnswersForApi(String gender) {
+    print("Gender: $gender");
+
+    // Initialize formatted answers with default values
     final formattedAnswers = <String, dynamic>{
       'userId': user.userId.value, // Ensure this is an integer
       'maritalStatus': '',
@@ -162,21 +165,16 @@ class SecondQuestionController extends GetxController {
         case 'issuesFrequentlyExperience':
           formattedAnswers['issuesFrequentlyExperience'] = formattedAnswer;
           break;
+        // Correct female-related question names to match exactly with the QuestionModel names
+        case 'femalePeriodType': // Corrected
+          formattedAnswers['femalePeriodType'] = formattedAnswer;
+          break;
+        case 'HormoneRelated': // Corrected
+          formattedAnswers['femaleHormoneRelated'] = formattedAnswer;
+          break;
         default:
           print('Unhandled question name: $questionName');
           break;
-      }
-
-      // If gender is female, include female-related answers
-      if (gender == 'Female') {
-        switch (questionName) {
-          case 'period type':
-            formattedAnswers['femalePeriodType'] = formattedAnswer;
-            break;
-          case 'hormone-related':
-            formattedAnswers['femaleHormoneRelated'] = formattedAnswer;
-            break;
-        }
       }
     });
 

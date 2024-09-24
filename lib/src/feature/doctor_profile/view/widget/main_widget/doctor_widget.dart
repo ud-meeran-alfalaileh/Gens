@@ -10,10 +10,12 @@ import 'package:gens/src/feature/booking/view/page/booking_page.dart';
 import 'package:gens/src/feature/doctor_profile/controller/doctor_controller.dart';
 import 'package:gens/src/feature/doctor_profile/view/widget/collection/doctor_container.dart';
 import 'package:gens/src/feature/doctor_profile/view/widget/text/doctor_text.dart';
+import 'package:gens/src/feature/fav_page/fav_controller.dart';
 import 'package:get/get.dart';
 
 class DoctorWidget extends StatefulWidget {
-  const DoctorWidget({super.key, required this.model});
+  const DoctorWidget({super.key, required this.model, required this.type});
+  final String type;
   final int model;
 
   @override
@@ -22,7 +24,7 @@ class DoctorWidget extends StatefulWidget {
 
 class _DoctorWidgetState extends State<DoctorWidget> {
   final controller = Get.put(DoctorController());
-  final PageController _pageController = PageController();
+  final favController = Get.put(FavController());
 
   @override
   void initState() {
@@ -59,6 +61,9 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                             children: [
                               IconButton(
                                   onPressed: () {
+                                    if (widget.type == 'Fav') {
+                                      favController.getFavDoctor();
+                                    }
                                     Get.back();
                                   },
                                   icon: Icon(
@@ -67,36 +72,45 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                                         .withOpacity(.8),
                                   )),
                               DoctorText.mainText("Details"),
-                              GestureDetector(
-                                onTap: () async {
-                                  if (controller.isFavString.value == 'null') {
-                                    controller.isFav.value = true;
-                                    controller.isFavString.value = "True";
-                                    controller.addFav(widget.model);
-                                  } else {
+                              Obx(
+                                () => GestureDetector(
+                                  onTap: () async {
                                     if (controller.isFavString.value ==
-                                        "False") {
-                                      controller.isFav.value = true;
-                                      controller.isFavString.value = "True";
-
+                                        'null') {
+                                      controller.isFav.value = false;
+                                      controller.isFavString.value = "fasle";
                                       controller.addFav(widget.model);
-                                    } else if (controller.isFavString.value ==
-                                        "False") {}
-                                  }
+                                    } else {
+                                      if (controller.favourite.value!.isFav ==
+                                          false) {
+                                        controller.isFav.value = true;
+                                        controller.isFavString.value = "true";
 
-                                  if (controller.isFav.value == true) {
-                                    controller.isFav.value = false;
-                                    // controller.addFav(model.vendorId);
-                                  } else {
-                                    controller.isFav.value = true;
-                                    // controller.removeFav(model.vendorId);
-                                  }
-                                },
-                                child: Image.asset(
-                                  controller.isFav.value == false
-                                      ? "assets/image/heart.png"
-                                      : "assets/image/lover.png",
-                                  height: 20,
+                                        controller.putFav(
+                                            widget.model,
+                                            true,
+                                            controller
+                                                .favourite.value!.favoriteId);
+                                      } else if (controller
+                                              .favourite.value!.isFav ==
+                                          true) {
+                                        controller.isFav.value = false;
+                                        controller.isFavString.value = "fasle";
+
+                                        controller.putFav(
+                                            widget.model,
+                                            false,
+                                            controller
+                                                .favourite.value!.favoriteId);
+                                      }
+                                    }
+                                  },
+                                  child: Image.asset(
+                                    controller.isFav.value == false
+                                        ? "assets/image/heart.png"
+                                        : "assets/image/lover.png",
+                                    height: 20,
+                                  ),
                                 ),
                               )
                             ],
@@ -150,36 +164,38 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                                   onTap: () {
                                     controller.toggleExpanded();
                                   },
-                                  child: Text.rich(
-                                    TextSpan(
-                                      text: controller.isExpanded.value ||
-                                              controller.doctor.value!
-                                                      .description.length <=
-                                                  maxLength
-                                          ? controller.doctor.value!.description
-                                          : controller.doctor.value!.description
-                                              .substring(0, maxLength),
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        fontFamily: 'Inter',
-                                        color: AppTheme
-                                            .lightAppColors.subTextcolor,
-                                      ),
-                                      children: [
-                                        TextSpan(
-                                          text: controller.isExpanded.value
-                                              ? " see less".tr
-                                              : " see more".tr,
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color:
-                                                AppTheme.lightAppColors.primary,
-                                            fontFamily: 'Inter',
-                                          ),
-                                        )
-                                      ],
+                                  child: Text.rich(TextSpan(
+                                    text: controller.isExpanded.value ||
+                                            controller.doctor.value!.description
+                                                    .length <=
+                                                maxLength
+                                        ? controller.doctor.value!.description
+                                        : controller.doctor.value!.description
+                                            .substring(0, maxLength),
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontFamily: 'Inter',
+                                      color:
+                                          AppTheme.lightAppColors.subTextcolor,
                                     ),
-                                  ),
+                                    children: [
+                                      controller.doctor.value!.description
+                                                  .length ==
+                                              90
+                                          ? TextSpan(
+                                              text: controller.isExpanded.value
+                                                  ? " see less".tr
+                                                  : " see more".tr,
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: AppTheme
+                                                    .lightAppColors.primary,
+                                                fontFamily: 'Inter',
+                                              ),
+                                            )
+                                          : const TextSpan(text: '')
+                                    ],
+                                  )),
                                 ),
                               ),
                               (context.screenHeight * .03).kH,
@@ -213,7 +229,7 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                                     MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  controller.services.isEmpty
+                                  controller.srevice.value == 0
                                       ? const SizedBox.shrink()
                                       : Row(
                                           mainAxisAlignment:

@@ -16,12 +16,13 @@ doctorDashboardContainer(
     onTap: () {
       Get.to(() => DoctorPage(
             model: model.vendorId,
+            type: 'dashboard',
           ));
     },
     child: Container(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
       width: context.screenWidth,
-      height: 180,
+      height: context.screenHeight * .21,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           boxShadow: [

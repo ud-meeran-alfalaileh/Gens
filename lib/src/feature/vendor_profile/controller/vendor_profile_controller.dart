@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gens/src/core/api/end_points.dart';
 import 'package:gens/src/core/api/netwok_info.dart';
@@ -15,6 +16,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+// ignore: depend_on_referenced_packages
 import 'package:path/path.dart'; // For extracting filename
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -97,9 +99,7 @@ class VendorProfileController extends GetxController {
             imageUrls.add(vendor.value.businessImages.first.imgUrl2);
             imageUrls.add(vendor.value.businessImages.first.imgUrl3);
             // vendor.value.businessImages.map((img) => img.imgUrl1).toList();
-            print(isLoading.value);
             isLoading.value = false;
-            print(isLoading.value);
           } catch (e) {
             Get.snackbar(
               "Error",
@@ -117,7 +117,9 @@ class VendorProfileController extends GetxController {
         }
         isLoading.value = false;
       } catch (e) {
-        print(e);
+        if (kDebugMode) {
+          print(e);
+        }
       }
     } else {
       Get.snackbar(
@@ -152,7 +154,9 @@ class VendorProfileController extends GetxController {
               'Content-Type': 'application/json',
             },
             body: body);
-        print(response.body);
+        if (kDebugMode) {
+          print(response.body);
+        }
         if (response.statusCode == StatusCode.ok) {
           isLoading.value = false;
           showSnackBar("Success", "Data Updated Successfully", Colors.green);
@@ -161,7 +165,9 @@ class VendorProfileController extends GetxController {
       } catch (e) {
         isLoading.value = false;
 
-        print(e);
+        if (kDebugMode) {
+          print(e);
+        }
       }
     } else {
       isLoading.value = false;
@@ -254,11 +260,6 @@ class VendorProfileController extends GetxController {
     isLoading.value = false;
 
     if (response.statusCode == 200) {
-      getVendorsById();
-      print('Images uploaded successfully');
-    } else {
-      print('Failed to upload images: ${response.statusCode}');
-      print('Response body: ${response.body}');
-    }
+    } else {}
   }
 }

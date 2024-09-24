@@ -5,6 +5,8 @@ import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/feature/profile/controller/profile_controller.dart';
 import 'package:gens/src/feature/question/controller/first_question_controller.dart';
+import 'package:gens/src/feature/question/view/widget/collection/add_image.dart';
+import 'package:gens/src/feature/question/view/widget/collection/add_product_widget.dart';
 import 'package:gens/src/feature/question/view/widget/main_widget/first_qustion_widget.dart';
 import 'package:gens/src/feature/question/view/widget/main_widget/fourth_question_page.dart';
 import 'package:gens/src/feature/question/view/widget/main_widget/second_question_page.dart';
@@ -107,16 +109,13 @@ class _QuestionPageState extends State<QuestionPage> {
                                 Obx(
                                   () => Stack(
                                     children: [
-                                      sectionButton(
-                                          context,
-                                          profileController
-                                              .isSecDataIncomplete.value
-                                              .toString(), () {
+                                      sectionButton(context, 'Hormonal & GI',
+                                          () {
                                         Get.to(() => SecondQuestionPageView(
                                               gender: widget.gender,
                                             ));
                                       }, 100),
-                                      !profileController
+                                      profileController
                                               .isSecDataIncomplete.value
                                           ? const Icon(
                                               Icons.error,
@@ -188,15 +187,18 @@ class _QuestionPageState extends State<QuestionPage> {
                                         : const SizedBox.shrink()
                                   ],
                                 ),
-                                sectionButton(context, "Skin Type", () {}, 300),
+                                sectionButton(context, "Face Image", () {
+                                  Get.to(() => const UserThreeImage());
+                                }, 300),
                               ],
                             ),
                             20.0.kH,
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                sectionButton(context, "Skin Type", () {}, 350),
-                                sectionButton(context, "Skin Type", () {}, 400),
+                                sectionButton(context, "Product", () {
+                                  Get.to(() => const AddProductWidget());
+                                }, 350),
                               ],
                             ),
                           ],

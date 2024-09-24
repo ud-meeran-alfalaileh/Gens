@@ -4,12 +4,15 @@ import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/core/utils/loading_page.dart';
+import 'package:gens/src/feature/fav_page/view/page/fav_page.dart';
 import 'package:gens/src/feature/profile/controller/profile_controller.dart';
 import 'package:gens/src/feature/profile/view/page/profile_row_container.dart';
 import 'package:gens/src/feature/profile/view/widget/collection/profile_collection.dart';
 import 'package:gens/src/feature/profile/view/widget/collection/skin_details.dart';
 import 'package:gens/src/feature/profile/view/widget/collection/update_profile.dart';
 import 'package:gens/src/feature/profile/view/widget/text/profile_text.dart';
+import 'package:gens/src/feature/question/controller/add_image_user_controller.dart';
+import 'package:gens/src/feature/question/controller/add_product_controller.dart';
 import 'package:get/get.dart';
 
 class ProfileWidget extends StatefulWidget {
@@ -21,17 +24,24 @@ class ProfileWidget extends StatefulWidget {
 
 class _ProfileWidgetState extends State<ProfileWidget> {
   final controller = Get.put(ProfileController());
+  final imageController = Get.put(AddImageUserController());
+  final productController = Get.put(AddProductController());
+
   User user = User();
   @override
   void initState() {
-    // initalState(context);
+    initalState(context);
     super.initState();
   }
 
   Future<void> initalState(context) async {
     await user.loadToken();
+    controller.isLoading.value = true;
+    await productController.getProduct();
+    await imageController.getUserthreeImage();
     await controller.getUser(user.userId, context);
     await controller.getQuestionDetails();
+    controller.isLoading.value = false;
   }
 
   @override
@@ -47,44 +57,61 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    20.0.kH,
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            showPopupButtons(context, controller);
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            width: 150,
-                            height: 150,
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: AppTheme.lightAppColors.background),
-                            child: CircleAvatar(
-                              radius: 20,
-                              backgroundColor: AppTheme.lightAppColors.black
-                                  .withOpacity(0.1),
-                              backgroundImage: controller
-                                              .userData.value!.userImage ==
-                                          "" ||
-                                      controller.userData.value!.userImage ==
-                                          "string"
-                                  ? const AssetImage(
-                                      "assets/image/profileIcon.png")
-                                  : NetworkImage(
-                                      controller.userData.value!.userImage ??
-                                          ''),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Get.to(() => const FavPage());
+                            },
+                            child: Image.asset(
+                              "assets/image/lover.png",
+                              height: 25,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 10),
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              showPopupButtons(context, controller);
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              width: 150,
+                              height: 150,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: AppTheme.lightAppColors.background),
+                              child: CircleAvatar(
+                                radius: 20,
+                                backgroundColor: AppTheme.lightAppColors.black
+                                    .withOpacity(0.1),
+                                backgroundImage: controller
+                                                .userData.value!.userImage ==
+                                            "" ||
+                                        controller.userData.value!.userImage ==
+                                            "string"
+                                    ? const AssetImage(
+                                        "assets/image/profileIcon.png")
+                                    : NetworkImage(
+                                        controller.userData.value!.userImage ??
+                                            ''),
+                              ),
                             ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Column(
+                          20.0.kW,
+                          Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              10.0.kH,
                               ProfileText.mainText(
                                   "${controller.userData.value?.fName} ${controller.userData.value?.secName}"),
                               5.0.kH,
@@ -97,7 +124,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                 child: Column(
                                   children: [
                                     SizedBox(
-                                      width: context.screenWidth * .5,
+                                      width: context.screenWidth * .46,
                                       child: ProfileText.secText(
                                           "Skin goals : ${controller.question.value?.mainSkincareGoals}"),
                                     )
@@ -106,8 +133,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                               )
                             ],
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                     profileContainerRow(controller),
                     Container(
@@ -122,6 +149,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                             );
                           case 1:
                             return const UpdateProfile();
+                          case 2:
+                            return const Scaffold();
 
                           default:
                             return Container();

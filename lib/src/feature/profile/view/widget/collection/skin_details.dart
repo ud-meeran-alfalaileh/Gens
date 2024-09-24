@@ -6,6 +6,8 @@ import 'package:gens/src/feature/profile/controller/profile_controller.dart';
 import 'package:gens/src/feature/profile/model/question_model.dart';
 import 'package:gens/src/feature/profile/view/widget/text/profile_text.dart';
 import 'package:gens/src/feature/profile/view/widget/text/skin_text.dart';
+import 'package:gens/src/feature/question/controller/add_image_user_controller.dart';
+import 'package:gens/src/feature/question/controller/add_product_controller.dart';
 import 'package:gens/src/feature/question/view/page/question_page.dart';
 import 'package:get/get.dart';
 
@@ -17,23 +19,32 @@ class SkinDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(ProfileController());
-    // final data = controller.question.value;
-    RxBool isDataIncomplete = RxBool([
-      controller.question.value!.skinTypeMorning,
-      controller.question.value!.skinConcerns,
-      controller.question.value!.skinIssue,
-      controller.question.value!.maritalStatus,
-      controller.question.value!.foodConsume,
-      controller.question.value!.issuesFrequentlyExperience,
-      controller.question.value!.waterConsume,
-      controller.question.value!.sleepingHours,
-      controller.question.value!.exerciseRoutine,
-      controller.question.value!.smokingStatus,
-      controller.question.value!.stressLevel,
-      controller.question.value!.mainSkincareGoals,
-      controller.question.value!.acneMedication,
-      controller.question.value!.b12Pills
-    ].any((field) => field == ""));
+    final isQuestionAvailable = controller.question.value != null;
+
+    final imageController = Get.put(AddImageUserController());
+    final productController = Get.put(AddProductController());
+    RxBool isDataIncomplete = RxBool(isQuestionAvailable &&
+        [
+          controller.question.value?.skinTypeMorning ?? "",
+          controller.question.value?.skinConcerns ?? "",
+          controller.question.value?.skinIssue ?? "",
+          controller.question.value?.maritalStatus ?? "",
+          // Append female-specific fields if gender is Female
+          if (gender == "Female")
+            controller.question.value?.femaleHormoneRelated ?? "",
+          if (gender == "Female")
+            controller.question.value?.femalePeriodType ?? "",
+          controller.question.value?.foodConsume ?? "",
+          controller.question.value?.issuesFrequentlyExperience ?? "",
+          controller.question.value?.waterConsume ?? "",
+          controller.question.value?.sleepingHours ?? "",
+          controller.question.value?.exerciseRoutine ?? "",
+          controller.question.value?.smokingStatus ?? "",
+          controller.question.value?.stressLevel ?? "",
+          controller.question.value?.mainSkincareGoals ?? "",
+          controller.question.value?.acneMedication ?? "",
+          controller.question.value?.b12Pills ?? "",
+        ].any((field) => field == ""));
 
     return Container(
       color: const Color(0xfff5f5f5),
@@ -46,63 +57,192 @@ class SkinDetailsPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                !isDataIncomplete.value
-                    ? questionButton(context, gender)
-                    : SizedBox.shrink(),
-                20.0.kH,
-                skinDetailsContainer(
-                    controller.question.value!,
-                    context,
-                    'Skin Type',
-                    controller.question.value?.skinTypeMorning,
-                    "assets/image/perfect-skin.png"),
-                controller.question.value!.skinConcerns == ""
-                    ? const SizedBox.shrink()
-                    : skinDetailsContainer(
-                        controller.question.value,
+                if (isDataIncomplete.isTrue ||
+                    controller.question.value == null)
+                  questionButton(context, gender),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          Get.to(() => QuestionPage(
+                                gender: controller.userData.value!.gender,
+                              ));
+                        },
+                        icon: Icon(
+                          Icons.edit_note_outlined,
+                          color: AppTheme.lightAppColors.primary,
+                        ))
+                  ],
+                ),
+                if (controller.question.value != null) ...[
+                  if (controller.question.value!.skinTypeMorning != "")
+                    skinDetailsContainer(
+                        controller.question.value!,
+                        context,
+                        'Skin Type',
+                        controller.question.value?.skinTypeMorning,
+                        "assets/image/perfect-skin.png"),
+                  if (controller.question.value!.skinConcerns != "")
+                    skinDetailsContainer(
+                        controller.question.value!,
                         context,
                         'Skin concern',
                         controller.question.value!.skinConcerns,
                         "assets/image/concern.png"),
-                controller.question.value!.acneMedication == ""
-                    ? const SizedBox.shrink()
-                    : skinDetailsContainer(
+                  if (controller.question.value!.skinIssue != "")
+                    skinDetailsContainer(
+                        controller.question.value!,
+                        context,
+                        'Skin Issue',
+                        controller.question.value!.skinIssue,
+                        "assets/image/concern.png"),
+                  if (controller.question.value!.acneMedication != "")
+                    skinDetailsContainer(
                         controller.question.value!,
                         context,
                         'Isotretinoin Use',
                         controller.question.value!.acneMedication,
                         "assets/image/capsules.png"),
-                lifeStyle(context, controller.question.value!),
-                10.0.kH,
-                controller.question.value!.foodConsume == ""
-                    ? const SizedBox.shrink()
-                    : skinDetailsContainer(
+                  controller.question.value!.waterConsume == ''
+                      ? const SizedBox.shrink()
+                      : lifeStyle(context, controller.question.value!),
+                  10.0.kH,
+                  if (controller.question.value!.foodConsume != "")
+                    skinDetailsContainer(
                         controller.question.value!,
                         context,
                         'Dietary Habits',
                         controller.question.value!.foodConsume,
                         "assets/image/bibimbap.png"),
-                controller.question.value!.b12Pills == ""
-                    ? const SizedBox.shrink()
-                    : skinDetailsContainer(
+                  if (controller.question.value!.b12Pills != "")
+                    skinDetailsContainer(
                         controller.question.value!,
                         context,
                         'Vitamin B12',
                         controller.question.value!.b12Pills,
                         "assets/image/vitamin-b12.png"),
-                controller.question.value!.manageStress == ""
-                    ? const SizedBox.shrink()
-                    : skinDetailsContainer(
+                  if (controller.question.value!.manageStress != "")
+                    skinDetailsContainer(
                         controller.question.value!,
                         context,
-                        'Stress Mange',
+                        'Stress Manage',
                         controller.question.value!.manageStress,
                         "assets/image/stress.png"),
-                30.0.kH,
-                gender == "Female"
-                    ? femaleRelatedContainer(
-                        context, controller.question.value!)
-                    : const SizedBox.shrink(),
+                  //assets/image/female.png
+                  if (gender == "Female")
+                    controller.question.value!.femaleHormoneRelated == ''
+                        ? const SizedBox.shrink()
+                        : Column(
+                            children: [
+                              skinDetailsContainer(
+                                  controller.question.value!,
+                                  context,
+                                  'Period Type',
+                                  controller.question.value!.femalePeriodType ==
+                                          "No"
+                                      ? "Irregular"
+                                      : "Regular",
+                                  'assets/image/female.png'),
+                              skinDetailsContainer(
+                                  controller.question.value!,
+                                  context,
+                                  'Having Period Problem',
+                                  controller
+                                      .question.value!.femaleHormoneRelated,
+                                  'assets/image/female.png'),
+                            ],
+                          ),
+                  10.0.kH,
+                  if (productController.message.text != "")
+                    Container(
+                      width: context.screenHeight,
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              color: AppTheme.lightAppColors.bordercolor),
+                          color: AppTheme.lightAppColors.background,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Column(
+                        children: [
+                          Container(
+                            width: context.screenWidth * .9,
+                            height: context.screenHeight * .2,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: FileImage(productController
+                                        .updatedImage.value!))),
+                          ),
+                          10.0.kH,
+                          SkinText.mainText(
+                              "Product recently used: ${productController.message.text}"),
+                          10.0.kH,
+                        ],
+                      ),
+                    ),
+                  10.0.kH,
+
+                  if (imageController.imageUrls.isNotEmpty)
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SkinText.mainText("Face Images"),
+                        5.0.kH,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: context.screenHeight * .12,
+                              height: context.screenHeight * .1,
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: NetworkImage(
+                                          imageController.imageUrls[0])),
+                                  border: Border.all(
+                                      color:
+                                          AppTheme.lightAppColors.bordercolor),
+                                  color: AppTheme.lightAppColors.background,
+                                  borderRadius: BorderRadius.circular(10)),
+                            ),
+                            Container(
+                              width: context.screenHeight * .12,
+                              height: context.screenHeight * .1,
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: NetworkImage(
+                                          imageController.imageUrls[1])),
+                                  border: Border.all(
+                                      color:
+                                          AppTheme.lightAppColors.bordercolor),
+                                  color: AppTheme.lightAppColors.background,
+                                  borderRadius: BorderRadius.circular(10)),
+                            ),
+                            Container(
+                              width: context.screenHeight * .12,
+                              height: context.screenHeight * .1,
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: NetworkImage(
+                                          imageController.imageUrls[2])),
+                                  border: Border.all(
+                                      color:
+                                          AppTheme.lightAppColors.bordercolor),
+                                  color: AppTheme.lightAppColors.background,
+                                  borderRadius: BorderRadius.circular(10)),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                ],
                 150.0.kH,
               ],
             ),
@@ -112,26 +252,31 @@ class SkinDetailsPage extends StatelessWidget {
     );
   }
 
-  skinDetailsContainer(
-      SkinCareModel? data, BuildContext context, title, answer, imag) {
+  skinDetailsContainer(SkinCareModel? data, BuildContext context, String title,
+      String? answer, String image) {
+    if (answer == null || answer.isEmpty) {
+      return const SizedBox
+          .shrink(); // Return empty if the answer is null or empty
+    }
     return Column(
       children: [
         Container(
           padding: EdgeInsets.symmetric(
-              horizontal: context.screenWidth * .03,
-              vertical: context.screenHeight * .03),
+            horizontal: context.screenWidth * .03,
+            vertical: context.screenHeight * .03,
+          ),
           width: context.screenWidth,
-          // height: context.screenHeight * .1,
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: AppTheme.lightAppColors.background,
-              border: Border.all(color: AppTheme.lightAppColors.bordercolor)),
+            borderRadius: BorderRadius.circular(10),
+            color: AppTheme.lightAppColors.background,
+            border: Border.all(color: AppTheme.lightAppColors.bordercolor),
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.asset(
-                imag,
+                image,
                 width: 30,
               ),
               20.0.kW,
@@ -143,13 +288,13 @@ class SkinDetailsPage extends StatelessWidget {
                   SizedBox(
                     width: context.screenWidth * .7,
                     child: SkinText.subMainText(answer),
-                  )
+                  ),
                 ],
-              )
+              ),
             ],
           ),
         ),
-        10.0.kH
+        10.0.kH,
       ],
     );
   }
@@ -245,6 +390,7 @@ class SkinDetailsPage extends StatelessWidget {
                 context, 'assets/image/sleep.png', data.sleepingHours),
           ],
         ),
+        10.0.kH,
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [

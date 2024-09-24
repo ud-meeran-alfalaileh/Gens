@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gens/src/core/api/end_points.dart';
 import 'package:gens/src/core/api/netwok_info.dart';
@@ -150,7 +151,6 @@ class ProfileController extends GetxController {
                   'Content-Type': 'application/json',
                 },
                 body: body);
-        print(response.body);
         if (response.statusCode == StatusCode.ok) {
           isLoading.value = false;
           showSnackBar("Success", "Data Updated Successfully", Colors.green);
@@ -158,8 +158,6 @@ class ProfileController extends GetxController {
         } else {}
       } catch (e) {
         isLoading.value = false;
-
-        print(e);
       }
     } else {
       isLoading.value = false;
@@ -260,7 +258,9 @@ class ProfileController extends GetxController {
         }
         isLoadingImg.value = false;
       } catch (e) {
-        print(e);
+        if (kDebugMode) {
+          print(e);
+        }
       }
       isLoadingImg.value = false;
     }
@@ -318,8 +318,6 @@ class ProfileController extends GetxController {
         }
       } catch (e) {
         isLoading.value = false;
-
-        print(e);
       }
     } else {
       isLoading.value = false;
@@ -355,8 +353,6 @@ class ProfileController extends GetxController {
             'Content-Type': 'application/json',
           },
         );
-        print(response.body);
-        print(response.statusCode);
         if (response.statusCode == StatusCode.ok) {
           final data = jsonDecode(response.body);
           question.value = SkinCareModel.fromJson(data);

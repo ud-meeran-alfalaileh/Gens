@@ -56,6 +56,13 @@ SingleChildScrollView profileContainerRow(ProfileController controller) {
           ),
           ProfileContainers(
             onTap: () {
+              controller.setSelectedIndex(2);
+            },
+            isSelected: controller.selectedIndex.value == 2,
+            title: 'Favourit'.tr,
+          ),
+          ProfileContainers(
+            onTap: () {
               controller.logout();
             },
             isSelected: controller.selectedIndex.value == 3,

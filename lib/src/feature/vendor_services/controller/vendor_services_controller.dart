@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gens/src/core/api/end_points.dart';
 import 'package:gens/src/core/api/netwok_info.dart';
@@ -58,7 +59,9 @@ class VendorServicesController extends GetxController {
 
       return downloadURL;
     } catch (e) {
-      print("Error uploading image: $e");
+      if (kDebugMode) {
+        print("Error uploading image: $e");
+      }
       isUpdating.value = false;
 
       return null;
@@ -167,7 +170,9 @@ class VendorServicesController extends GetxController {
           );
         }
       } catch (e) {
-        print(e);
+        if (kDebugMode) {
+          print(e);
+        }
       }
     }
   }
@@ -199,7 +204,9 @@ class VendorServicesController extends GetxController {
           );
         }
       } catch (e) {
-        print(e);
+        if (kDebugMode) {
+          print(e);
+        }
       }
     }
   }
@@ -248,7 +255,6 @@ class VendorServicesController extends GetxController {
           isUpdating.value = false;
         }
       } catch (e) {
-        print("Error while getting vendor services $e");
         isUpdating.value = false;
       }
     }

@@ -57,74 +57,99 @@ class BookingWidget extends StatelessWidget {
           ),
         ),
         SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 20, right: 10, bottom: 30),
-            child: SizedBox(
-              height: context.screenHeight,
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      DoctorText.mainText("Select Date"),
-                    ],
-                  ),
-                  (context.screenHeight * .02).kH,
-                  Obx(
-                    () => calendarContainer(controller, vendorId),
-                  ),
-                  (context.screenHeight * .03).kH,
-                  Row(
-                    children: [
-                      DoctorText.mainText("Select Hour"),
-                    ],
-                  ),
-                  (context.screenHeight * .01).kH,
-                  Obx(
-                    () => controller.isLoading.value
-                        ? CircularProgressIndicator(
-                            color: AppTheme.lightAppColors.primary,
-                          )
-                        : controller.workingHors.isEmpty
-                            ? Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    "assets/image/no.png",
-                                    width: context.screenWidth * .2,
-                                    height: context.screenHeight * .1,
+          child: Obx(
+            () => Stack(
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 20, right: 10, bottom: 30),
+                  child: SizedBox(
+                    height: context.screenHeight,
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            DoctorText.mainText("Select Date"),
+                          ],
+                        ),
+                        (context.screenHeight * .02).kH,
+                        Obx(
+                          () => calendarContainer(controller, vendorId),
+                        ),
+                        (context.screenHeight * .03).kH,
+                        Row(
+                          children: [
+                            DoctorText.mainText("Select Hour"),
+                          ],
+                        ),
+                        (context.screenHeight * .01).kH,
+                        Obx(
+                          () => controller.isLoading.value
+                              ? CircularProgressIndicator(
+                                  color: AppTheme.lightAppColors.primary,
+                                )
+                              : controller.workingHors.isEmpty
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset(
+                                          "assets/image/no.png",
+                                          width: context.screenWidth * .2,
+                                          height: context.screenHeight * .1,
+                                        ),
+                                        20.0.kW,
+                                        ServicesText.secText(
+                                            "There is no available\n time this day"),
+                                      ],
+                                    )
+                                  : hourContainer(context, controller),
+                        ),
+                        (context.screenHeight * .02).kH,
+                        AppButton(
+                            onTap: () {
+                              if (controller.selectedDay.value == null) {
+                                showTopSnackBar(
+                                  Overlay.of(context),
+                                  CustomSnackBar.error(
+                                    message: 'Please Select a Day'.tr,
                                   ),
-                                  20.0.kW,
-                                  ServicesText.secText(
-                                      "There is no available\n time this day"),
-                                ],
-                              )
-                            : hourContainer(context, controller),
+                                );
+                              } else if (controller.hourSelected.value == "") {
+                                showTopSnackBar(
+                                  Overlay.of(context),
+                                  CustomSnackBar.error(
+                                    message: 'Please Select a Hour'.tr,
+                                  ),
+                                );
+                              } else {
+                                controller.isBooking.value = true;
+                                controller.postBooking(
+                                    doctorController.srevice.value,
+                                    vendorId,
+                                    context,
+                                    type,
+                                    bookId);
+                              }
+                            },
+                            title: "Book Appointment".tr)
+                      ],
+                    ),
                   ),
-                  (context.screenHeight * .02).kH,
-                  AppButton(
-                      onTap: () {
-                        if (controller.selectedDay.value == null) {
-                          showTopSnackBar(
-                            Overlay.of(context),
-                            CustomSnackBar.error(
-                              message: 'Please Select a Day'.tr,
-                            ),
-                          );
-                        } else if (controller.hourSelected.value == "") {
-                          showTopSnackBar(
-                            Overlay.of(context),
-                            CustomSnackBar.error(
-                              message: 'Please Select a Hour'.tr,
-                            ),
-                          );
-                        } else {
-                          controller.postBooking(doctorController.srevice.value,
-                              vendorId, context, type, bookId);
-                        }
-                      },
-                      title: "Book Appointment".tr)
-                ],
-              ),
+                ),
+                controller.isBooking.value
+                    ? Container(
+                        width: context.screenWidth,
+                        height: context.screenHeight,
+                        color: AppTheme.lightAppColors.black.withOpacity(0.1),
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: AppTheme.lightAppColors.primary,
+                          ),
+                        ),
+                      )
+                    : const SizedBox.shrink()
+              ],
             ),
           ),
         ),

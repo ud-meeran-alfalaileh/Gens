@@ -22,7 +22,6 @@ class VendorProfileWidget extends StatefulWidget {
 
 class _VendorProfileWidgetState extends State<VendorProfileWidget> {
   final controller = Get.put(VendorProfileController());
-  final PageController _pageController = PageController();
 
   @override
   void initState() {
