@@ -27,7 +27,9 @@ class _ShowUserWidgetState extends State<ShowUserWidget> {
 
   Future<void> initmethod() async {
     await controller.getUser(widget.id);
+    await controller.getProduct(widget.id);
     await controller.getQuestionDetails(widget.id);
+    await controller.getUserthreeImage(widget.id);
   }
 
   @override

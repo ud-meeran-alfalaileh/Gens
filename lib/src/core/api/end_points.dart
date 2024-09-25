@@ -48,5 +48,8 @@ class EndPoints {
   static const String timeslotsForDay =
       '${baseUrl}Schedule/generate-timeslotsForDay/TestAndTest';
 
+  static String resetPassword =
+      "https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/reset-password";
+
   // static const String crateConversation = '$globalURL/conversations';
 }

@@ -33,75 +33,95 @@ class _HistoryWidgetState extends State<HistoryWidget> {
   final controller = Get.put(HistoryController());
   @override
   void initState() {
-    getBooking(context);
     super.initState();
+    // controller.selectedIndex.value = 0; // Set default to Pending (index 0)
+    // getBooking(context);
   }
 
   Future<void> getBooking(context) async {
     await controller.user.loadToken();
     await controller.getBooking(context);
-    controller.getFilteredList(0);
+    controller.getFilteredList(0); // Filter the list for "Pending" by default
   }
 
   @override
   Widget build(BuildContext context) {
     // final controller = Get.put(HistoryController());
-    return SafeArea(
-      child: SizedBox(
-        width: context.screenWidth,
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            // mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              10.0.kH,
-              HistoryText.headerText("My Bookings"),
-              (context.screenHeight * .03).kH,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildNavItem(0, 'Pending'),
-                  _buildNavItem(1, 'Upcoming'),
-                  _buildNavItem(2, 'Done'),
-                ],
-              ),
-              // (context.screenHeight * .03).kH,
-              Obx(
-                () => controller.isLaoding.value
-                    ? SizedBox(
-                        height: context.screenHeight * .7,
-                        child: loadingPage(context))
-                    : controller.filteredList.isEmpty
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                "assets/image/no.png",
-                                width: context.screenWidth * .2,
-                                height: context.screenHeight * .1,
-                              ),
-                              20.0.kW,
-                              ServicesText.secText(
-                                  "There Is No Available booking"),
-                            ],
-                          )
-                        : SizedBox(
-                            height: context.screenHeight * .7,
-                            child: ListView.separated(
-                              itemCount: controller.filteredList.length,
-                              itemBuilder: (context, index) {
-                                return _buildHistoryContainer(
-                                    controller.filteredList[index], index);
-                              },
-                              separatorBuilder:
-                                  (BuildContext context, int index) {
-                                return 5.0.kH;
-                              },
-                            ),
-                          ),
-              )
-            ]),
-      ),
+    return Stack(
+      children: [
+        SafeArea(
+          child: SizedBox(
+            width: context.screenWidth,
+            child: SingleChildScrollView(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    10.0.kH,
+                    HistoryText.headerText("My Bookings"),
+                    (context.screenHeight * .03).kH,
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildNavItem(0, 'Pending'),
+                        _buildNavItem(1, 'Upcoming'),
+                        _buildNavItem(2, 'Done'),
+                      ],
+                    ),
+                    // (context.screenHeight * .03).kH,
+                    Obx(
+                      () => controller.isLaoding.value
+                          ? SizedBox(
+                              height: context.screenHeight * .7,
+                              child: loadingPage(context))
+                          : controller.filteredList.isEmpty
+                              ? Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      "assets/image/no.png",
+                                      width: context.screenWidth * .2,
+                                      height: context.screenHeight * .1,
+                                    ),
+                                    20.0.kW,
+                                    ServicesText.secText(
+                                        "There Is No Available booking"),
+                                  ],
+                                )
+                              : SizedBox(
+                                  child: ListView.separated(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: controller.filteredList.length,
+                                    itemBuilder: (context, index) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          showBookingDetails(
+                                            context,
+                                            controller.filteredList[index],
+                                          );
+                                        },
+                                        child: _buildHistoryContainer(
+                                            controller.filteredList[index],
+                                            index),
+                                      );
+                                    },
+                                    separatorBuilder:
+                                        (BuildContext context, int index) {
+                                      return 5.0.kH;
+                                    },
+                                  ),
+                                ),
+                    ),
+                    90.0.kH,
+                  ]),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -155,7 +175,6 @@ class _HistoryWidgetState extends State<HistoryWidget> {
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       width: context.screenWidth,
-      height: context.screenHeight * .3,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
@@ -237,94 +256,154 @@ class _HistoryWidgetState extends State<HistoryWidget> {
           ),
           const Divider(),
           10.0.kH,
-          GestureDetector(
-            onTap: () {
-              doctorController.srevice.value = history.serviceId;
-              Get.to(() => BookingPage(
-                    vendorId: history.vendorId,
-                    type: 'reschadule',
-                    bookId: history.id,
-                  ));
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: context.screenWidth * .4,
-                  height: context.screenHeight * .05,
-                  decoration: BoxDecoration(
-                      color: AppTheme.lightAppColors.primary,
-                      borderRadius: BorderRadius.circular(20)),
-                  child: Center(
-                    child: Text(
-                      "Reschedule",
-                      style: TextStyle(
-                          color: AppTheme.lightAppColors.background,
-                          fontFamily: "Inter",
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                ),
-                GestureDetector(
+          history.status == "Done"
+              ? const SizedBox.shrink()
+              : GestureDetector(
                   onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          backgroundColor: AppTheme.lightAppColors.background,
-                          title: const Text(
-                              "Are you sure you want to delete this reservation?"),
-                          actions: [
-                            TextButton(
-                              child: Text(
-                                "Cancel",
-                                style: TextStyle(
-                                    color: AppTheme.lightAppColors.primary),
-                              ),
-                              onPressed: () {
-                                Get.back();
-                              },
-                            ),
-                            TextButton(
-                              child: const Text(
-                                "Yes",
-                                style: TextStyle(color: Colors.red),
-                              ),
-                              onPressed: () async {
-                                await controller.canceleBooking(
-                                    history.id, index);
-                                Get.back();
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    );
+                    doctorController.srevice.value = history.serviceId;
+                    Get.to(() => BookingPage(
+                          vendorId: history.vendorId,
+                          type: 'reschadule',
+                          bookId: history.id,
+                        ));
                   },
-                  child: Container(
-                    width: context.screenWidth * .4,
-                    height: context.screenHeight * .05,
-                    decoration: BoxDecoration(
-                        color: AppTheme.lightAppColors.maincolor,
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Center(
-                      child: Text(
-                        "Cancel",
-                        style: TextStyle(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        width: context.screenWidth * .4,
+                        height: context.screenHeight * .05,
+                        decoration: BoxDecoration(
                             color: AppTheme.lightAppColors.primary,
-                            fontFamily: "Inter",
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600),
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Center(
+                          child: Text(
+                            "Reschedule",
+                            style: TextStyle(
+                                color: AppTheme.lightAppColors.background,
+                                fontFamily: "Inter",
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ),
                       ),
-                    ),
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                backgroundColor:
+                                    AppTheme.lightAppColors.background,
+                                title: const Text(
+                                    "Are you sure you want to delete this reservation?"),
+                                actions: [
+                                  TextButton(
+                                    child: Text(
+                                      "Cancel",
+                                      style: TextStyle(
+                                          color:
+                                              AppTheme.lightAppColors.primary),
+                                    ),
+                                    onPressed: () {
+                                      Get.back();
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: const Text(
+                                      "Yes",
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                    onPressed: () async {
+                                      await controller.canceleBooking(
+                                          history.id, index);
+                                      Get.back();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: Container(
+                          width: context.screenWidth * .4,
+                          height: context.screenHeight * .05,
+                          decoration: BoxDecoration(
+                              color: AppTheme.lightAppColors.maincolor,
+                              borderRadius: BorderRadius.circular(20)),
+                          child: Center(
+                            child: Text(
+                              "Cancel",
+                              style: TextStyle(
+                                  color: AppTheme.lightAppColors.primary,
+                                  fontFamily: "Inter",
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
-          )
+                )
         ],
       ),
+    );
+  }
+
+  Future<dynamic> showBookingDetails(
+    BuildContext context,
+    History history,
+  ) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: AppTheme.lightAppColors.background,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          contentPadding: const EdgeInsets.all(13),
+          content: SizedBox(
+            width: context.screenWidth * 0.9,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 40,
+                      backgroundImage: NetworkImage(history.vendorImg),
+                    ),
+                    10.0.kW,
+                    SizedBox(
+                      width: context.screenWidth * .5,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          HistoryText.secText(history.vendorName),
+                          HistoryText.thirdText(history.date),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                const Divider(),
+                HistoryText.secText(history.serviceName),
+                HistoryText.thirdText("At ${history.time}"),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text("Start from: ${history.servicePrice.toString()}JD")
+                  ],
+                )
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

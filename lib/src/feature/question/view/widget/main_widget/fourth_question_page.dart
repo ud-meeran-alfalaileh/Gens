@@ -177,9 +177,8 @@ class _FourthQuestionPageViewState extends State<FourthQuestionPageView> {
         return Column(
           children: [
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7),
               width: context.screenWidth,
-              height: context.screenHeight * .08,
               decoration: BoxDecoration(
                 color: AppTheme.lightAppColors.maincolor,
                 borderRadius: BorderRadius.circular(25),

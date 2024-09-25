@@ -539,12 +539,11 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                 )
               : const Center(child: Text("No images available")),
 
-          // Page Indicator (Dots)
-
-          Align(
-              alignment: Alignment.bottomCenter,
+          Positioned(
+              bottom: 0,
+              left: 30,
+              right: 30,
               child: doctorContainer(context, controller.doctor.value!)),
-          // Bottom overlay with vendor info and rating
         ],
       ),
     );

@@ -8,6 +8,7 @@ import 'package:gens/src/core/api/end_points.dart';
 import 'package:gens/src/core/api/netwok_info.dart';
 import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
+import 'package:gens/src/core/utils/snack_bar.dart';
 import 'package:gens/src/feature/dashboard/model/review_pending_model.dart';
 import 'package:gens/src/feature/doctor_profile/model/doctor_model.dart';
 import 'package:gens/src/feature/doctor_profile/model/service_model.dart';
@@ -329,7 +330,7 @@ class DoctorController extends GetxController {
             'Accept': 'application/json',
           },
         );
-
+        print(response.body);
         if (response.statusCode == StatusCode.ok) {
           final List<dynamic> jsonData = json.decode(response.body);
 
@@ -384,32 +385,37 @@ class DoctorController extends GetxController {
 
   Future<void> postReview(reviewId, status) async {
     if (await networkInfo.isConnected) {
-      try {
-        var body = jsonEncode({
-          "description": messageController.text.trim(),
-          "imgUrl": serviceImage.value,
-          "status": status,
-          "reviewRate": userRating.value.toInt()
-        });
+      if (messageController.text.isEmpty) {
+        showSnackBar(
+            "Please fill the filed", "Error", Colors.black.withOpacity(0.1));
+      } else {
+        try {
+          var body = jsonEncode({
+            "description": messageController.text.trim(),
+            "imgUrl": serviceImage.value,
+            "status": status,
+            "reviewRate": userRating.value.toInt()
+          });
 
-        final response = await http.put(
-            Uri.parse(
-                'https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/Review/$reviewId/user-update'),
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-            body: body);
+          final response = await http.put(
+              Uri.parse(
+                  'https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/Review/$reviewId/user-update'),
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+              },
+              body: body);
 
-        if (response.statusCode == StatusCode.ok) {
-          reviewPinding.clear();
-          serviceImage.value = "";
-          messageController.text = "";
-          await getPendingReview();
-        }
-      } catch (e) {
-        if (kDebugMode) {
-          print(e);
+          if (response.statusCode == StatusCode.ok) {
+            reviewPinding.clear();
+            serviceImage.value = "";
+            messageController.text = "";
+            await getPendingReview();
+          }
+        } catch (e) {
+          if (kDebugMode) {
+            print(e);
+          }
         }
       }
     }

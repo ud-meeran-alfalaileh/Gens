@@ -18,22 +18,6 @@ class ShowUserSkin extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(ShowUserController());
     // final data = controller.question.value;
-    RxBool isDataIncomplete = RxBool([
-      controller.question.value!.skinTypeMorning,
-      controller.question.value!.skinConcerns,
-      controller.question.value!.skinIssue,
-      controller.question.value!.maritalStatus,
-      controller.question.value!.foodConsume,
-      controller.question.value!.issuesFrequentlyExperience,
-      controller.question.value!.waterConsume,
-      controller.question.value!.sleepingHours,
-      controller.question.value!.exerciseRoutine,
-      controller.question.value!.smokingStatus,
-      controller.question.value!.stressLevel,
-      controller.question.value!.mainSkincareGoals,
-      controller.question.value!.acneMedication,
-      controller.question.value!.b12Pills
-    ].any((field) => field == ""));
 
     return Obx(
       () => SingleChildScrollView(
@@ -91,10 +75,111 @@ class ShowUserSkin extends StatelessWidget {
                     'Stress Mange',
                     controller.question.value!.manageStress,
                     "assets/image/stress.png"),
-            30.0.kH,
-            gender == "Female"
-                ? femaleRelatedContainer(context, controller.question.value!)
-                : const SizedBox.shrink(),
+            if (gender == "Female")
+              Column(
+                children: [
+                  skinDetailsContainer(
+                      controller.question.value!,
+                      context,
+                      'Period Type',
+                      controller.question.value!.femalePeriodType == "No"
+                          ? "Irregular"
+                          : "Regular",
+                      'assets/image/female.png'),
+                  skinDetailsContainer(
+                      controller.question.value!,
+                      context,
+                      'Having Period Problem',
+                      controller.question.value!.femaleHormoneRelated,
+                      'assets/image/female.png'),
+                  if (controller.message.text != "")
+                    Container(
+                      width: context.screenHeight,
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              color: AppTheme.lightAppColors.bordercolor),
+                          color: AppTheme.lightAppColors.background,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Column(
+                        children: [
+                          Container(
+                            width: context.screenWidth * .9,
+                            height: context.screenHeight * .2,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: FileImage(
+                                        controller.updatedImage.value!))),
+                          ),
+                          10.0.kH,
+                          SkinText.mainText(
+                              "Product recently used: ${controller.message.text}"),
+                          10.0.kH,
+                        ],
+                      ),
+                    ),
+                  if (controller.imageUrls.isNotEmpty)
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SkinText.mainText("Face Images"),
+                        5.0.kH,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: context.screenHeight * .12,
+                              height: context.screenHeight * .1,
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: NetworkImage(
+                                          controller.imageUrls[0])),
+                                  border: Border.all(
+                                      color:
+                                          AppTheme.lightAppColors.bordercolor),
+                                  color: AppTheme.lightAppColors.background,
+                                  borderRadius: BorderRadius.circular(10)),
+                            ),
+                            Container(
+                              width: context.screenHeight * .12,
+                              height: context.screenHeight * .1,
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: NetworkImage(
+                                          controller.imageUrls[1])),
+                                  border: Border.all(
+                                      color:
+                                          AppTheme.lightAppColors.bordercolor),
+                                  color: AppTheme.lightAppColors.background,
+                                  borderRadius: BorderRadius.circular(10)),
+                            ),
+                            Container(
+                              width: context.screenHeight * .12,
+                              height: context.screenHeight * .1,
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: NetworkImage(
+                                          controller.imageUrls[2])),
+                                  border: Border.all(
+                                      color:
+                                          AppTheme.lightAppColors.bordercolor),
+                                  color: AppTheme.lightAppColors.background,
+                                  borderRadius: BorderRadius.circular(10)),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                ],
+              ),
             150.0.kH,
           ],
         ),
@@ -111,7 +196,6 @@ class ShowUserSkin extends StatelessWidget {
               horizontal: context.screenWidth * .03,
               vertical: context.screenHeight * .03),
           width: context.screenWidth,
-          // height: context.screenHeight * .1,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: AppTheme.lightAppColors.background,
@@ -148,7 +232,6 @@ class ShowUserSkin extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(10),
       width: context.screenWidth,
-      height: context.screenHeight * .09,
       decoration: BoxDecoration(
           color: AppTheme.lightAppColors.background,
           borderRadius: BorderRadius.circular(10)),
@@ -254,7 +337,6 @@ class ShowUserSkin extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(10),
       width: context.screenWidth * .4,
-      height: context.screenHeight * .2,
       decoration: BoxDecoration(
           color: AppTheme.lightAppColors.background,
           borderRadius: BorderRadius.circular(20)),

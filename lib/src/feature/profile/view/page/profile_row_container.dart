@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/feature/profile/controller/profile_controller.dart';
 import 'package:gens/src/feature/profile/view/widget/text/profile_text.dart';
+import 'package:gens/src/feature/question/view/page/question_page.dart';
 import 'package:get/get.dart';
 
 class ProfileContainers extends StatelessWidget {
@@ -34,42 +35,44 @@ class ProfileContainers extends StatelessWidget {
   }
 }
 
-SingleChildScrollView profileContainerRow(ProfileController controller) {
-  return SingleChildScrollView(
-    scrollDirection: Axis.horizontal,
-    child: Obx(
-      () => Row(
-        children: [
-          ProfileContainers(
-            onTap: () {
-              controller.setSelectedIndex(0);
+profileContainerRow(ProfileController controller) {
+  return Obx(
+    () => Row(
+      children: [
+        ProfileContainers(
+          onTap: () {
+            controller.setSelectedIndex(0);
+          },
+          isSelected: controller.selectedIndex.value == 0,
+          title: "Skin Details".tr,
+        ),
+        const Spacer(),
+        IconButton(
+            onPressed: () {
+              Get.to(() => QuestionPage(
+                    gender: controller.userData.value!.gender,
+                  ));
             },
-            isSelected: controller.selectedIndex.value == 0,
-            title: "Skin Details".tr,
-          ),
-          ProfileContainers(
-            onTap: () {
-              controller.setSelectedIndex(1);
-            },
-            isSelected: controller.selectedIndex.value == 1,
-            title: 'Profile Details'.tr,
-          ),
-          ProfileContainers(
-            onTap: () {
-              controller.setSelectedIndex(2);
-            },
-            isSelected: controller.selectedIndex.value == 2,
-            title: 'Favourit'.tr,
-          ),
-          ProfileContainers(
-            onTap: () {
-              controller.logout();
-            },
-            isSelected: controller.selectedIndex.value == 3,
-            title: 'logout'.tr,
-          ),
-        ],
-      ),
+            icon: Icon(
+              Icons.edit_note_outlined,
+              color: AppTheme.lightAppColors.primary,
+              size: 30,
+            )),
+        // ProfileContainers(
+        //   onTap: () {
+        //     controller.setSelectedIndex(1);
+        //   },
+        //   isSelected: controller.selectedIndex.value == 1,
+        //   title: 'Profile Details'.tr,
+        // ),
+        // ProfileContainers(
+        //   onTap: () {
+        //     controller.logout();
+        //   },
+        //   isSelected: controller.selectedIndex.value == 3,
+        //   title: 'logout'.tr,
+        // ),
+      ],
     ),
   );
 }

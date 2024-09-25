@@ -6,6 +6,7 @@ import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/core/utils/loading_page.dart';
 import 'package:gens/src/feature/doctor_profile/model/doctor_model.dart';
+import 'package:gens/src/feature/profile/view/widget/collection/vendor_profile_row.dart';
 import 'package:gens/src/feature/vendor_history/view/page/vendor_history_page.dart';
 import 'package:gens/src/feature/vendor_profile/controller/vendor_profile_controller.dart';
 import 'package:gens/src/feature/vendor_profile/view/widget/main_widget/vendor_pationt.dart';
@@ -51,69 +52,32 @@ class _VendorProfileWidgetState extends State<VendorProfileWidget> {
                 child: Obx(
                   () => controller.isLoading.value
                       ? loadingPage(context)
-                      : Column(
-                          children: [
-                            SizedBox(
-                                height: context.screenHeight * .35,
-                                child: vendorHeader(context, user)),
-                            20.0.kH,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                vendorProfileContainer(
-                                    context,
-                                    'assets/image/information.png',
-                                    "Information", () {
-                                  Get.to(() => const VendorUpdateProfile());
+                      : SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              SizedBox(child: vendorHeader(context, user)),
+                              profileContainerRow(controller),
+                              Container(
+                                color: const Color(0xfff5f5f5),
+                                width: context.screenWidth,
+                                height: context.screenHeight,
+                                child: Obx(() {
+                                  switch (controller.selectedIndex.value) {
+                                    case 0:
+                                      return const VendorUpdateProfile();
+                                    case 1:
+                                      return const SizedBox(
+                                          height: 20, child: VendorPationt());
+
+                                    default:
+                                      return Container();
+                                  }
                                 }),
-                                vendorProfileContainer(context,
-                                    'assets/image/people.png', "Patients", () {
-                                  Get.to(() => const VendorPationt());
-                                }),
-                              ],
-                            ),
-                            20.0.kH,
-                            Container(
-                              padding: const EdgeInsets.all(18),
-                              width: context.screenWidth * .9,
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: AppTheme.lightAppColors.maincolor),
-                                  borderRadius: BorderRadius.circular(20)),
-                              child: Column(
-                                children: [
-                                  20.0.kW,
-                                  VendorProfileText.timeText(user.workingTime),
-                                  10.0.kH,
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
-                                    child: VendorProfileText.thirdText(
-                                        user.description),
-                                  ),
-                                ],
                               ),
-                            ),
-                            20.0.kH,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                vendorProfileContainer(
-                                    context,
-                                    'assets/image/back-in-time.png',
-                                    "History", () {
-                                  Get.to(() => const VendorHistoryPage());
-                                }),
-                                vendorProfileContainer(
-                                    context,
-                                    'assets/image/back-in-time.png',
-                                    "Working Hours", () {
-                                  Get.to(() => const VendorHistoryPage());
-                                }),
-                              ],
-                            ),
-                            100.0.kH,
-                          ],
+                              20.0.kH,
+                              100.0.kH,
+                            ],
+                          ),
                         ),
                 ),
               ),
@@ -141,26 +105,18 @@ class _VendorProfileWidgetState extends State<VendorProfileWidget> {
                   ),
                 ))
             : const Center(child: Text("No images available")),
-        Align(
-          alignment: Alignment.topRight,
-          child: IconButton(
-              onPressed: () {
-                controller.logout();
-              },
-              icon: Icon(
-                Icons.login_outlined,
-                color: AppTheme.lightAppColors.primary,
-              )),
-        ),
-        // Page Indicator (Dots)
 
-        // Bottom overlay with vendor info and rating
-        Align(
-          alignment: Alignment.bottomCenter,
+        Container(
+          width: context.screenWidth,
+          height: context.screenHeight * .3,
+          color: AppTheme.lightAppColors.black.withOpacity(0.3),
+        ),
+
+        Padding(
+          padding: const EdgeInsets.only(top: 70.0, left: 35, right: 35),
           child: Container(
             padding: const EdgeInsets.all(10),
             width: context.screenWidth * .8,
-            height: context.screenHeight * .1,
             decoration: BoxDecoration(
               boxShadow: [
                 BoxShadow(
@@ -173,24 +129,75 @@ class _VendorProfileWidgetState extends State<VendorProfileWidget> {
               borderRadius: BorderRadius.circular(15),
               color: AppTheme.lightAppColors.background,
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                VendorProfileText.mainText(user.name),
-                const Spacer(),
-                SvgPicture.asset(
-                  "assets/image/ratingStar.svg",
-                  height: 16,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    VendorProfileText.mainText(user.name),
+                    const Spacer(),
+                    SvgPicture.asset(
+                      "assets/image/ratingStar.svg",
+                      height: 16,
+                    ),
+                    const SizedBox(width: 5),
+                    VendorProfileText.ratingText(
+                        storyShortenText(user.avgRating.toString())),
+                  ],
                 ),
-                const SizedBox(width: 5),
-                VendorProfileText.ratingText(
-                    storyShortenText(user.avgRating.toString())),
+                const Divider(),
+                VendorProfileText.thirdText(user.type),
+                VendorProfileText.thirdText(user.phone),
+                VendorProfileText.thirdText(user.location),
               ],
             ),
           ),
         ),
       ],
+    );
+  }
+
+  profileContainerRow(VendorProfileController controller) {
+    return Obx(
+      () => SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            VendorProfileRow(
+              onTap: () {
+                controller.setSelectedIndex(0);
+              },
+              isSelected: controller.selectedIndex.value == 0,
+              title: "Profile Details".tr,
+            ),
+            VendorProfileRow(
+              onTap: () {
+                controller.setSelectedIndex(1);
+              },
+              isSelected: controller.selectedIndex.value == 1,
+              title: 'Pationt Details'.tr,
+            ),
+            VendorProfileRow(
+              onTap: () {
+                Get.to(const VendorHistoryPage(),
+                    transition: Transition.downToUp);
+              },
+              isSelected: controller.selectedIndex.value == 2,
+              title: 'History'.tr,
+            ),
+            VendorProfileRow(
+              onTap: () {
+                controller.logout();
+              },
+              isSelected: controller.selectedIndex.value == 3,
+              title: 'logout'.tr,
+            ),
+          ],
+        ),
+      ),
     );
   }
 

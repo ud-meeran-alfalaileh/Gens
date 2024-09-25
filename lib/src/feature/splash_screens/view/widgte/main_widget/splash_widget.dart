@@ -95,7 +95,10 @@ class _SplashWidgetState extends State<SplashWidget> {
           ],
         ),
         GestureDetector(
-          onTap: () => Get.to(() => const NavBarPage()),
+          onTap: () => {
+            Get.to(() => const NavBarPage()),
+            controller.completeOnboarding()
+          },
           child: SplashText.secText("Skip"),
         )
       ],

@@ -105,7 +105,7 @@ class DoctorModelById {
       vendorId: json['vendorId'],
       name: json['name'] ?? '',
       type: json['type'] ?? '',
-      phone: json['phone'] ?? '',
+      phone: json['vendorPhone'] ?? '',
       location: json['location'] ?? '',
       pastBookings: json['pastBookings'] ?? 0,
       avgRating: json['avgRating'].toDouble(),

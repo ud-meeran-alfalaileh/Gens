@@ -84,54 +84,51 @@ Container calendarContainer(BookingController controller, vendorId) {
 }
 
 hourContainer(BuildContext context, BookingController controller) {
-  return Expanded(
-    child: AlignedGridView.count(
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 3,
-      shrinkWrap: true,
-      itemCount: controller.workingHors.length,
-      itemBuilder: (context, index) {
-        return Obx(
-          () => GestureDetector(
-            onTap: () {
-              controller.hourSelected.value = controller
-                  .workingHors[index]; // Format the time with seconds set to 00
-            },
-            child: Container(
-              height: 50,
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: AppTheme.lightAppColors.black.withOpacity(0.1),
-                    spreadRadius: 1.5,
-                    blurRadius: 10,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
-                color: controller.hourSelected.value ==
-                        controller.workingHors[index]
-                    ? AppTheme.lightAppColors.primary
-                    : AppTheme.lightAppColors.background,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Center(
-                child: Text(
-                  controller.workingHors[index], // Display time as HH:mm:00
-                  style: TextStyle(
-                      color: controller.hourSelected.value ==
-                              controller.workingHors[index]
-                          ? AppTheme.lightAppColors.maincolor
-                          : AppTheme.lightAppColors.primary,
-                      fontSize: 15),
+  return AlignedGridView.count(
+    physics: const NeverScrollableScrollPhysics(),
+    crossAxisCount: 3,
+    shrinkWrap: true,
+    itemCount: controller.workingHors.length,
+    itemBuilder: (context, index) {
+      return Obx(
+        () => GestureDetector(
+          onTap: () {
+            controller.hourSelected.value = controller
+                .workingHors[index]; // Format the time with seconds set to 00
+          },
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: AppTheme.lightAppColors.black.withOpacity(0.1),
+                  spreadRadius: 1.5,
+                  blurRadius: 10,
+                  offset: const Offset(0, 1),
                 ),
+              ],
+              color:
+                  controller.hourSelected.value == controller.workingHors[index]
+                      ? AppTheme.lightAppColors.primary
+                      : AppTheme.lightAppColors.background,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Center(
+              child: Text(
+                controller.workingHors[index], // Display time as HH:mm:00
+                style: TextStyle(
+                    color: controller.hourSelected.value ==
+                            controller.workingHors[index]
+                        ? AppTheme.lightAppColors.maincolor
+                        : AppTheme.lightAppColors.primary,
+                    fontSize: 15),
               ),
             ),
           ),
-        );
-      },
-      mainAxisSpacing: 8.0,
-      crossAxisSpacing: 8.0,
-    ),
+        ),
+      );
+    },
+    mainAxisSpacing: 8.0,
+    crossAxisSpacing: 8.0,
   );
 }

@@ -35,6 +35,7 @@ class AddProductWidget extends StatelessWidget {
                             ),
                             onPressed: () {
                               Get.back();
+                              controller.getProduct();
                             },
                           ),
                         ],

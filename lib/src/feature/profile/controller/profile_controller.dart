@@ -215,22 +215,16 @@ class ProfileController extends GetxController {
   Future<void> pickImages(context) async {
     isLoadingImg.value = true;
     try {
-      PermissionStatus status = await Permission.storage.request();
+      final pickedFile =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        File image = File(pickedFile.path);
+        isUpdating.value = true;
 
-      if (status.isGranted) {
-        final pickedFile =
-            await ImagePicker().pickImage(source: ImageSource.gallery);
-        if (pickedFile != null) {
-          File image = File(pickedFile.path);
-          isUpdating.value = true;
+        await uploadImageToFirebase(image, context);
 
-          await uploadImageToFirebase(image, context);
-
-          Get.back();
-          isUpdating.value = false;
-        }
-      } else if (status.isDenied || status.isPermanentlyDenied) {
-        openAppSettings();
+        Get.back();
+        isUpdating.value = false;
       }
     } catch (e) {
       if (Get.isDialogOpen ?? false) {
@@ -336,11 +330,11 @@ class ProfileController extends GetxController {
     Get.off(() => const LoginPage());
   }
 
-  RxBool isFirstDataIncomplete = false.obs;
-  RxBool isSecDataIncomplete = false.obs;
-  RxBool isThirdDataIncomplete = false.obs;
-  RxBool isFourthDataIncomplete = false.obs;
-  RxBool isFifthDataIncomplete = false.obs;
+  late RxBool isFirstDataIncomplete = false.obs;
+  late RxBool isSecDataIncomplete = false.obs;
+  late RxBool isThirdDataIncomplete = false.obs;
+  late RxBool isFourthDataIncomplete = false.obs;
+  late RxBool isFifthDataIncomplete = false.obs;
   Future<void> getQuestionDetails() async {
     if (await networkInfo.isConnected) {
       isLoading.value = true;
@@ -356,22 +350,19 @@ class ProfileController extends GetxController {
         if (response.statusCode == StatusCode.ok) {
           final data = jsonDecode(response.body);
           question.value = SkinCareModel.fromJson(data);
-          isFirstDataIncomplete = ((question.value == null) ||
-                  question.value!.skinTypeMorning.isEmpty ||
-                  question.value!.skinConcerns == "" ||
-                  question.value!.skinIssue == "")
-              .obs;
-          isSecDataIncomplete = ((question.value == null) ||
-                  question.value!.maritalStatus.isEmpty ||
-                  question.value!.foodConsume.isEmpty ||
-                  question.value!.issuesFrequentlyExperience.isEmpty)
-              .obs;
-          isThirdDataIncomplete = ((question.value == null) ||
-                  question.value!.waterConsume == "" ||
-                  question.value!.exerciseRoutine == "" ||
-                  question.value!.stressLevel == "" ||
-                  question.value!.manageStress == "")
-              .obs;
+          isFirstDataIncomplete.value = ((question.value == null) ||
+              question.value!.skinTypeMorning.isEmpty ||
+              question.value!.skinConcerns == "" ||
+              question.value!.skinIssue == "");
+          isSecDataIncomplete.value = ((question.value == null) ||
+              question.value!.maritalStatus.isEmpty ||
+              question.value!.foodConsume.isEmpty ||
+              question.value!.issuesFrequentlyExperience.isEmpty);
+          isThirdDataIncomplete.value = ((question.value == null) ||
+              question.value!.waterConsume == "" ||
+              question.value!.exerciseRoutine == "" ||
+              question.value!.stressLevel == "" ||
+              question.value!.manageStress == "");
           isFourthDataIncomplete = ((question.value == null) ||
                   question.value!.mainSkincareGoals == "")
               .obs;

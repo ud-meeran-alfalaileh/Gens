@@ -30,6 +30,8 @@ class VendorProfileController extends GetxController {
   final description = TextEditingController();
   final phone = TextEditingController();
   final location = TextEditingController();
+  RxInt selectedIndex = 0.obs;
+
   final image = TextEditingController();
   Rx<DoctorModelById> vendor = DoctorModelById(
           vendorId: 1,
@@ -63,6 +65,10 @@ class VendorProfileController extends GetxController {
     await getVendorsById();
 
     super.onInit();
+  }
+
+  void setSelectedIndex(int index) {
+    selectedIndex.value = index;
   }
 
   Future<void> getVendorsById() async {
@@ -143,7 +149,7 @@ class VendorProfileController extends GetxController {
         "name": name.text.trim(),
         "address": location.text.trim(),
         "description": description.text.trim(),
-        "phone": "string"
+        "phone": "962791368189"
       });
       try {
         final response = await http.put(
@@ -160,7 +166,7 @@ class VendorProfileController extends GetxController {
         if (response.statusCode == StatusCode.ok) {
           isLoading.value = false;
           showSnackBar("Success", "Data Updated Successfully", Colors.green);
-          getVendorsById();
+          // getVendorsById();
         } else {}
       } catch (e) {
         isLoading.value = false;

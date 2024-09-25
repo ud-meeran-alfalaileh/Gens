@@ -23,30 +23,10 @@ class _VendorPationtState extends State<VendorPationt> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.lightAppColors.background,
-      body: SafeArea(
-          child: Padding(
+      body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            Row(
-              children: [
-                IconButton(
-                    onPressed: () {
-                      Get.back();
-                    },
-                    icon: Icon(
-                      Icons.arrow_back_ios_new_outlined,
-                      color: AppTheme.lightAppColors.black,
-                    )),
-                SizedBox(
-                  width: context.screenWidth * .67,
-                  child: Center(
-                    child: ProfileText.mainText("Patients"),
-                  ),
-                ),
-              ],
-            ),
-            20.0.kH,
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -69,28 +49,34 @@ class _VendorPationtState extends State<VendorPationt> {
             Row(
               children: [
                 ProfileText.mainText("Reviews"),
+                const Spacer(),
+                GestureDetector(
+                  onTap: () {
+                    _showReviewsBottomSheet(context);
+                  },
+                  child: ProfileText.secText("See all"),
+                )
               ],
             ),
             10.0.kH,
-            Expanded(
-              child: ListView.separated(
-                itemBuilder: (context, index) {
-                  return _builderReviewContainer(
-                      index); // Reuse the existing review builder
-                },
-                separatorBuilder: (context, index) {
-                  return Divider(
-                    color: AppTheme.lightAppColors.primary.withOpacity(0.3),
-                    height: 3,
-                  );
-                },
-                itemCount: controller
-                    .vendor.value.reviews.length, // Display all reviews
-              ),
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                return _builderReviewContainer(
+                    index); // Reuse the existing review builder
+              },
+              separatorBuilder: (context, index) {
+                return Divider(
+                  color: AppTheme.lightAppColors.primary.withOpacity(0.3),
+                  height: 3,
+                );
+              },
+              itemCount: 4, // Display all reviews
             ),
           ],
         ),
-      )),
+      ),
     );
   }
 
@@ -176,6 +162,55 @@ class _VendorPationtState extends State<VendorPationt> {
                 )
         ],
       ),
+    );
+  }
+
+  void _showReviewsBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: AppTheme.lightAppColors.background,
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.7, // Height of the sheet (70% of screen height)
+          minChildSize: 0.4, // Minimum height when dragged down
+          maxChildSize: 1.0, // Maximum height when dragged up
+          builder: (BuildContext context, ScrollController scrollController) {
+            return Container(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  const Text(
+                    "All Reviews",
+                    // style: Theme.of(context).textTheme.headline6,
+                  ),
+                  10.0.kH,
+                  Expanded(
+                    child: ListView.separated(
+                      controller:
+                          scrollController, // Ensure the list scrolls inside the bottom sheet
+                      itemBuilder: (context, index) {
+                        return _builderReviewContainer(
+                            index); // Reuse the existing review builder
+                      },
+                      separatorBuilder: (context, index) {
+                        return Divider(
+                          color:
+                              AppTheme.lightAppColors.primary.withOpacity(0.3),
+                          height: 3,
+                        );
+                      },
+                      itemCount: controller
+                          .vendor.value.reviews.length, // Display all reviews
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 

@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:gens/src/core/api/end_points.dart';
 import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/feature/profile/model/question_model.dart';
@@ -11,7 +13,9 @@ import 'package:http/http.dart' as http;
 class ShowUserController extends GetxController {
   RxBool isLoading = false.obs;
   Rx<SkinCareModel?> question = Rx<SkinCareModel?>(null);
-
+  var updatedImage = Rx<File?>(null);
+  RxList<String> imageUrls = List<String>.filled(3, '').obs;
+  var message = TextEditingController();
   Rx<UserModel?> userData = UserModel(
           userId: 0,
           dateOfBirth: "password",
@@ -65,6 +69,46 @@ class ShowUserController extends GetxController {
     }
   }
 
+  Future<void> getProduct(userId) async {
+    isLoading.value = true;
+    final response = await http.get(
+      Uri.parse(
+          'https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/Questionnaire/get-product-details/$userId'), // Replace with your API URL
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    );
+    print(response.body);
+    if (response.statusCode == StatusCode.ok) {
+      var data = jsonDecode(response.body);
+      isLoading.value = true;
+
+      if (data != null) {
+        message.text = data['productDescription'] ?? '';
+
+        // Update the image field (this assumes the image URL is in the response)
+        if (data['productImage'] != null && data['productImage'].isNotEmpty) {
+          updatedImage.value = await downloadImage(data['productImage']);
+        } else {}
+        isLoading.value = false;
+      }
+    } else {
+      // Handle error
+      print('Failed to get product: ${response.statusCode}');
+    }
+  }
+
+  Future<File> downloadImage(String imageUrl) async {
+    final response = await http.get(Uri.parse(imageUrl));
+    final bytes = response.bodyBytes;
+    final tempDir = Directory.systemTemp;
+    final file =
+        File('${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg');
+    await file.writeAsBytes(bytes);
+    return file;
+  }
+
   Future<void> getQuestionDetails(id) async {
     isLoading.value = true;
     try {
@@ -88,6 +132,41 @@ class ShowUserController extends GetxController {
       isLoading.value = F;
     } catch (e) {
       print(e);
+    }
+  }
+
+  RxBool isImageDataIncomplere = false.obs;
+
+  Future<void> getUserthreeImage(userId) async {
+    String apiUrl =
+        'https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/UserImages/$userId';
+    try {
+      isLoading.value = true;
+      final response = await http.get(
+        Uri.parse(apiUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      );
+      print(response.body);
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+
+        // Update imageUrls with the URLs from the response
+        imageUrls[0] = responseData['userImage1'] ?? '';
+        imageUrls[1] = responseData['userImage2'] ?? '';
+        imageUrls[2] = responseData['userImage3'] ?? '';
+        isImageDataIncomplere.value = imageUrls[0].isEmpty ? true : false;
+        isLoading.value = false;
+      } else {
+        print('The image is empty');
+        isLoading.value = false;
+        isImageDataIncomplere.value = true;
+      }
+    } catch (e) {
+      print(e);
+      isLoading.value = false;
     }
   }
 }

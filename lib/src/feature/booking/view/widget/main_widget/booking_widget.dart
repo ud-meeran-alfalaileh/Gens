@@ -96,7 +96,6 @@ class BookingWidget extends StatelessWidget {
                                         Image.asset(
                                           "assets/image/no.png",
                                           width: context.screenWidth * .2,
-                                          height: context.screenHeight * .1,
                                         ),
                                         20.0.kW,
                                         ServicesText.secText(

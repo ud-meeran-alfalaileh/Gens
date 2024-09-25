@@ -82,6 +82,8 @@ class AddImageUserController extends GetxController {
     }
   }
 
+  RxBool isImageDataIncomplere = false.obs;
+
   // Send image URLs to the new API
   Future<void> sendImagesToApi(int userId, List<String> imageUrls) async {
     const String apiUrl =
@@ -138,11 +140,12 @@ class AddImageUserController extends GetxController {
         imageUrls[0] = responseData['userImage1'] ?? '';
         imageUrls[1] = responseData['userImage2'] ?? '';
         imageUrls[2] = responseData['userImage3'] ?? '';
-
+        isImageDataIncomplere.value = imageUrls[0].isEmpty ? true : false;
         isLoading.value = false;
       } else {
         print('The image is empty');
         isLoading.value = false;
+        isImageDataIncomplere.value = true;
       }
     } catch (e) {
       print(e);

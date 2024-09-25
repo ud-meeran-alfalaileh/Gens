@@ -97,9 +97,7 @@ class ForgetPasswordController extends GetxController {
           jsonEncode({"email": nEmail.value, "password": password.text.trim()});
       print(body);
       print(nEmail.value);
-      final response = await http.post(
-          Uri.parse(
-              'https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/reset-password'),
+      final response = await http.post(Uri.parse(EndPoints.resetPassword),
           headers: {
             'Content-Type':
                 'application/json', // This should match the API's expected content type

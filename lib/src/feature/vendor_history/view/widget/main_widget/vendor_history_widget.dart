@@ -85,7 +85,6 @@ class VendorHistoryWidget extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         margin: const EdgeInsets.symmetric(horizontal: 20),
         width: context.screenWidth,
-        height: context.screenHeight * .2,
         decoration: BoxDecoration(
             border: Border.all(color: AppTheme.lightAppColors.maincolor),
             borderRadius: BorderRadius.circular(20),

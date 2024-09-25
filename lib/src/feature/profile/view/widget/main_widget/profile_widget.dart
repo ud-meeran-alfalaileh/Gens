@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gens/src/config/sizes/short_text.dart';
 import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
@@ -30,7 +31,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   User user = User();
   @override
   void initState() {
-    initalState(context);
+    // initalState(context);
     super.initState();
   }
 
@@ -57,23 +58,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              Get.to(() => const FavPage());
-                            },
-                            child: Image.asset(
-                              "assets/image/lover.png",
-                              height: 25,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
+                    10.0.kH,
+                    _buildHeaderButton(),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20.0, vertical: 10),
@@ -108,30 +94,33 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                             ),
                           ),
                           20.0.kW,
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ProfileText.mainText(
-                                  "${controller.userData.value?.fName} ${controller.userData.value?.secName}"),
-                              5.0.kH,
-                              ProfileText.secText(
-                                  "+962${controller.removeLeadingZero(controller.userData.value!.phone)}"),
-                              5.0.kH,
-                              ProfileText.secText(
-                                  "Age : ${controller.dateOfBirth.text}"),
-                              SingleChildScrollView(
-                                child: Column(
-                                  children: [
-                                    SizedBox(
-                                      width: context.screenWidth * .46,
-                                      child: ProfileText.secText(
-                                          "Skin goals : ${controller.question.value?.mainSkincareGoals}"),
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
+                          SizedBox(
+                            width: context.screenWidth * .46,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ProfileText.mainText(nameShortText(
+                                    "${controller.userData.value?.fName} ${controller.userData.value?.secName}")),
+                                5.0.kH,
+                                ProfileText.secText(
+                                    "+962${controller.removeLeadingZero(controller.userData.value!.phone)}"),
+                                5.0.kH,
+                                ProfileText.secText(
+                                    "Age : ${controller.dateOfBirth.text}"),
+                                SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        width: context.screenWidth * .46,
+                                        child: ProfileText.secText(
+                                            "Skin goals : ${controller.question.value?.mainSkincareGoals}"),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -147,10 +136,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                             return SkinDetailsPage(
                               gender: controller.userData.value!.gender,
                             );
-                          case 1:
-                            return const UpdateProfile();
-                          case 2:
-                            return const Scaffold();
 
                           default:
                             return Container();
@@ -162,6 +147,46 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               ),
             ),
           ));
+  }
+
+  Padding _buildHeaderButton() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          GestureDetector(
+            onTap: () {
+              Get.to(() => const UpdateProfile());
+            },
+            child: Image.asset(
+              "assets/image/settings.png",
+              height: 25,
+            ),
+          ),
+          10.0.kW,
+          GestureDetector(
+            onTap: () {
+              Get.to(() => const FavPage());
+            },
+            child: Image.asset(
+              "assets/image/lover.png",
+              height: 25,
+            ),
+          ),
+          10.0.kW,
+          GestureDetector(
+            onTap: () {
+              controller.logout();
+            },
+            child: Image.asset(
+              "assets/image/out.png",
+              height: 25,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   profileRow(icon, text, VoidCallback onTap) {

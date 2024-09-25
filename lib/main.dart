@@ -6,12 +6,12 @@ import 'package:gens/src/core/api/injection_container.dart' as di;
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/nav_bar/view/main/main_app_page.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await di.init();
-
   runApp(const MyApp());
 }
 
@@ -31,11 +31,33 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> initst() async {
+    await requestPermissions();
+
     // await user.clearId();
     // await user.clearVendorId();
     await user.loadOtp();
+
     await user.loadToken();
     await user.loadVendorId();
+    print(user.userId);
+  }
+
+  Future<void> requestPermissions() async {
+    var status = await Permission.camera.status;
+    if (!status.isGranted) {
+      status = await Permission.camera.request();
+    }
+
+    var storageStatus = await Permission.storage.status;
+    if (!storageStatus.isGranted) {
+      storageStatus = await Permission.storage.request();
+    }
+
+    // Handle permission denied scenario
+    if (status.isDenied || storageStatus.isDenied) {
+      // Handle the case when permission is denied
+      print('Camera or Storage permission denied.');
+    }
   }
 
   @override

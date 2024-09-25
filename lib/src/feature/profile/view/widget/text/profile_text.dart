@@ -32,9 +32,11 @@ class ProfileText {
       style: TextStyle(
         fontFamily: 'Inter',
         fontSize: 14,
-        color: isSelected
-            ? AppTheme.lightAppColors.primary
-            : AppTheme.lightAppColors.subTextcolor.withOpacity(.5),
+        color: title == "Logout"
+            ? Colors.red
+            : isSelected
+                ? AppTheme.lightAppColors.primary
+                : AppTheme.lightAppColors.subTextcolor.withOpacity(.5),
         fontWeight: FontWeight.w500, // Use FontWeight.bold for the bold variant
       ),
     );

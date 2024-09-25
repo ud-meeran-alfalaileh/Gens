@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:gens/src/core/api/end_points.dart';
 import 'package:gens/src/core/api/netwok_info.dart';
 import 'package:gens/src/core/api/status_code.dart';
@@ -9,7 +10,6 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class VendorDashboardController extends GetxController {
   RxBool isLaoding = false.obs;
@@ -73,16 +73,8 @@ class VendorDashboardController extends GetxController {
   }
 
   Future<void> makePhoneCall(String phoneNumber) async {
-    final Uri callUri = Uri(scheme: 'tel', path: '+962791368191');
-    try {
-      if (await canLaunchUrl(callUri)) {
-        await launchUrl(callUri);
-      } else {
-        throw 'Could not launch $phoneNumber';
-      }
-    } catch (e) {
-      print(e);
-    }
+    var number = phoneNumber; //set the number here
+    await FlutterPhoneDirectCaller.callNumber(number);
   }
 
   Future<void> getVendorBoooking(context) async {
@@ -99,8 +91,7 @@ class VendorDashboardController extends GetxController {
             'Accept': 'application/json',
           },
         );
-        print(response.body);
-        print(response.statusCode);
+
         if (response.statusCode == StatusCode.ok) {
           final List<dynamic> jsonData = json.decode(response.body);
 
@@ -135,12 +126,17 @@ class VendorDashboardController extends GetxController {
     }
   }
 
-  Future<void> updateBookingStatus(String status, int serviceId,
-      VendorBooking booking, RxBool statusUpadating) async {
+  Future<void> updateBookingStatus(
+      String status,
+      int serviceId,
+      VendorBooking booking,
+      RxBool statusUpadating,
+      bool removeFromSchulde) async {
     if (await networkInfo.isConnected) {
       try {
         statusUpadating.value = true;
-        var body = jsonEncode(status);
+        var body = jsonEncode(
+            {'removeFromSchulde': removeFromSchulde, 'newStatus': status});
         await Future.delayed(const Duration(milliseconds: 600));
         final response = await http.post(
           Uri.parse("${EndPoints.postBooking}/$serviceId/status"),

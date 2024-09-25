@@ -44,7 +44,7 @@ class SkinDetailsPage extends StatelessWidget {
           controller.question.value?.mainSkincareGoals ?? "",
           controller.question.value?.acneMedication ?? "",
           controller.question.value?.b12Pills ?? "",
-        ].any((field) => field == ""));
+        ].every((field) => field == ""));
 
     return Container(
       color: const Color(0xfff5f5f5),
@@ -60,21 +60,6 @@ class SkinDetailsPage extends StatelessWidget {
                 if (isDataIncomplete.isTrue ||
                     controller.question.value == null)
                   questionButton(context, gender),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    IconButton(
-                        onPressed: () {
-                          Get.to(() => QuestionPage(
-                                gender: controller.userData.value!.gender,
-                              ));
-                        },
-                        icon: Icon(
-                          Icons.edit_note_outlined,
-                          color: AppTheme.lightAppColors.primary,
-                        ))
-                  ],
-                ),
                 if (controller.question.value != null) ...[
                   if (controller.question.value!.skinTypeMorning != "")
                     skinDetailsContainer(
@@ -410,7 +395,6 @@ class SkinDetailsPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(10),
       width: context.screenWidth * .4,
-      height: context.screenHeight * .2,
       decoration: BoxDecoration(
           color: AppTheme.lightAppColors.background,
           borderRadius: BorderRadius.circular(20)),

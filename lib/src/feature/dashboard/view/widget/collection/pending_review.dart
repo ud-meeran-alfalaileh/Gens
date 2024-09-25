@@ -16,10 +16,16 @@ Container reviewContainer(BuildContext context) {
     width: context.screenWidth,
     height: context.screenHeight,
     color: AppTheme.lightAppColors.black.withOpacity(0.2),
-    child: Center(
-        child: doctorController.reviewPinding.first.reviewStatus == 'Pending'
-            ? pendingReviewContainer(context, doctorController)
-            : absentReviewContainer(context, doctorController)),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Center(
+            child:
+                doctorController.reviewPinding.first.reviewStatus == 'Pending'
+                    ? pendingReviewContainer(context, doctorController)
+                    : absentReviewContainer(context, doctorController)),
+      ],
+    ),
   );
 }
 
@@ -30,13 +36,13 @@ Container pendingReviewContainer(
   return Container(
     padding: const EdgeInsets.all(20),
     width: context.screenWidth * .8,
-    height: context.screenHeight * .5,
     decoration: BoxDecoration(
       color: AppTheme.lightAppColors.background,
       borderRadius: BorderRadius.circular(20),
     ),
     child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // Displaying the service name and details
         DashboardText.reviewText(
@@ -44,9 +50,16 @@ Container pendingReviewContainer(
         ),
         10.0.kH,
         Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            DashboardText.reviewSecText('On'),
+            DashboardText.reviewSecText('On '),
             DashboardText.reviewThText('${review.bookedDate} '),
+          ],
+        ),
+        10.0.kH,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
             DashboardText.reviewSecText(' at '),
             DashboardText.reviewThText(review.bookedTime)
           ],
@@ -60,7 +73,8 @@ Container pendingReviewContainer(
             direction: Axis.horizontal,
             allowHalfRating: true,
             itemCount: 5,
-            itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+            itemPadding:
+                EdgeInsets.symmetric(horizontal: context.screenWidth * .002),
             itemBuilder: (context, _) => const Icon(
               Icons.star,
               color: Colors.amber,
@@ -123,7 +137,7 @@ Container pendingReviewContainer(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             SizedBox(
-              width: context.screenWidth * .32,
+              width: context.screenWidth * .25,
               child: AppButton(
                 onTap: () {
                   doctorController.postReview(review.reviewId, 'Done');
@@ -132,14 +146,14 @@ Container pendingReviewContainer(
               ),
             ),
             SizedBox(
-              width: context.screenWidth * .32,
+              width: context.screenWidth * .25,
               child: AppButton(
                 onTap: () {
                   doctorController.reviewPinding.clear();
                   doctorController.serviceImage.value = "";
                   doctorController.messageController.text = "";
                 },
-                title: 'Submit later',
+                title: 'later',
               ),
             ),
           ],
@@ -156,9 +170,6 @@ Container absentReviewContainer(
   return Container(
     padding: const EdgeInsets.all(20),
     width: context.screenWidth * .8,
-    height: doctorController.isAbsent.value
-        ? context.screenHeight * .45
-        : context.screenHeight * .25,
     decoration: BoxDecoration(
       color: AppTheme.lightAppColors.background,
       borderRadius: BorderRadius.circular(20),
@@ -172,9 +183,15 @@ Container absentReviewContainer(
         ),
         10.0.kH,
         Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             DashboardText.reviewSecText('On '),
             DashboardText.reviewThText('${review.bookedDate} '),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
             DashboardText.reviewSecText(' at '),
             DashboardText.reviewThText(review.bookedTime)
           ],
@@ -191,12 +208,8 @@ Container absentReviewContainer(
                     width: context.screenWidth * .32,
                     child: AppButton(
                       onTap: () {
-                        if (doctorController.messageController.text.isEmpty ||
-                            doctorController.serviceImage.value == '') {
-                          null;
-                        } else {
-                          doctorController.postReview(review.reviewId, 'Done');
-                        }
+                        // doctorController.isAbsent.value = true;
+                        doctorController.postReview(review.reviewId, 'Pending');
                       },
                       title: 'Yes',
                     ),

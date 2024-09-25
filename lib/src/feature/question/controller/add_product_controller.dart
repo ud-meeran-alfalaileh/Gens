@@ -83,6 +83,7 @@ class AddProductController extends GetxController {
     }
   }
 
+  RxBool isProductIncomplete = false.obs;
   Future<void> getProduct() async {
     isLoading.value = true;
     final response = await http.get(
@@ -106,12 +107,15 @@ class AddProductController extends GetxController {
         // Update the image field (this assumes the image URL is in the response)
         if (data['productImage'] != null && data['productImage'].isNotEmpty) {
           updatedImage.value = await downloadImage(data['productImage']);
+        } else {
+          isProductIncomplete.value = true;
         }
         isLoading.value = false;
       }
     } else {
       // Handle error
-      print('Failed to get product: ${response.statusCode}');
+      message.text = "";
+      isLoading.value = false;
     }
   }
 

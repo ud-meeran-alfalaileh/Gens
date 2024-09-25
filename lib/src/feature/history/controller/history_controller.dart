@@ -51,7 +51,7 @@ class HistoryController extends GetxController {
             'Accept': 'application/json',
           },
         );
-
+        print(response.body);
         if (response.statusCode == StatusCode.ok) {
           final List<dynamic> jsonData = json.decode(response.body);
 
@@ -65,6 +65,7 @@ class HistoryController extends GetxController {
           isLaoding.value = false;
         }
       } catch (e) {
+        print(e);
         Get.snackbar(
           "Error Accure While Booking",
           "Try again later",
