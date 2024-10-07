@@ -7,6 +7,8 @@ import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 Container calendarContainer(BookingController controller, vendorId) {
+  DateTime now = DateTime.now();
+  DateTime twoMonthsLater = DateTime(now.year, now.month + 2, now.day);
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
     decoration: BoxDecoration(
@@ -21,8 +23,8 @@ Container calendarContainer(BookingController controller, vendorId) {
         color: AppTheme.lightAppColors.maincolor,
         borderRadius: BorderRadius.circular(30)),
     child: TableCalendar(
-      firstDay: DateTime.now(),
-      lastDay: DateTime.utc(2030, 12, 31),
+      firstDay: now, // Start date: now
+      lastDay: twoMonthsLater,
       focusedDay: controller.focusedDay.value,
       calendarFormat: controller.calendarFormat,
       selectedDayPredicate: (day) {

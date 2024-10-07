@@ -162,7 +162,7 @@ class _FourthQuestionPageViewState extends State<FourthQuestionPageView> {
             child: AppButton(
               onTap: () {
                 // controller.debugPrintAnswers();
-                Get.to(() => const FourthDiaplayPage());
+                Get.to(() => const FourthDisplayPage());
               },
               title: 'Finish',
             ),

@@ -1,5 +1,4 @@
-import 'dart:developer';
-
+ 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:gens/src/core/user.dart';
@@ -10,7 +9,7 @@ class AppIntercepters extends Interceptor {
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
     options.headers['Accept'] = 'application/json';
-    log("TOKEN: ${options.headers['Authorization']}");
+    options.headers['Content-Type'] = 'application/json';
     return handler.next(options);
   }
 

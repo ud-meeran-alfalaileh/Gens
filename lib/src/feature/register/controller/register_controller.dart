@@ -12,7 +12,6 @@ import 'package:gens/src/feature/login/view/pages/login_page.dart';
 import 'package:gens/src/feature/nav_bar/view/main/main_app_page.dart';
 import 'package:gens/src/feature/register/model/country_model.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -194,17 +193,11 @@ class RegisterController extends GetxController {
         "locked": true,
         "userImage": ""
       });
-      final response = await http.post(Uri.parse(EndPoints.signup),
-          headers: {
-            'Content-Type':
-                'application/json', // This should match the API's expected content type
-            'Accept': 'application/json',
-          },
-          body: body);
+      final response = await dioConsumer.post(EndPoints.signup, body: body);
       try {
         if (response.statusCode == StatusCode.ok ||
             response.statusCode == StatusCode.created) {
-          final jsonData = json.decode(response.body);
+          final jsonData = json.decode(response.data);
           final token = jsonData['userId'];
           await user.saveId(token);
           user.userId.value = token;
@@ -220,7 +213,7 @@ class RegisterController extends GetxController {
           phoneNumber.clear();
           password.clear();
         } else {
-          final jsonData = json.decode(response.body);
+          final jsonData = json.decode(response.data);
 
           showTopSnackBar(
             Overlay.of(context),
@@ -257,16 +250,9 @@ class RegisterController extends GetxController {
       "subject": "Access code",
       "message": "otp"
     });
-    final response = await http.post(Uri.parse(EndPoints.senMessage),
-        headers: {
-          'Content-Type':
-              'application/json', // This should match the API's expected content type
-          'Accept': 'application/json',
-        },
-        body: body);
-    print(response.body);
+    final response = await dioConsumer.post(EndPoints.senMessage, body: body);
     if (response.statusCode == StatusCode.ok) {
-      final jsonData = json.decode(response.body);
+      final jsonData = json.decode(response.data);
       final otpId = jsonData['randomNumber'];
       await user.saveOtp(otpId.toString());
       await user.loadOtp();

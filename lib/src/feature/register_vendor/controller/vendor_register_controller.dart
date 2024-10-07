@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:gens/src/config/theme/theme.dart';
@@ -12,9 +13,9 @@ import 'package:gens/src/feature/register_vendor/model/schaduale_model.dart';
 import 'package:gens/src/feature/register_vendor/model/vendor_register_model.dart';
 import 'package:gens/src/feature/register_vendor/view/widget/collection/register_page_four.dart';
 import 'package:gens/src/feature/register_vendor/view/widget/main_widget/otp_vendor_widget.dart';
+import 'package:gens/src/feature/show_user/controller/show_user_controller.dart';
 import 'package:gens/src/feature/vendor_navbar.dart/view/widget/main_widget/vendor_navbar_page.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -229,24 +230,38 @@ class VendorRegisterController extends GetxController {
   }
 
   //license image
-  Future<void> pickLicenseImages(context) async {
+  Future<void> pickLicenseImages(BuildContext context) async {
     try {
-      final pickedFile =
-          await ImagePicker().pickImage(source: ImageSource.gallery);
-      if (pickedFile != null) {
-        File image = File(pickedFile.path);
+      // Pick an image file using file picker
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+          // Specify the file type to only allow images
+          );
+
+      if (result != null && result.files.isNotEmpty) {
+        File image = File(result.files.single.path!);
         isUpdating.value = true;
 
+        // Call your method to upload the image
         await secUploadImageToFirebase(image, context);
+      } else {
+        // Optionally handle the case when no image is selected
+        Get.snackbar(
+            'No image selected', 'Please select an image to continue.');
       }
     } catch (e) {
+      // Handle any errors that occur during the process
       if (Get.isDialogOpen ?? false) {
         openAppSettings();
-        isUpdating.value = false;
       }
       isUpdating.value = false;
 
-      throw Exception('Error picking image: $e');
+      // Log the error for debugging purposes
+      print('Error picking image: $e');
+      Get.snackbar('Error', 'Failed to pick image: $e',
+          snackPosition: SnackPosition.BOTTOM);
+    } finally {
+      isUpdating.value =
+          false; // Ensure isUpdating is set to false after execution
     }
   }
 
@@ -356,23 +371,17 @@ class VendorRegisterController extends GetxController {
   Future<void> postSchedule() async {
     isUpdating.value = true;
     if (await networkInfo.isConnected) {
-      print(schedules.length);
       for (var schedule in schedules) {
         // Convert Schedule object to JSON string
         String jsonString = jsonEncode(schedule.toJson());
 
         // Send POST request with the JSON string as the body
-        final response = await http.post(
-          Uri.parse(EndPoints.postSchadule),
-          headers: {
-            'Content-Type': 'application/json', // API expects JSON
-            'Accept': 'application/json',
-          },
+        await dioConsumer.post(
+          EndPoints.postSchadule,
           body: jsonString, // Sending the JSON string
         );
 
         // Print response
-        print(response.body);
 
         await Future.delayed(const Duration(milliseconds: 500));
       }
@@ -444,16 +453,10 @@ class VendorRegisterController extends GetxController {
       "subject": "Access code",
       "message": "otp"
     });
-    final response = await http.post(Uri.parse(EndPoints.senMessage),
-        headers: {
-          'Content-Type':
-              'application/json', // This should match the API's expected content type
-          'Accept': 'application/json',
-        },
-        body: body);
-    print(response.body);
+    final response = await dioConsumer.post(EndPoints.senMessage, body: body);
+    print(response.data);
     if (response.statusCode == StatusCode.ok) {
-      final jsonData = json.decode(response.body);
+      final jsonData = json.decode(response.data);
       final otpId = jsonData['randomNumber'];
       await user.saveOtp(otpId.toString());
       await user.loadOtp();
@@ -493,16 +496,11 @@ class VendorRegisterController extends GetxController {
             status: true,
             address: location.text.trim(),
             businessImages: [businessImage]));
-        final response = await http.post(Uri.parse(EndPoints.vendorRignup),
-            headers: {
-              'Content-Type':
-                  'application/json', // This should match the API's expected content type
-              'Accept': 'application/json',
-            },
-            body: body);
+        final response =
+            await dioConsumer.post(EndPoints.vendorRignup, body: body);
         if (response.statusCode == StatusCode.ok ||
             response.statusCode == StatusCode.created) {
-          final jsonData = json.decode(response.body);
+          final jsonData = json.decode(response.data);
           final token = jsonData['vendorId'];
           await user.saveVendorId(token);
           user.vendorId.value = token;

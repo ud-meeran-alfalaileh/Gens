@@ -3,12 +3,13 @@ import 'package:gens/src/config/sizes/short_text.dart';
 import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
-import 'package:gens/src/core/utils/loading_page.dart';
 import 'package:gens/src/feature/booking/view/page/booking_page.dart';
+import 'package:gens/src/feature/dashboard/view/widget/collection/dashboard_shimmer.dart';
 import 'package:gens/src/feature/dashboard/view/widget/text/dashboard_text.dart';
 import 'package:gens/src/feature/doctor_profile/controller/doctor_controller.dart';
 import 'package:gens/src/feature/history/controller/history_controller.dart';
 import 'package:gens/src/feature/history/model/history_model.dart';
+import 'package:gens/src/feature/history/view/page/user_waiting_list.dart';
 import 'package:gens/src/feature/history/view/widget/text/history_text.dart';
 import 'package:gens/src/feature/vendor_services/view/widget/text/services_text.dart';
 import 'package:get/get.dart';
@@ -34,8 +35,8 @@ class _HistoryWidgetState extends State<HistoryWidget> {
   @override
   void initState() {
     super.initState();
-    // controller.selectedIndex.value = 0; // Set default to Pending (index 0)
-    // getBooking(context);
+    controller.selectedIndex.value = 0; // Set default to Pending (index 0)
+    getBooking(context);
   }
 
   Future<void> getBooking(context) async {
@@ -58,7 +59,23 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                   // mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     10.0.kH,
-                    HistoryText.headerText("My Bookings"),
+                    Row(
+                      children: [
+                        (context.screenWidth * .15).kW,
+                        const Spacer(),
+                        HistoryText.headerText("My Bookings"),
+                        const Spacer(),
+                        IconButton(
+                            onPressed: () {
+                              Get.to(() => const UserWaitingListPage());
+                            },
+                            icon: Icon(
+                              Icons.calendar_month_outlined,
+                              size: 30,
+                              color: AppTheme.lightAppColors.primary,
+                            )),
+                      ],
+                    ),
                     (context.screenHeight * .03).kH,
 
                     Row(
@@ -72,9 +89,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                     // (context.screenHeight * .03).kH,
                     Obx(
                       () => controller.isLaoding.value
-                          ? SizedBox(
-                              height: context.screenHeight * .7,
-                              child: loadingPage(context))
+                          ? dashboardShimmer()
                           : controller.filteredList.isEmpty
                               ? Column(
                                   mainAxisAlignment: MainAxisAlignment.center,

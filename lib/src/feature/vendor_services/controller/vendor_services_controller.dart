@@ -4,12 +4,15 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:gens/src/core/api/api_services.dart';
 import 'package:gens/src/core/api/end_points.dart';
+import 'package:gens/src/core/api/injection_container.dart';
 import 'package:gens/src/core/api/netwok_info.dart';
 import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/core/utils/snack_bar.dart';
 import 'package:gens/src/feature/doctor_profile/model/service_model.dart';
+import 'package:gens/src/feature/vendor_navbar.dart/view/widget/main_widget/vendor_navbar_page.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -19,13 +22,18 @@ class VendorServicesController extends GetxController {
   final NetworkInfo networkInfo =
       NetworkInfoImpl(connectionChecker: InternetConnectionChecker());
   RxList<Services> services = <Services>[].obs;
+  final DioConsumer dioConsumer = sl<DioConsumer>();
+  var instructionId = 0.obs;
+  var isLoading = false.obs;
   User user = User();
   final ImagePicker _picker = ImagePicker();
-
+  RxInt serviceId = 0.obs;
   final title = TextEditingController();
   final description = TextEditingController();
   final price = TextEditingController();
   final imageUrl = TextEditingController();
+  final postInstructionDays = TextEditingController();
+  var daysOfInstruction = 0.obs;
   RxString serviceImage = "".obs;
   RxBool isUpdating = false.obs;
 
@@ -39,6 +47,28 @@ class VendorServicesController extends GetxController {
     isUpdating.value = false;
 
     // imageFiles.value = (File(selectedImages.take(3)).toList());
+  }
+
+  List<TextEditingController> instructionControllers = [];
+
+  // Method to update the controllers list based on the number of days
+  void updateInstructionControllers(int days) {
+    // Adjust the length of the list to match the number of days
+    while (instructionControllers.length < days) {
+      instructionControllers.add(TextEditingController());
+    }
+    while (instructionControllers.length > days) {
+      instructionControllers.removeLast();
+    }
+  }
+
+  @override
+  void onClose() {
+    // Dispose controllers when not needed
+    for (var controller in instructionControllers) {
+      controller.dispose();
+    }
+    super.onClose();
   }
 
   Future<String?> uploadImageToFirebase(File pickedFile, context) async {
@@ -80,16 +110,12 @@ class VendorServicesController extends GetxController {
     if (await networkInfo.isConnected) {
       try {
         isUpdating.value = true;
-        final response = await http.get(
-          Uri.parse('${EndPoints.getVendorServices}/${user.vendorId}/all'),
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
+        final response = await dioConsumer.get(
+          '${EndPoints.getVendorServices}/${user.vendorId}/all',
         );
         if (response.statusCode == StatusCode.ok) {
           try {
-            final jsonData = json.decode(response.body);
+            final jsonData = json.decode(response.data);
 
             // Cast jsonData to List to use map properly
             List<Services> servicesData = (jsonData as List)
@@ -180,13 +206,8 @@ class VendorServicesController extends GetxController {
   Future<void> deleteService(int serviceId) async {
     if (await networkInfo.isConnected) {
       try {
-        final response = await http.delete(
-          Uri.parse('${EndPoints.ediSvendorServices}/$serviceId'),
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-        );
+        final response = await dioConsumer
+            .delete('${EndPoints.ediSvendorServices}/$serviceId');
 
         if (response.statusCode == StatusCode.noContent) {
           Get.back();
@@ -223,20 +244,18 @@ class VendorServicesController extends GetxController {
           "imageUrl": serviceImage.value
         });
         final response =
-            await http.post(Uri.parse(EndPoints.ediSvendorServices),
-                headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json',
-                },
-                body: body);
+            await dioConsumer.post(EndPoints.ediSvendorServices, body: body);
         if (response.statusCode == StatusCode.created) {
           try {
-            Get.back();
+            serviceId.value = jsonDecode(response.data)['serviceId'];
+            print(serviceId.value);
             showSnackBar("Success", "Service Add Successfully ", Colors.green);
             await Future.delayed(const Duration(seconds: 1));
+
             await getVendorServices();
 
             clearServiceData();
+
             isUpdating.value = false;
           } catch (e) {
             Get.snackbar(
@@ -256,6 +275,72 @@ class VendorServicesController extends GetxController {
         }
       } catch (e) {
         isUpdating.value = false;
+      }
+    }
+  }
+
+  Future<void> addInstruction() async {
+    isLoading.value = true;
+    if (await networkInfo.isConnected) {
+      isUpdating.value = true;
+      try {
+        var body = jsonEncode({
+          "id": 0,
+          "serviceId": serviceId.value,
+          "title": "string",
+          "period": int.parse(postInstructionDays.text),
+        });
+        print(body);
+        final response =
+            await dioConsumer.post(EndPoints.postInstruction, body: body);
+        print(response.data);
+        print(response.statusCode);
+        if (response.statusCode == StatusCode.ok) {
+          final responseData = json.decode(response.data)['id'];
+          instructionId.value = responseData;
+          await addInstructionDay();
+          isLoading.value = false;
+
+          Get.offAll(const VendorNavBar());
+          postInstructionDays.clear();
+        } else {
+          isLoading.value = false;
+
+          Get.snackbar(
+            "Error",
+            "Failed to add instruction",
+            snackPosition: SnackPosition.BOTTOM,
+          );
+          isUpdating.value = false;
+        }
+      } catch (e) {
+        isLoading.value = false;
+
+        isUpdating.value = false;
+      }
+    }
+  }
+
+  Future<void> addInstructionDay() async {
+    for (int i = 0; i < instructionControllers.length; i++) {
+      try {
+        var body = {
+          "id": 0,
+          "medicalPrescriptionId": instructionId.value,
+          "day": i + 1, // Use the index + 1
+          "description":
+              instructionControllers[i].text // Use the controller's text
+        };
+
+        final response =
+            await dioConsumer.post(EndPoints.medicalPlan, body: body);
+
+        if (response.statusCode == StatusCode.created) {
+          // Handle error if necessary
+          // print('Failed to add instruction for day ${i + 1}');
+        }
+      } catch (e) {
+        print(e);
       }
     }
   }

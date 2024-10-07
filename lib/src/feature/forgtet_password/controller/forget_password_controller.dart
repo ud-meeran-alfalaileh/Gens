@@ -9,8 +9,8 @@ import 'package:gens/src/feature/forgtet_password/view/page/forget_password_page
 import 'package:gens/src/feature/forgtet_password/view/widget/main_widget/forget_passwrod_page.dart';
 import 'package:gens/src/feature/forgtet_password/view/widget/main_widget/passwor_otp.dart';
 import 'package:gens/src/feature/login/view/pages/login_page.dart';
+import 'package:gens/src/feature/show_user/controller/show_user_controller.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -20,6 +20,7 @@ class ForgetPasswordController extends GetxController {
   final confirmPassword = TextEditingController();
   RxInt remainingTime = 30.obs;
   RxBool isLoading = false.obs;
+  RxBool isExist = false.obs;
   final fromKeyOne = GlobalKey<FormState>();
   RxString nEmail = "".obs;
   Future<void> checklOtp(String verificationCode, context) async {
@@ -53,40 +54,51 @@ class ForgetPasswordController extends GetxController {
     return null;
   }
 
+  Future<void> checkExist() async {
+    var body = '"${nEmail.value}"'; // Ensure the email is a string with quotes
+    final response = await dioConsumer.post(EndPoints.checkExist, body: body);
+
+    if (response.statusCode == StatusCode.ok) {
+      final data = jsonDecode(response.data)['userExits'];
+      isExist.value = data;
+    }
+  }
+
   Future<void> sendEmail(context) async {
     isLoading.value = true;
-    await user.clearOtp();
-    var body = jsonEncode({
-      "email": email.text.trim(),
-      "subject": "Access code",
-      "message": "otp"
-    });
-    final response = await http.post(Uri.parse(EndPoints.senMessage),
-        headers: {
-          'Content-Type':
-              'application/json', // This should match the API's expected content type
-          'Accept': 'application/json',
-        },
-        body: body);
-    print(response.body);
-    if (response.statusCode == StatusCode.ok) {
-      final jsonData = json.decode(response.body);
-      final otpId = jsonData['randomNumber'];
-      await user.saveOtp(otpId.toString());
-      await user.loadOtp();
-      isLoading.value = false;
 
-      Get.to(() => const PassworOtp());
+    await checkExist();
+    if (isExist.value) {
+      await user.clearOtp();
+      var body = jsonEncode({
+        "email": email.text.trim(),
+        "subject": "Access code",
+        "message": "otp"
+      });
+      final response = await dioConsumer.post(EndPoints.senMessage, body: body);
+      if (response.statusCode == StatusCode.ok) {
+        final jsonData = json.decode(response.data);
+        final otpId = jsonData['randomNumber'];
+        await user.saveOtp(otpId.toString());
+        await user.loadOtp();
+        isLoading.value = false;
+
+        Get.to(() => const PassworOtp());
+      } else {
+        isLoading.value = false;
+
+        showTopSnackBar(
+          Overlay.of(context),
+          const CustomSnackBar.error(
+            message: 'Something went wrong.',
+          ),
+        );
+        isLoading.value = false;
+      }
     } else {
       isLoading.value = false;
 
-      showTopSnackBar(
-        Overlay.of(context),
-        const CustomSnackBar.error(
-          message: 'Something went wrong.',
-        ),
-      );
-      isLoading.value = false;
+      showSnackBar("Email does not exist.", "Error", Colors.red);
     }
   }
 
@@ -95,30 +107,20 @@ class ForgetPasswordController extends GetxController {
     try {
       var body =
           jsonEncode({"email": nEmail.value, "password": password.text.trim()});
-      print(body);
-      print(nEmail.value);
-      final response = await http.post(Uri.parse(EndPoints.resetPassword),
-          headers: {
-            'Content-Type':
-                'application/json', // This should match the API's expected content type
-            'Accept': 'application/json',
-          },
-          body: body);
 
-      print(response.statusCode);
-      print(response.body);
-      print(body);
+      final response =
+          await dioConsumer.post(EndPoints.resetPassword, body: body);
+
       if (response.statusCode == StatusCode.ok) {
         showSnackBar("Password changed successfully \n try login now",
             "Success", Colors.green);
-        Get.offAll(() => LoginPage());
+        Get.offAll(() => const LoginPage());
       } else {
         showSnackBar("Error", "Please cheack you email", Colors.red);
         Get.offAll(() => const ForgetPasswordPage());
       }
       isLoading.value = false;
     } catch (e) {
-      print(e);
       isLoading.value = false;
     }
   }
@@ -146,8 +148,4 @@ class ForgetPasswordController extends GetxController {
   }
 
   RxString errorText = "".obs;
-
-  // Future<void> updatePassword ()async{
-  //   final response  = await http.post(url)
-  // }
 }

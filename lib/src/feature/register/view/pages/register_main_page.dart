@@ -46,7 +46,6 @@ class RegisterMainPage extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         width: context.screenWidth * .43,
-                        height: context.screenHeight * .22,
                         decoration: BoxDecoration(
                           border: Border.all(
                             color: AppTheme.lightAppColors.primary,
@@ -72,7 +71,6 @@ class RegisterMainPage extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         width: context.screenWidth * .43,
-                        height: context.screenHeight * .22,
                         decoration: BoxDecoration(
                             border: Border.all(
                               color: AppTheme.lightAppColors.primary,

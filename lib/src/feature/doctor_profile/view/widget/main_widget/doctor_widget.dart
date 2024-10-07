@@ -416,8 +416,6 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                 children: [
                   DoctorText.secText(
                       controller.doctor.value!.reviews[index].userFirstName),
-                  DoctorText.secText(
-                      controller.doctor.value!.reviews[index].userFirstName),
                   5.0.kH,
                   Row(
                     children: [
@@ -440,6 +438,33 @@ class _DoctorWidgetState extends State<DoctorWidget> {
           10.0.kH,
           DoctorText.reviewDesText(
               controller.doctor.value!.reviews[index].description),
+          controller.doctor.value!.reviews[index].imgUrl == ''
+              ? const SizedBox.shrink()
+              : GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Dialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Image.network(
+                              controller.doctor.value!.reviews[index].imgUrl,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  child: Image.network(
+                    controller.doctor.value!.reviews[index].imgUrl,
+                    height: 90,
+                  ),
+                )
         ],
       ),
     );

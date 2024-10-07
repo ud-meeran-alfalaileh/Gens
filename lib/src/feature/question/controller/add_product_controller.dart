@@ -3,6 +3,9 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:gens/src/core/api/api_services.dart';
+import 'package:gens/src/core/api/end_points.dart';
+import 'package:gens/src/core/api/injection_container.dart';
 import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:get/get.dart';
@@ -14,6 +17,7 @@ class AddProductController extends GetxController {
   var message = TextEditingController();
   var productDescription = ''.obs;
   var isLoading = false.obs;
+  final DioConsumer dioConsumer = sl<DioConsumer>();
 
   final ImagePicker _picker = ImagePicker();
   User user = User();
@@ -64,41 +68,28 @@ class AddProductController extends GetxController {
       "productImage": imageUrl,
     };
 
-    final response = await http.post(
-      Uri.parse(
-          'https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/Questionnaire/post-product-section'), // Replace with your API URL
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
+    final response = await dioConsumer.post(
+      EndPoints.postProduct, // Replace with your API URL
+
       body: jsonEncode(requestBody),
     );
 
     if (response.statusCode == 200) {
       Get.back();
-      print('Data sent successfully: ${response.body}');
     } else {
       // Handle error
-      print('Failed to send data: ${response.statusCode}');
     }
   }
 
   RxBool isProductIncomplete = false.obs;
   Future<void> getProduct() async {
     isLoading.value = true;
-    final response = await http.get(
-      Uri.parse(
-          'https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/Questionnaire/get-product-details/${user.userId.value}'), // Replace with your API URL
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-    );
-    print(
-        'https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/Questionnaire/get-product-details/${user.userId.value}');
-    print(response.body);
+    final response = await dioConsumer
+        .get('${EndPoints.getProductDetail}${user.userId.value}');
+
+    print(response.data);
     if (response.statusCode == StatusCode.ok) {
-      var data = jsonDecode(response.body);
+      var data = jsonDecode(response.data);
       isLoading.value = true;
 
       if (data != null) {

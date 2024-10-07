@@ -5,13 +5,13 @@ import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/profile/controller/profile_controller.dart';
 import 'package:gens/src/feature/question/model/question_model.dart';
+import 'package:gens/src/feature/show_user/controller/show_user_controller.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 
 class FirstQuestionController extends GetxController {
   RxBool show = true.obs;
   final profileController = Get.put(ProfileController());
-
+  RxBool isloading = false.obs;
   RxInt currentPage = 0.obs;
   User user = User();
   @override
@@ -22,6 +22,7 @@ class FirstQuestionController extends GetxController {
 
   final List<QuestionModel> skinType = [
     QuestionModel(
+      displayName: "Skin Type",
       quesstion:
           "How would you categorize your skin type after cleansing and waiting 2 hours or first thing in the morning?",
       answers: ['Oily', 'Dry', 'Combination', 'Normal', 'I am not sure'],
@@ -29,6 +30,7 @@ class FirstQuestionController extends GetxController {
       name: "skinTypeMorning",
     ),
     QuestionModel(
+      displayName: "Skin Concerns",
       quesstion: "Do you experience any of these skin concerns?",
       answers: [
         'Acne',
@@ -42,8 +44,8 @@ class FirstQuestionController extends GetxController {
       name: "skinConcerns",
     ),
     QuestionModel(
-      quesstion:
-          "How would you categorize your skin type after cleansing and waiting 2 hours or first thing in the morning?",
+      displayName: "Skin Concerns",
+      quesstion: "Do you experience any of the following skin issues?",
       answers: [
         'Itching sensation',
         'Stinging sensation',
@@ -121,28 +123,23 @@ class FirstQuestionController extends GetxController {
   }
 
   Future<void> firstQuestionApi(gender) async {
+    isloading.value = true;
     try {
       final formattedAnswers = formatAnswersForApi();
       print('Formatted Answers: $formattedAnswers'); // Debug print
 
       final body = jsonEncode(formattedAnswers);
-      final response = await http.post(Uri.parse(EndPoints.firstPage),
-          headers: {
-            'Content-Type':
-                'application/json', // This should match the API's expected content type
-            'Accept': 'application/json',
-          },
-          body: body);
+      final response = await dioConsumer.post(EndPoints.firstPage, body: body);
 
-      print('Request Body: $body');
-      print('Response: ${response.body}');
-      print('Status Code: ${response.statusCode}');
       if (response.statusCode == StatusCode.ok) {
         await profileController.getQuestionDetails();
         Get.back();
         Get.back();
       }
+      isloading.value = false;
     } catch (e) {
+      isloading.value = false;
+
       print(e);
     }
   }

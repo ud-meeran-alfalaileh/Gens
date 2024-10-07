@@ -5,10 +5,12 @@ import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/profile/controller/profile_controller.dart';
 import 'package:gens/src/feature/question/model/question_model.dart';
+import 'package:gens/src/feature/show_user/controller/show_user_controller.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 
 class FourthQuestionController extends GetxController {
+  RxBool isloading = false.obs;
+
   RxInt currentPage = 0.obs;
   User user = User();
   @override
@@ -26,6 +28,7 @@ class FourthQuestionController extends GetxController {
       answers: ['Yes', 'No'],
       type: "single",
       name: "acneMedication",
+      displayName: 'Isotretinoin',
     ),
     QuestionModel(
       quesstion:
@@ -36,6 +39,7 @@ class FourthQuestionController extends GetxController {
       ],
       type: "single",
       name: "b12Pills",
+      displayName: 'vitamin B12',
     ),
   ];
 
@@ -104,28 +108,23 @@ class FourthQuestionController extends GetxController {
   }
 
   Future<void> fourthQuestionApi() async {
+    isloading.value = true;
+
     try {
       final formattedAnswers = formatAnswersForApi();
       print('Formatted Answers: $formattedAnswers'); // Debug print
 
       final body = jsonEncode(formattedAnswers);
-      final response = await http.post(Uri.parse(EndPoints.fourthPage),
-          headers: {
-            'Content-Type':
-                'application/json', // This should match the API's expected content type
-            'Accept': 'application/json',
-          },
-          body: body);
+      final response = await dioConsumer.post(EndPoints.fourthPage, body: body);
 
-      print('Request Body: $body');
-      print('Response: ${response.body}');
-      print('Status Code: ${response.statusCode}');
       if (response.statusCode == StatusCode.ok) {
         await profileController.getQuestionDetails();
         Get.back();
         Get.back();
       }
+      isloading.value = false;
     } catch (e) {
+      isloading.value = false;
       print(e);
     }
   }

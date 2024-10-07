@@ -29,7 +29,7 @@ class UpdateProfile extends StatelessWidget {
                       onPressed: () {
                         Get.back();
                       },
-                      icon: Icon(Icons.arrow_back_ios_new))
+                      icon: const Icon(Icons.arrow_back_ios_new))
                 ],
               ),
               30.0.kH,

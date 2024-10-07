@@ -5,7 +5,6 @@ import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/feature/profile/controller/profile_controller.dart';
 import 'package:gens/src/feature/question/controller/add_image_user_controller.dart';
-import 'package:gens/src/feature/question/controller/add_product_controller.dart';
 import 'package:gens/src/feature/question/controller/first_question_controller.dart';
 import 'package:gens/src/feature/question/view/widget/collection/add_image.dart';
 import 'package:gens/src/feature/question/view/widget/collection/add_product_widget.dart';
@@ -31,7 +30,6 @@ class _QuestionPageState extends State<QuestionPage> {
     final controller = Get.put(FirstQuestionController());
     final profileController = Get.put(ProfileController());
     final imageController = Get.put(AddImageUserController());
-    final productController = Get.put(AddProductController());
 
     return Scaffold(
       backgroundColor: AppTheme.lightAppColors.background,

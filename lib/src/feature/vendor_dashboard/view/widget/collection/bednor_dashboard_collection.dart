@@ -9,14 +9,16 @@ import 'package:gens/src/feature/history/model/history_model.dart';
 import 'package:gens/src/feature/show_user/view/page/show_user_page.dart';
 import 'package:gens/src/feature/vendor_dashboard/controller/vendor_dashboard_controoler.dart';
 import 'package:gens/src/feature/vendor_dashboard/view/widget/text/vendor_dashboard_text.dart';
+import 'package:gens/src/feature/waiting_list/view/page/vendor_waiting_list.dart';
 import 'package:get/get.dart';
 
 final vendorGController = Get.put(VendorDashboardController());
 
-Container vendorHeader(BuildContext context) {
+Container vendorHeader(BuildContext context, waitingListLength) {
   return Container(
-    width: context.screenWidth,
+    width: context.screenWidth * 0.99,
     height: context.screenHeight * .08,
+    padding: const EdgeInsets.symmetric(horizontal: 10),
     decoration: BoxDecoration(
       color: AppTheme.lightAppColors.background,
     ),
@@ -38,6 +40,37 @@ Container vendorHeader(BuildContext context) {
                 height: 40,
                 width: 80,
                 fit: BoxFit.fitWidth,
+              ),
+              const Spacer(),
+              Stack(
+                children: [
+                  IconButton(
+                      onPressed: () {
+                        Get.to(() => const VendorWaitingList());
+                      },
+                      icon: Icon(
+                        Icons.calendar_month_outlined,
+                        size: 30,
+                        color: AppTheme.lightAppColors.primary,
+                      )),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Container(
+                      width: context.screenWidth * .045,
+                      height: context.screenHeight * .03,
+                      decoration: const BoxDecoration(
+                          color: Colors.red, shape: BoxShape.circle),
+                      child: Center(
+                        child: Text(
+                          waitingListLength.toString(),
+                          style: TextStyle(
+                              color: AppTheme.lightAppColors.background,
+                              fontWeight: FontWeight.w700),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
               )
             ],
           ),
@@ -138,8 +171,15 @@ vendorBookingContainerToday(BuildContext context, index, VendorBooking model) {
                       ),
                     )
                   : model.status == "Pending"
-                      ? statusWidgetToday(model, statusUpadating, context,
-                          "Upcoming", "Accept", index)
+                      ? Column(
+                          children: [
+                            statusWidget(model, statusUpadating, context,
+                                "Upcoming", 'Accept'),
+                            10.0.kH,
+                            statusWidgetReject(model, statusUpadating, context,
+                                "Rejected", 'Reject'),
+                          ],
+                        )
                       : model.status == "Upcoming"
                           ? Column(
                               mainAxisAlignment: MainAxisAlignment.end,
@@ -152,7 +192,7 @@ vendorBookingContainerToday(BuildContext context, index, VendorBooking model) {
                                     context, "Absent", "Absent", index),
                               ],
                             )
-                          : const Text("remove this from here")
+                          : const Text("Done")
             ])
           ],
         ),
@@ -167,9 +207,10 @@ GestureDetector statusWidgetToday(VendorBooking model, RxBool statusUpadating,
     onTap: () async {
       // print(object)
       print(status);
-
-      await vendorGController.updateBookingStatus(
-          '$status', model.id, model, statusUpadating, true);
+      model.status == "Pending"
+          ? pendingDialog(context, model, statusUpadating)
+          : await vendorGController.updateBookingStatus(
+              '$status', model.id, model, statusUpadating, true);
       if (status == "Absent" || status == "Done") {
         vendorGController.filteredBooking.remove(model);
       }
@@ -288,8 +329,15 @@ vendorBookingContainer(BuildContext context, index, VendorBooking model) {
                       ),
                     )
                   : model.status == "Pending"
-                      ? statusWidget(
-                          model, statusUpadating, context, "Upcoming", 'Accept')
+                      ? Column(
+                          children: [
+                            statusWidget(model, statusUpadating, context,
+                                "Upcoming", 'Accept'),
+                            10.0.kH,
+                            statusWidgetReject(model, statusUpadating, context,
+                                "Rejected", 'Reject'),
+                          ],
+                        )
                       : model.status == "Upcoming"
                           ? statusWidget(model, statusUpadating, context,
                               "Waiting", 'Waiting')
@@ -323,6 +371,33 @@ GestureDetector statusWidget(VendorBooking model, RxBool statusUpadating,
               : status == "Waiting"
                   ? AppTheme.lightAppColors.bordercolor
                   : AppTheme.lightAppColors.primary,
+          borderRadius: BorderRadius.circular(20)),
+      child: Center(
+        child: Text(
+          title,
+          style: TextStyle(
+            color: AppTheme.lightAppColors.background,
+            fontFamily: 'Inter',
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+GestureDetector statusWidgetReject(VendorBooking model, RxBool statusUpadating,
+    BuildContext context, status, title) {
+  return GestureDetector(
+    onTap: () {
+      vendorGController.updateBookingStatus(
+          '$status', model.id, model, statusUpadating, true);
+      // model.status = "Upcoming";
+    },
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      height: context.screenHeight * .04,
+      decoration: BoxDecoration(
+          color: AppTheme.lightAppColors.bordercolor,
           borderRadius: BorderRadius.circular(20)),
       child: Center(
         child: Text(

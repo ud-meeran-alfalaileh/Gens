@@ -35,7 +35,7 @@ Container pendingReviewContainer(
 
   return Container(
     padding: const EdgeInsets.all(20),
-    width: context.screenWidth * .8,
+    width: context.screenWidth * .84,
     decoration: BoxDecoration(
       color: AppTheme.lightAppColors.background,
       borderRadius: BorderRadius.circular(20),
@@ -68,7 +68,7 @@ Container pendingReviewContainer(
 
         Center(
           child: RatingBar.builder(
-            initialRating: 1,
+            initialRating: 5,
             minRating: 1,
             direction: Axis.horizontal,
             allowHalfRating: true,

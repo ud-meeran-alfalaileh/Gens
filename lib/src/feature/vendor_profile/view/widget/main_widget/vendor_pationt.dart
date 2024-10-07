@@ -72,7 +72,10 @@ class _VendorPationtState extends State<VendorPationt> {
                   height: 3,
                 );
               },
-              itemCount: 4, // Display all reviews
+              itemCount: controller.vendor.value.reviews.length > 4
+                  ? 4
+                  : controller
+                      .vendor.value.reviews.length, // Display all reviews
             ),
           ],
         ),
@@ -157,7 +160,7 @@ class _VendorPationtState extends State<VendorPationt> {
                   },
                   child: Image.network(
                     controller.vendor.value.reviews[index].imgUrl,
-                    height: 50,
+                    height: 90,
                   ),
                 )
         ],

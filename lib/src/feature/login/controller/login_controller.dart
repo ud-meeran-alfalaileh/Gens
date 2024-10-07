@@ -9,7 +9,6 @@ import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/nav_bar/view/main/main_app_page.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -62,16 +61,10 @@ class LoginController extends GetxController {
           "phone": "962${removeLeadingZero(phoneNumber.text.trim())}",
           "password": password.text.trim(),
         });
-        final response = await http.post(Uri.parse(EndPoints.login),
-            headers: {
-              'Content-Type':
-                  'application/json', // This should match the API's expected content type
-              'Accept': 'application/json',
-            },
-            body: body);
+        final response = await dioConsumer.post(EndPoints.login, body: body);
 
         if (response.statusCode == StatusCode.ok) {
-          final jsonData = json.decode(response.body);
+          final jsonData = json.decode(response.data);
           final type = jsonData['userType'];
           if (type == 'User') {
             final token = jsonData['userId'];
@@ -89,7 +82,7 @@ class LoginController extends GetxController {
             phoneNumber.clear();
             password.clear();
           } else {
-            final jsonData = json.decode(response.body);
+            final jsonData = json.decode(response.data);
             final token = jsonData['vendorId'];
             await user.saveVendorId(token);
             user.vendorId.value = token;

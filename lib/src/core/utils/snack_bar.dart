@@ -12,7 +12,9 @@ void showSnackBar(String message, title, Color backgroundColor) {
       title,
       textAlign: TextAlign.start,
       style: const TextStyle(
+        fontFamily: "Inter",
         color: Colors.white,
+        fontSize: 20,
         fontWeight: FontWeight.w700,
       ),
     ),
@@ -20,6 +22,7 @@ void showSnackBar(String message, title, Color backgroundColor) {
       message,
       textAlign: TextAlign.start,
       style: const TextStyle(
+        fontFamily: "Inter",
         color: Colors.white,
       ),
     ),

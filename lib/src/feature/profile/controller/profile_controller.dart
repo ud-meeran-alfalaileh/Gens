@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:gens/src/core/api/api_services.dart';
 import 'package:gens/src/core/api/end_points.dart';
+import 'package:gens/src/core/api/injection_container.dart';
 import 'package:gens/src/core/api/netwok_info.dart';
 import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
@@ -22,6 +24,8 @@ import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class ProfileController extends GetxController {
+  final DioConsumer dioConsumer = sl<DioConsumer>();
+
   final NetworkInfo networkInfo =
       NetworkInfoImpl(connectionChecker: InternetConnectionChecker());
   User user = User();
@@ -41,7 +45,9 @@ class ProfileController extends GetxController {
   final confirmPassword = TextEditingController();
   final name = TextEditingController();
   final secName = TextEditingController();
-  RxBool isLoading = false.obs;
+  RxBool isUserLoading = false.obs;
+  RxBool isSkinLoading = true.obs;
+  // RxBool isLoading = false.obs;
   RxBool isLoadingImg = false.obs;
   Rx<String?> selectedGender = Rx<String?>(null);
   final List<String> genderOptions = ['Male', 'Female', 'Prefer not to say'];
@@ -81,18 +87,15 @@ class ProfileController extends GetxController {
 
   Future<void> getUser(id, context) async {
     if (await networkInfo.isConnected) {
-      isLoading.value = true;
+      isUserLoading.value = true;
       try {
-        final response = await http.get(
-          Uri.parse("${EndPoints.getUser}/${userId.value}"),
-          headers: {
-            'Accept': 'application/json',
-          },
+        final response = await dioConsumer.get(
+          "${EndPoints.getUser}/${userId.value}",
         );
 
         if (response.statusCode == StatusCode.ok) {
-          isLoading.value = false;
-          final data = jsonDecode(response.body);
+          isUserLoading.value = false;
+          final data = jsonDecode(response.data);
           final responseData = UserModel.fromJson(data);
           final ageDate = calculateAge(responseData.dateOfBirth);
 
@@ -105,10 +108,10 @@ class ProfileController extends GetxController {
           selectedGender.value = responseData.gender;
         } else {}
       } catch (e) {
-        isLoading.value = false;
+        isUserLoading.value = false;
       }
     } else {
-      isLoading.value = false;
+      isUserLoading.value = false;
 
       showTopSnackBar(
         Overlay.of(context),
@@ -135,7 +138,7 @@ class ProfileController extends GetxController {
 
   Future<void> updateUser(context) async {
     if (await networkInfo.isConnected) {
-      isLoading.value = true;
+      isUserLoading.value = true;
       var body = jsonEncode({
         "email": email.text.trim(),
         "fName": name.text.trim(),
@@ -152,15 +155,15 @@ class ProfileController extends GetxController {
                 },
                 body: body);
         if (response.statusCode == StatusCode.ok) {
-          isLoading.value = false;
+          isUserLoading.value = false;
           showSnackBar("Success", "Data Updated Successfully", Colors.green);
           getUser(user.userId, context);
         } else {}
       } catch (e) {
-        isLoading.value = false;
+        isUserLoading.value = false;
       }
     } else {
-      isLoading.value = false;
+      isUserLoading.value = false;
 
       showTopSnackBar(
         Overlay.of(context),
@@ -241,12 +244,8 @@ class ProfileController extends GetxController {
         var body = jsonEncode(
             {"userId": user.userId.value.toString(), "userImage": downloadURL});
 
-        final response = await http.post(Uri.parse(EndPoints.updateImage),
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: body);
+        final response =
+            await dioConsumer.post(EndPoints.updateImage, body: body);
         if (response.statusCode == StatusCode.ok) {
           getUser(userId, context);
         }
@@ -280,18 +279,14 @@ class ProfileController extends GetxController {
 
   Future<void> updtaePassword(context) async {
     if (await networkInfo.isConnected) {
-      isLoading.value = true;
+      isUserLoading.value = true;
       var body = jsonEncode({
         "currentPassword": oldPassword.text.trim(),
         "newPassword": newPassword.text.trim()
       });
       try {
-        final response = await http.post(
-            Uri.parse("${EndPoints.getUser}/${userId.value}/change-password"),
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-            },
+        final response = await dioConsumer.post(
+            "${EndPoints.getUser}/${userId.value}/change-password",
             body: body);
 
         if (response.statusCode == StatusCode.ok) {
@@ -301,7 +296,7 @@ class ProfileController extends GetxController {
               message: 'Password changed successfully.'.tr,
             ),
           );
-          isLoading.value = false;
+          isUserLoading.value = false;
         } else {
           showTopSnackBar(
             Overlay.of(context),
@@ -311,10 +306,10 @@ class ProfileController extends GetxController {
           );
         }
       } catch (e) {
-        isLoading.value = false;
+        isUserLoading.value = false;
       }
     } else {
-      isLoading.value = false;
+      isUserLoading.value = false;
 
       showTopSnackBar(
         Overlay.of(context),
@@ -337,18 +332,14 @@ class ProfileController extends GetxController {
   late RxBool isFifthDataIncomplete = false.obs;
   Future<void> getQuestionDetails() async {
     if (await networkInfo.isConnected) {
-      isLoading.value = true;
+      isSkinLoading.value = true;
       try {
-        final response = await http.get(
-          Uri.parse(
-              "https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/Questionnaire/${user.userId}"),
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-        );
+        final response = await dioConsumer.get(
+            "https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/Questionnaire/${user.userId}");
+
         if (response.statusCode == StatusCode.ok) {
-          final data = jsonDecode(response.body);
+          final data = jsonDecode(response.data);
+
           question.value = SkinCareModel.fromJson(data);
           isFirstDataIncomplete.value = ((question.value == null) ||
               question.value!.skinTypeMorning.isEmpty ||
@@ -369,13 +360,18 @@ class ProfileController extends GetxController {
           isFifthDataIncomplete =
               ((question.value == null) || question.value!.b12Pills == "").obs;
         } else {
-          final data = jsonDecode(response.body)['message'];
+          isFirstDataIncomplete.value = true;
+          isSecDataIncomplete.value = true;
+          isThirdDataIncomplete.value = true;
+          isFourthDataIncomplete.value = true;
+          isFifthDataIncomplete.value = true;
+          final data = jsonDecode(response.data)['message'];
           if (data == "Questionnaire not found for the given user.") {
             buildProfile.value = true;
           }
         }
 
-        isLoading.value = F;
+        isSkinLoading.value = F;
       } catch (e) {
         print(e);
       }

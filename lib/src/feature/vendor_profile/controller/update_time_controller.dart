@@ -7,6 +7,7 @@ import 'package:gens/src/core/api/netwok_info.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/nav_bar/view/main/main_app_page.dart';
 import 'package:gens/src/feature/register_vendor/model/schaduale_model.dart';
+import 'package:gens/src/feature/show_user/controller/show_user_controller.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -80,17 +81,12 @@ class UpdateTimeController extends GetxController {
   Future<void> getWorkingHours() async {
     try {
       isUpdating(true);
-      final response = await http.get(
-        Uri.parse("${EndPoints.getSchadule}${user.vendorId}"),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-      );
-      print(response.body);
+      final response =
+          await dioConsumer.get("${EndPoints.getSchadule}${user.vendorId}");
+      print(response.data);
       if (response.statusCode == 200) {
         // Parsing the response as a Map
-        final apiData = jsonDecode(response.body);
+        final apiData = jsonDecode(response.data);
 
         // Extract the working days and pre-select them
         List<dynamic> workingDaysFromApi = apiData['workingDay'];

@@ -4,11 +4,12 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:gens/src/core/api/api_services.dart';
 import 'package:gens/src/core/api/end_points.dart';
+import 'package:gens/src/core/api/injection_container.dart';
 import 'package:gens/src/core/api/netwok_info.dart';
 import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
-import 'package:gens/src/core/utils/snack_bar.dart';
 import 'package:gens/src/feature/dashboard/model/review_pending_model.dart';
 import 'package:gens/src/feature/doctor_profile/model/doctor_model.dart';
 import 'package:gens/src/feature/doctor_profile/model/service_model.dart';
@@ -21,6 +22,8 @@ class DoctorController extends GetxController {
   var isExpanded = false.obs;
   final NetworkInfo networkInfo =
       NetworkInfoImpl(connectionChecker: InternetConnectionChecker());
+  final DioConsumer dioConsumer = sl<DioConsumer>();
+
   void toggleExpanded() {
     isExpanded.value = !isExpanded.value;
   }
@@ -34,7 +37,7 @@ class DoctorController extends GetxController {
 
   RxBool isAbsent = false.obs;
   RxList<String> imagesUrl = <String>[].obs;
-  RxDouble userRating = 0.0.obs; // Initial rating
+  RxDouble userRating = 5.0.obs; // Initial rating
   TextEditingController messageController = TextEditingController();
   User user = User();
 
@@ -100,12 +103,8 @@ class DoctorController extends GetxController {
         "vendorId": vendorId,
         "isFav": true,
       });
-      await http.post(Uri.parse(EndPoints.postFav),
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          body: body);
+      final response = await dioConsumer.post(EndPoints.postFav, body: body);
+      print(response);
       getFav(vendorId);
     }
   }
@@ -138,16 +137,12 @@ class DoctorController extends GetxController {
 
   Future<void> getFav(id) async {
     try {
-      final response = await http.get(
-        Uri.parse("${EndPoints.getFav}${user.userId}/$id"),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
+      final response = await dioConsumer.get(
+        "${EndPoints.getFav}${user.userId}/$id",
       );
 
       if (response.statusCode == StatusCode.ok) {
-        final data = jsonDecode(response.body);
+        final data = jsonDecode(response.data);
         if (data != "null") {
           favourite.value = Favourite.fromJson(data);
           if (favourite.value?.isFav == true) {
@@ -180,19 +175,15 @@ class DoctorController extends GetxController {
   }
 
   Future<void> getVendors() async {
-    if (await networkInfo.isConnected) {
-      isLoading.value = true;
-      final response = await http.get(
-        Uri.parse(EndPoints.getVendor),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-      );
+    isLoading.value = true;
 
+    if (await networkInfo.isConnected) {
+      final response = await dioConsumer.get(EndPoints.getVendor);
+
+      print(response.data);
       if (response.statusCode == StatusCode.ok) {
         try {
-          final List<dynamic> jsonData = json.decode(response.body);
+          final List<dynamic> jsonData = json.decode(response.data);
 
           List<Vendor> vendors =
               jsonData.map((json) => Vendor.fromJson(json)).toList();
@@ -211,11 +202,7 @@ class DoctorController extends GetxController {
         }
         isLoading.value = false;
       } else {
-        Get.snackbar(
-          "Error",
-          "Failed to fetch vendors",
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        doctors.value = [];
         isLoading.value = false;
       }
     } else {
@@ -232,17 +219,13 @@ class DoctorController extends GetxController {
     if (await networkInfo.isConnected) {
       isLoadingVendor.value = true;
 
-      final response = await http.get(
-        Uri.parse("${EndPoints.getVendorId}/$id/details"),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
+      final response = await dioConsumer.get(
+        "${EndPoints.getVendorId}/$id/details",
       );
 
       if (response.statusCode == StatusCode.ok) {
         try {
-          final dynamic jsonData = json.decode(response.body);
+          final dynamic jsonData = json.decode(response.data);
 
           doctor.value = DoctorModelById.fromJson(jsonData);
           imagesUrl.clear();
@@ -280,17 +263,13 @@ class DoctorController extends GetxController {
   ) async {
     services.clear();
     if (await networkInfo.isConnected) {
-      final response = await http.get(
-        Uri.parse("${EndPoints.getVendorServices}/$id/all"),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
+      final response = await dioConsumer.get(
+        "${EndPoints.getVendorServices}/$id/all",
       );
 
       if (response.statusCode == StatusCode.ok) {
         try {
-          final List<dynamic> jsonData = json.decode(response.body);
+          final List<dynamic> jsonData = json.decode(response.data);
 
           List<Services> servicesData =
               jsonData.map((json) => Services.fromJson(json)).toList();
@@ -323,16 +302,11 @@ class DoctorController extends GetxController {
   Future<void> getPendingReview() async {
     if (await networkInfo.isConnected) {
       try {
-        final response = await http.get(
-          Uri.parse("${EndPoints.getPendingReview}/${user.userId}"),
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
+        final response = await dioConsumer.get(
+          "${EndPoints.getPendingReview}/${user.userId}",
         );
-        print(response.body);
         if (response.statusCode == StatusCode.ok) {
-          final List<dynamic> jsonData = json.decode(response.body);
+          final List<dynamic> jsonData = json.decode(response.data);
 
           List<ReviewPending> pendingReview =
               jsonData.map((json) => ReviewPending.fromJson(json)).toList();
@@ -342,7 +316,9 @@ class DoctorController extends GetxController {
           }
         }
       } catch (e) {
-        print(e);
+        if (kDebugMode) {
+          print(e);
+        }
       }
     }
   }
@@ -385,37 +361,32 @@ class DoctorController extends GetxController {
 
   Future<void> postReview(reviewId, status) async {
     if (await networkInfo.isConnected) {
-      if (messageController.text.isEmpty) {
-        showSnackBar(
-            "Please fill the filed", "Error", Colors.black.withOpacity(0.1));
-      } else {
-        try {
-          var body = jsonEncode({
-            "description": messageController.text.trim(),
-            "imgUrl": serviceImage.value,
-            "status": status,
-            "reviewRate": userRating.value.toInt()
-          });
+      try {
+        var body = jsonEncode({
+          "description": messageController.text.trim(),
+          "imgUrl": serviceImage.value,
+          "status": status,
+          "reviewRate": userRating.value.toInt()
+        });
 
-          final response = await http.put(
-              Uri.parse(
-                  'https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/Review/$reviewId/user-update'),
-              headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-              },
-              body: body);
+        final response = await http.put(
+            Uri.parse(
+                'https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/Review/$reviewId/user-update'),
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: body);
 
-          if (response.statusCode == StatusCode.ok) {
-            reviewPinding.clear();
-            serviceImage.value = "";
-            messageController.text = "";
-            await getPendingReview();
-          }
-        } catch (e) {
-          if (kDebugMode) {
-            print(e);
-          }
+        if (response.statusCode == StatusCode.ok) {
+          reviewPinding.clear();
+          serviceImage.value = "";
+          messageController.text = "";
+          await getPendingReview();
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          print(e);
         }
       }
     }
@@ -423,7 +394,7 @@ class DoctorController extends GetxController {
 
   Future<void> deleteReview(reviewId) async {
     if (await networkInfo.isConnected) {
-      await http.delete(Uri.parse("${EndPoints.postReview}/$reviewId"));
+      await dioConsumer.delete("${EndPoints.postReview}/$reviewId");
 
       Get.back();
       getPendingReview();

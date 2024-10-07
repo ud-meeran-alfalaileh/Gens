@@ -1,11 +1,12 @@
 import 'dart:convert';
 
+import 'package:gens/src/core/api/api_services.dart';
 import 'package:gens/src/core/api/end_points.dart';
+import 'package:gens/src/core/api/injection_container.dart';
 import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/fav_page/model/fav_vendor_model.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 
 class FavController extends GetxController {
   User user = User();
@@ -18,28 +19,22 @@ class FavController extends GetxController {
     super.onInit();
   }
 
+  final DioConsumer dioConsumer = sl<DioConsumer>();
+
   RxList<FavVendorModel> favDoctor = <FavVendorModel>[].obs;
 
   Future<void> getFavDoctor() async {
     isLoading.value = true;
-    final response = await http.get(
-      Uri.parse("${EndPoints.getAllFav}${user.userId}"),
-      headers: {
-        'Content-Type':
-            'application/json', // This should match the API's expected content type
-        'Accept': 'application/json',
-      },
+    final response = await dioConsumer.get(
+      "${EndPoints.getAllFav}${user.userId}",
     );
-    print("${EndPoints.getAllFav}${user.userId}");
 
-    print(response.body);
     if (response.statusCode == StatusCode.ok) {
       isLoading.value = false;
-      final List<dynamic> jsonData = json.decode(response.body);
+      final List<dynamic> jsonData = json.decode(response.data);
 
       favDoctor.value =
           jsonData.map((json) => FavVendorModel.fromJson(json)).toList();
-      print(favDoctor.length);
     }
   }
 }

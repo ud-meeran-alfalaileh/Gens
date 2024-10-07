@@ -8,6 +8,7 @@ import 'package:gens/src/feature/booking/view/widget/collection/booking_containe
 import 'package:gens/src/feature/doctor_profile/controller/doctor_controller.dart';
 import 'package:gens/src/feature/doctor_profile/view/widget/text/doctor_text.dart';
 import 'package:gens/src/feature/vendor_services/view/widget/text/services_text.dart';
+import 'package:gens/src/feature/waiting_list/view/page/waiting_list_page.dart';
 import 'package:get/get.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -63,50 +64,50 @@ class BookingWidget extends StatelessWidget {
                 Padding(
                   padding:
                       const EdgeInsets.only(left: 20, right: 10, bottom: 30),
-                  child: SizedBox(
-                    height: context.screenHeight,
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            DoctorText.mainText("Select Date"),
-                          ],
-                        ),
-                        (context.screenHeight * .02).kH,
-                        Obx(
-                          () => calendarContainer(controller, vendorId),
-                        ),
-                        (context.screenHeight * .03).kH,
-                        Row(
-                          children: [
-                            DoctorText.mainText("Select Hour"),
-                          ],
-                        ),
-                        (context.screenHeight * .01).kH,
-                        Obx(
-                          () => controller.isLoading.value
-                              ? CircularProgressIndicator(
-                                  color: AppTheme.lightAppColors.primary,
-                                )
-                              : controller.workingHors.isEmpty
-                                  ? Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          "assets/image/no.png",
-                                          width: context.screenWidth * .2,
-                                        ),
-                                        20.0.kW,
-                                        ServicesText.secText(
-                                            "There is no available\n time this day"),
-                                      ],
-                                    )
-                                  : hourContainer(context, controller),
-                        ),
-                        (context.screenHeight * .02).kH,
-                        AppButton(
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          DoctorText.mainText("Select Date"),
+                        ],
+                      ),
+                      (context.screenHeight * .02).kH,
+                      Obx(
+                        () => calendarContainer(controller, vendorId),
+                      ),
+                      (context.screenHeight * .03).kH,
+                      Row(
+                        children: [
+                          DoctorText.mainText("Select Hour"),
+                        ],
+                      ),
+                      (context.screenHeight * .01).kH,
+                      Obx(
+                        () => controller.isLoading.value
+                            ? CircularProgressIndicator(
+                                color: AppTheme.lightAppColors.primary,
+                              )
+                            : controller.workingHors.isEmpty
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        "assets/image/no.png",
+                                        width: context.screenWidth * .2,
+                                      ),
+                                      20.0.kW,
+                                      ServicesText.secText(
+                                          "There is no available\n time this day"),
+                                    ],
+                                  )
+                                : hourContainer(context, controller),
+                      ),
+                      (context.screenHeight * .02).kH,
+                      SizedBox(
+                        width: context.screenWidth * .6,
+                        child: AppButton(
                             onTap: () {
+                              print(controller.day.value);
                               if (controller.selectedDay.value == null) {
                                 showTopSnackBar(
                                   Overlay.of(context),
@@ -131,9 +132,62 @@ class BookingWidget extends StatelessWidget {
                                     bookId);
                               }
                             },
-                            title: "Book Appointment".tr)
-                      ],
-                    ),
+                            title: "Book Appointment".tr),
+                      ),
+                      10.0.kH,
+                      Text(
+                        "Don't see you Preference",
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 14,
+                          color: AppTheme.lightAppColors.black,
+                          fontWeight: FontWeight
+                              .w500, // Use FontWeight.bold for the bold variant
+                        ),
+                      ),
+                      10.0.kH,
+                      GestureDetector(
+                          onTap: () {
+                            if (controller.selectedDay.value == null) {
+                              showTopSnackBar(
+                                Overlay.of(context),
+                                CustomSnackBar.error(
+                                  message: 'Please Select a Day'.tr,
+                                ),
+                              );
+                            } else {
+                              Get.to(() => WaitingListPage(
+                                    dayOfTheWeek: controller.dayOfWeek.value,
+                                    data: controller.dateFormat
+                                        .format(controller.focusedDay.value),
+                                    vendorId: vendorId,
+                                    serviceId: doctorController.srevice.value,
+                                  ));
+                            }
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            width: context.screenWidth * .6,
+                            decoration: BoxDecoration(
+                                color: AppTheme.lightAppColors.bordercolor,
+                                borderRadius: BorderRadius.circular(20)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Text(
+                                  "Join the Wishing List",
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 15,
+                                    color: AppTheme.lightAppColors.background,
+                                    fontWeight: FontWeight
+                                        .w500, // Use FontWeight.bold for the bold variant
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ))
+                    ],
                   ),
                 ),
                 controller.isBooking.value

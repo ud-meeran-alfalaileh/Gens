@@ -18,96 +18,119 @@ class ResultsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppTheme.lightAppColors.maincolor,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              IconButton(
-                onPressed: () {
-                  Get.back();
-                },
-                icon: Icon(
-                  Icons.arrow_back_ios_new,
-                  color: AppTheme.lightAppColors.primary,
+        child: Obx(
+          () => controller.isloading.value
+              ? Center(
+                  child: CircularProgressIndicator(
+                    color: AppTheme.lightAppColors.primary,
+                  ),
+                )
+              : Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        icon: Icon(
+                          Icons.arrow_back_ios_new,
+                          color: AppTheme.lightAppColors.primary,
+                        ),
+                      ),
+                      const Text(
+                        'Your Answers:',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 20),
+                      Obx(() => Container(
+                          padding: const EdgeInsets.all(20),
+                          width: context.screenWidth,
+                          // height: context.screenHeight * .3,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: AppTheme.lightAppColors.background,
+                              border: Border.all(
+                                  color: AppTheme.lightAppColors.bordercolor)),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: controller.selectedAnswers.length,
+                            itemBuilder: (context, index) {
+                              // Retrieve the question name (key)
+                              final questionName = controller
+                                  .selectedAnswers.keys
+                                  .elementAt(index);
+                              final answer =
+                                  controller.selectedAnswers[questionName];
+
+                              // Find the matching QuestionModel from the skinType list based on the name
+                              final questionModel =
+                                  controller.skinType.firstWhere(
+                                (element) => element.name == questionName,
+                              );
+
+                              // Use displayName instead of name
+                              String questionDisplayName =
+                                  questionModel.displayName;
+
+                              // Format answer (handle single or multiple answers)
+                              String answerText;
+                              if (answer is List) {
+                                answerText = answer.join(', ');
+                              } else {
+                                answerText = answer.toString();
+                              }
+
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        questionDisplayName, // Use displayName here
+                                        style: TextStyle(
+                                          color: AppTheme.lightAppColors.black,
+                                          fontFamily: "Inter",
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                      20.0.kW,
+                                      SizedBox(
+                                        width: context.screenWidth * .35,
+                                        child: Text(
+                                          answerText,
+                                          style: TextStyle(
+                                            color:
+                                                AppTheme.lightAppColors.black,
+                                            fontFamily: "Inter",
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  20.0.kH,
+                                ],
+                              );
+                            },
+                          ))),
+                      20.0.kH,
+                      AppButton(
+                          onTap: () {
+                            controller.firstQuestionApi(gender);
+                          },
+                          title: "Next")
+                    ],
+                  ),
                 ),
-              ),
-              const Text(
-                'Your Answers:',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
-              Obx(() => Container(
-                    padding: const EdgeInsets.all(20),
-                    width: context.screenWidth,
-                    // height: context.screenHeight * .3,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: AppTheme.lightAppColors.background,
-                        border: Border.all(
-                            color: AppTheme.lightAppColors.bordercolor)),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: controller.selectedAnswers.length,
-                      itemBuilder: (context, index) {
-                        final questionName =
-                            controller.selectedAnswers.keys.elementAt(index);
-                        final answer = controller.selectedAnswers[questionName];
-
-                        String answerText;
-                        if (answer is List) {
-                          answerText = answer
-                              .join(', '); // Join multiple answers with a comma
-                        } else {
-                          answerText = answer.toString(); // Single answer
-                        }
-
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  questionName,
-                                  style: TextStyle(
-                                    color: AppTheme.lightAppColors.black,
-                                    fontFamily: "Inter",
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                                20.0.kW,
-                                SizedBox(
-                                  width: context.screenWidth * .35,
-                                  child: Text(
-                                    answerText,
-                                    style: TextStyle(
-                                      color: AppTheme.lightAppColors.black,
-                                      fontFamily: "Inter",
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            20.0.kH,
-                          ],
-                        );
-                      },
-                    ),
-                  )),
-              20.0.kH,
-              AppButton(
-                  onTap: () {
-                    controller.firstQuestionApi(gender);
-                  },
-                  title: "Next")
-            ],
-          ),
         ),
       ),
     );

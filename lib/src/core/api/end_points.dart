@@ -32,9 +32,17 @@ class EndPoints {
   static const String postFav = '${baseUrl}Favorite';
   static const String getFav = '${baseUrl}Favorite/check-favorite-status/';
   static const String getQuestion = '${baseUrl}Questionnaire';
+  static const String postInstruction = '${baseUrl}MedicalPrescription';
+  static const String medicalPlan = '${baseUrl}MedicalPlan';
 
   static const String getAllFav = '${baseUrl}Favorite/user/Favorites/';
   static const String addImage = '${baseUrl}UserImages/create';
+  static const String checkExist = '${baseUrl}User/check-user-exists';
+  static const String addWaitingList = '${baseUrl}WaitingList';
+  static const String postProduct =
+      '${baseUrl}Questionnaire/post-product-section';
+  static const String getProductDetail =
+      '${baseUrl}Questionnaire/get-product-details/';
 
   static const String skinGoals =
       '${baseUrl}Questionnaire/PostMainSkincareGoalsByUserId/';
@@ -47,6 +55,8 @@ class EndPoints {
       '${baseUrl}Questionnaire/post-skincare-goals-section';
   static const String timeslotsForDay =
       '${baseUrl}Schedule/generate-timeslotsForDay/TestAndTest';
+  static const String timeSlotsForDoctor =
+      '${baseUrl}Schedule/generate-timeslots';
 
   static String resetPassword =
       "https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/reset-password";

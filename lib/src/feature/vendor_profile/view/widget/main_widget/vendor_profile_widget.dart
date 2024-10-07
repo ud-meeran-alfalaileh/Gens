@@ -38,49 +38,45 @@ class _VendorProfileWidgetState extends State<VendorProfileWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final user = controller.vendor.value;
-
 // Split the string at " - "
 
 // Access the start and end times
 
-    return Obx(
-      () => SafeArea(
-        child: controller.isLoading.value
-            ? loadingPage(context)
-            : SingleChildScrollView(
-                child: Obx(
-                  () => controller.isLoading.value
-                      ? loadingPage(context)
-                      : SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              SizedBox(child: vendorHeader(context, user)),
-                              profileContainerRow(controller),
-                              Container(
-                                color: const Color(0xfff5f5f5),
-                                width: context.screenWidth,
-                                height: context.screenHeight,
-                                child: Obx(() {
-                                  switch (controller.selectedIndex.value) {
-                                    case 0:
-                                      return const VendorUpdateProfile();
-                                    case 1:
-                                      return const SizedBox(
-                                          height: 20, child: VendorPationt());
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Obx(
+          () => controller.isLoading.value
+              ? loadingPage(context)
+              : SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                          child:
+                              vendorHeader(context, controller.vendor.value)),
+                      profileContainerRow(controller),
+                      Container(
+                        color: const Color(0xfff5f5f5),
+                        width: context.screenWidth,
+                        height: context.screenHeight,
+                        child: Obx(() {
+                          switch (controller.selectedIndex.value) {
+                            case 0:
+                              return const VendorUpdateProfile();
+                            case 1:
+                              return const SizedBox(
+                                  height: 20, child: VendorPationt());
 
-                                    default:
-                                      return Container();
-                                  }
-                                }),
-                              ),
-                              20.0.kH,
-                              100.0.kH,
-                            ],
-                          ),
-                        ),
+                            default:
+                              return Container();
+                          }
+                        }),
+                      ),
+                      20.0.kH,
+                      100.0.kH,
+                    ],
+                  ),
                 ),
-              ),
+        ),
       ),
     );
   }

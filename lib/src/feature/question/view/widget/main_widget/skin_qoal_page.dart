@@ -37,32 +37,41 @@ class _SkinQoalQuestionPageViewState extends State<SkinQoalQuestionPageView> {
     return Scaffold(
       backgroundColor: AppTheme.lightAppColors.background,
       body: SafeArea(
-        child: Column(
-          children: [
-            _buildHeader(context),
-            const Text(
-              '1 / 1',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            20.0.kH,
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        child: Obx(
+          () => controller.isloading.value
+              ? Center(
+                  child: CircularProgressIndicator(
+                    color: AppTheme.lightAppColors.primary,
+                  ),
+                )
+              : Column(
                   children: [
-                    QuestionText.mainText(
-                        controller.skinGoalQuestions[0].quesstion),
+                    _buildHeader(context),
+                    const Text(
+                      '1 / 1',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
                     20.0.kH,
-                    Obx(() => _buildQuestionWidget(
-                        controller.skinGoalQuestions[0], context)),
-                    20.0.kH,
-                    _buildButton(context),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            QuestionText.mainText(
+                                controller.skinGoalQuestions[0].quesstion),
+                            20.0.kH,
+                            Obx(() => _buildQuestionWidget(
+                                controller.skinGoalQuestions[0], context)),
+                            20.0.kH,
+                            _buildButton(context),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-              ),
-            ),
-          ],
         ),
       ),
     );

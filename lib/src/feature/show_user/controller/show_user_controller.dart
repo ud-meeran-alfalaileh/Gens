@@ -2,13 +2,17 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:gens/src/core/api/api_services.dart';
 import 'package:gens/src/core/api/end_points.dart';
+import 'package:gens/src/core/api/injection_container.dart';
 import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/feature/profile/model/question_model.dart';
 import 'package:gens/src/feature/profile/model/user_model.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:http/http.dart' as http;
+
+final DioConsumer dioConsumer = sl<DioConsumer>();
 
 class ShowUserController extends GetxController {
   RxBool isLoading = false.obs;
@@ -45,17 +49,10 @@ class ShowUserController extends GetxController {
   Future<void> getUser(id) async {
     isLoading.value = true;
     try {
-      final response = await http.get(
-        Uri.parse("${EndPoints.getUser}/$id"),
-        headers: {
-          'Content-Type':
-              'application/json', // This should match the API's expected content type
-          'Accept': 'application/json',
-        },
-      );
-      print(response.body);
+      final response = await dioConsumer.get("${EndPoints.getUser}/$id");
+      print(response.data);
       if (response.statusCode == StatusCode.ok) {
-        final data = jsonDecode(response.body);
+        final data = jsonDecode(response.data);
 
         userData.value = UserModel.fromJson(data);
         print(userData.value);
@@ -71,17 +68,11 @@ class ShowUserController extends GetxController {
 
   Future<void> getProduct(userId) async {
     isLoading.value = true;
-    final response = await http.get(
-      Uri.parse(
-          'https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/Questionnaire/get-product-details/$userId'), // Replace with your API URL
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-    );
+    final response =
+        await dioConsumer.get('${EndPoints.getProductDetail}$userId');
     print(response.body);
     if (response.statusCode == StatusCode.ok) {
-      var data = jsonDecode(response.body);
+      var data = jsonDecode(response.data);
       isLoading.value = true;
 
       if (data != null) {
@@ -112,20 +103,15 @@ class ShowUserController extends GetxController {
   Future<void> getQuestionDetails(id) async {
     isLoading.value = true;
     try {
-      final response = await http.get(
-        Uri.parse("${EndPoints.getQuestion}/$id"),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
+      final response = await dioConsumer.get(
+    "${EndPoints.getQuestion}/$id"
       );
-      print(response.body);
-      print(response.statusCode);
+    
       if (response.statusCode == StatusCode.ok) {
-        final data = jsonDecode(response.body);
+        final data = jsonDecode(response.data);
         question.value = SkinCareModel.fromJson(data);
       } else {
-        final data = jsonDecode(response.body)['message'];
+        final data = jsonDecode(response.data)['message'];
         if (data == "Questionnaire not found for the given user.") {}
       }
 
@@ -142,16 +128,13 @@ class ShowUserController extends GetxController {
         'https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/UserImages/$userId';
     try {
       isLoading.value = true;
-      final response = await http.get(
-        Uri.parse(apiUrl),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
+      final response = await dioConsumer.get(
+      apiUrl,
+        
       );
-      print(response.body);
+      print(response.data);
       if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
+        final responseData = jsonDecode(response.data);
 
         // Update imageUrls with the URLs from the response
         imageUrls[0] = responseData['userImage1'] ?? '';

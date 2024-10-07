@@ -5,10 +5,12 @@ import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/profile/controller/profile_controller.dart';
 import 'package:gens/src/feature/question/model/question_model.dart';
+import 'package:gens/src/feature/show_user/controller/show_user_controller.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
-
+ 
 class SkinQoalController extends GetxController {
+  RxBool isloading = false.obs;
+
   RxInt currentPage = 0.obs;
   User user = User();
   final profileController = Get.put(ProfileController());
@@ -32,6 +34,7 @@ class SkinQoalController extends GetxController {
       ],
       type: "multiple",
       name: "mainSkincareGoals",
+      displayName: 'Skin goals',
     ),
 
     // Add more questions as needed
@@ -67,29 +70,27 @@ class SkinQoalController extends GetxController {
   }
 
   Future<void> submitSkinGoals() async {
+    isloading.value = true;
+
     try {
       final formattedAnswer =
           jsonEncode(formatAnswersForApi()); // Get the answer as a string
       print('Formatted Answer: $formattedAnswer');
 
-      final response = await http.post(
-        Uri.parse("${EndPoints.skinGoals}${user.userId}"),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
+      final response = await dioConsumer.post(
+     "${EndPoints.skinGoals}${user.userId}",
         body: formattedAnswer,
       );
 
-      print('Request Body: $formattedAnswer');
-      print('Response: ${response.body}');
-      print('Status Code: ${response.statusCode}');
+    
       if (response.statusCode == StatusCode.ok) {
         await profileController.getQuestionDetails();
         Get.back();
         Get.back();
       }
+      isloading.value = false;
     } catch (e) {
+      isloading.value = false;
       print(e);
     }
   }

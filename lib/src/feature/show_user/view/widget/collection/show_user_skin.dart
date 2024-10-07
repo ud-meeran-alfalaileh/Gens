@@ -132,7 +132,7 @@ class ShowUserSkin extends StatelessWidget {
                             Container(
                               width: context.screenHeight * .12,
                               height: context.screenHeight * .1,
-                              padding: EdgeInsets.all(10),
+                              padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
                                   image: DecorationImage(
                                       fit: BoxFit.cover,
@@ -147,7 +147,7 @@ class ShowUserSkin extends StatelessWidget {
                             Container(
                               width: context.screenHeight * .12,
                               height: context.screenHeight * .1,
-                              padding: EdgeInsets.all(10),
+                              padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
                                   image: DecorationImage(
                                       fit: BoxFit.cover,
@@ -162,7 +162,7 @@ class ShowUserSkin extends StatelessWidget {
                             Container(
                               width: context.screenHeight * .12,
                               height: context.screenHeight * .1,
-                              padding: EdgeInsets.all(10),
+                              padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
                                   image: DecorationImage(
                                       fit: BoxFit.cover,

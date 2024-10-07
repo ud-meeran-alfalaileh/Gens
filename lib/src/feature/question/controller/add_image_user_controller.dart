@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:gens/src/core/api/api_services.dart';
+import 'package:gens/src/core/api/injection_container.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -14,8 +16,11 @@ class AddImageUserController extends GetxController {
       List<File?>.filled(3, null).obs; // For storing selected images
   RxList<String> imageUrls =
       List<String>.filled(3, '').obs; // For storing image URLs
+  RxList<String> noUpdateImageUrls =
+      List<String>.filled(3, '').obs; // For storing image URLs
   RxBool isLoading = false.obs;
   User user = User();
+  final DioConsumer dioConsumer = sl<DioConsumer>();
 
   @override
   void onInit() async {
@@ -60,8 +65,9 @@ class AddImageUserController extends GetxController {
 
     imageUrls.value = newImageUrls;
 
-    // Call the API with the new image URLs
-    await sendImagesToApi(user.userId.value, imageUrls);
+    !isImageDataIncomplere.value
+        ? await updateImagesToApi(user.userId.value, imageUrls)
+        : await sendImagesToApi(user.userId.value, imageUrls);
   }
 
   // Upload the selected image to Firebase
@@ -73,8 +79,9 @@ class AddImageUserController extends GetxController {
 
       UploadTask uploadTask = storageRef.putFile(image);
       TaskSnapshot taskSnapshot = await uploadTask;
-
       String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+      print(downloadUrl);
+
       return downloadUrl;
     } catch (e) {
       print("Error uploading image: $e");
@@ -86,6 +93,8 @@ class AddImageUserController extends GetxController {
 
   // Send image URLs to the new API
   Future<void> sendImagesToApi(int userId, List<String> imageUrls) async {
+    print("send api");
+
     const String apiUrl =
         'https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/UserImages/create';
 
@@ -97,7 +106,38 @@ class AddImageUserController extends GetxController {
       "userImage3": imageUrls[2]
     });
     try {
-      final response = await http.post(
+      final response = await dioConsumer.post(
+        apiUrl,
+        body: jsonPayload,
+      );
+      print(response.statusCode);
+      print(jsonPayload);
+
+      if (response.statusCode == 200) {
+        print("Images sent to API successfully.");
+      } else {
+        print("Failed to send images to API: ${response.data}");
+      }
+    } catch (e) {
+      print("Error sending images to API: $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> updateImagesToApi(int userId, List<String> imageUrls) async {
+    print("update api");
+    String apiUrl =
+        'https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/UserImages/update-images/${user.userId}';
+
+    // Create JSON payload
+    final jsonPayload = jsonEncode({
+      "userImage1": imageUrls[0],
+      "userImage2": imageUrls[1],
+      "userImage3": imageUrls[2]
+    });
+    try {
+      final response = await http.put(
         Uri.parse(apiUrl),
         headers: {
           'Content-Type': 'application/json',
@@ -125,21 +165,18 @@ class AddImageUserController extends GetxController {
         'https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/UserImages/${user.userId}';
     try {
       isLoading.value = true;
-      final response = await http.get(
-        Uri.parse(apiUrl),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
+      final response = await dioConsumer.get(
+        apiUrl,
       );
-      print(response.body);
+      print(response.data);
       if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
+        final responseData = jsonDecode(response.data);
 
         // Update imageUrls with the URLs from the response
         imageUrls[0] = responseData['userImage1'] ?? '';
         imageUrls[1] = responseData['userImage2'] ?? '';
         imageUrls[2] = responseData['userImage3'] ?? '';
+
         isImageDataIncomplere.value = imageUrls[0].isEmpty ? true : false;
         isLoading.value = false;
       } else {

@@ -32,7 +32,7 @@ successBookingDialog(context, focusedDay, hourSelected) {
               (context.screenHeight * .06).kH,
               DoctorText.mainText("Congratulations!"),
               BookingText.mainText(
-                  "Your appointment with Israa Elshebli is confirmed for ${DateFormat.yMMMMd().format(focusedDay)}, at $hourSelected"),
+                  "Your appointment is confirmed for ${DateFormat.yMMMMd().format(focusedDay)}, at $hourSelected"),
               (context.screenHeight * .03).kH,
               AppButton(
                   onTap: () {

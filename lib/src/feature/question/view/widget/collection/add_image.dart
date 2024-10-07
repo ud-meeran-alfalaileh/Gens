@@ -224,7 +224,7 @@ class _UserThreeImageState extends State<UserThreeImage> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: AppTheme.lightAppColors.background,
-          title: Text('Confirm Changes'),
+          title: const Text('Confirm Changes'),
           content: const Text(
             'Do you want to save changes or discard them?',
             textAlign: TextAlign.center,

@@ -39,7 +39,6 @@ class _MyAppState extends State<MyApp> {
 
     await user.loadToken();
     await user.loadVendorId();
-    print(user.userId);
   }
 
   Future<void> requestPermissions() async {
@@ -56,7 +55,6 @@ class _MyAppState extends State<MyApp> {
     // Handle permission denied scenario
     if (status.isDenied || storageStatus.isDenied) {
       // Handle the case when permission is denied
-      print('Camera or Storage permission denied.');
     }
   }
 

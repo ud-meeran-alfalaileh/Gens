@@ -5,11 +5,12 @@ import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/profile/controller/profile_controller.dart';
 import 'package:gens/src/feature/question/model/question_model.dart';
+import 'package:gens/src/feature/show_user/controller/show_user_controller.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
-
+ 
 class ThirdQuestionController extends GetxController {
   final profileController = Get.put(ProfileController());
+  RxBool isloading = false.obs;
 
   RxInt currentPage = 0.obs;
   User user = User();
@@ -29,6 +30,7 @@ class ThirdQuestionController extends GetxController {
       ],
       type: "single",
       name: "waterConsume",
+      displayName: 'Water consume',
     ),
     QuestionModel(
       quesstion: 'How many hours of sleep do you get each night?',
@@ -40,12 +42,14 @@ class ThirdQuestionController extends GetxController {
       ],
       type: "single",
       name: "sleepingHours",
+      displayName: 'Sleep',
     ),
     QuestionModel(
       quesstion: "How often do you exercise?",
       answers: ['Every day', 'A few times a week', 'Rarely', 'Never'],
       type: "single",
       name: "ExerciseRoutine",
+      displayName: 'Exercies',
     ),
     QuestionModel(
       quesstion: "What is your smoking status?",
@@ -56,6 +60,7 @@ class ThirdQuestionController extends GetxController {
       ],
       type: "single",
       name: "smokingStatus",
+      displayName: 'Smoking status',
     ),
     QuestionModel(
       quesstion: 'How would you rate your stress levels?',
@@ -67,6 +72,7 @@ class ThirdQuestionController extends GetxController {
       ],
       type: "single",
       name: "stressLevel",
+      displayName: 'Stress level',
     ),
     QuestionModel(
       quesstion: "What do you do to manage stress?",
@@ -79,6 +85,7 @@ class ThirdQuestionController extends GetxController {
       ],
       type: "multiple",
       name: "manageStress",
+      displayName: 'Stress manage',
     ),
   ];
 
@@ -158,28 +165,25 @@ class ThirdQuestionController extends GetxController {
   }
 
   Future<void> thirdQuestionApi() async {
+    isloading.value = true;
+
     try {
       final formattedAnswers = formatAnswersForApi();
       print('Formatted Answers: $formattedAnswers'); // Debug print
 
       final body = jsonEncode(formattedAnswers);
-      final response = await http.post(Uri.parse(EndPoints.thirdPage),
-          headers: {
-            'Content-Type':
-                'application/json', // This should match the API's expected content type
-            'Accept': 'application/json',
-          },
+      final response = await dioConsumer.post( EndPoints.thirdPage,
           body: body);
 
-      print('Request Body: $body');
-      print('Response: ${response.body}');
-      print('Status Code: ${response.statusCode}');
+      
       if (response.statusCode == StatusCode.ok) {
         await profileController.getQuestionDetails();
         Get.back();
         Get.back();
       }
+      isloading.value = false;
     } catch (e) {
+      isloading.value = false;
       print(e);
     }
   }

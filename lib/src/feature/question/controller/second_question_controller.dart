@@ -5,11 +5,12 @@ import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/profile/controller/profile_controller.dart';
 import 'package:gens/src/feature/question/model/question_model.dart';
+import 'package:gens/src/feature/show_user/controller/show_user_controller.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 
 class SecondQuestionController extends GetxController {
   final profileController = Get.put(ProfileController());
+  RxBool isloading = false.obs;
 
   RxInt currentPage = 0.obs;
   User user = User();
@@ -25,6 +26,7 @@ class SecondQuestionController extends GetxController {
       answers: ['Single', 'Married', 'Divorced', 'Widowed'],
       type: "single",
       name: "maritalStatus",
+      displayName: 'Marital status',
     ),
     QuestionModel(
         quesstion:
@@ -35,7 +37,8 @@ class SecondQuestionController extends GetxController {
         ],
         type: "single",
         name: "femalePeriodType",
-        gender: "Female"),
+        gender: "Female",
+        displayName: 'Having regular periods'),
     QuestionModel(
         quesstion:
             "Do you have any hormone-related issues or conditions (e.g., PCOS)?",
@@ -45,7 +48,8 @@ class SecondQuestionController extends GetxController {
         ],
         type: "single",
         name: "HormoneRelated",
-        gender: "Female"),
+        gender: "Female",
+        displayName: 'Hormone-related issues'),
     QuestionModel(
       quesstion: "Which of the following foods do you consume daily?",
       answers: [
@@ -60,6 +64,7 @@ class SecondQuestionController extends GetxController {
       ],
       type: "multiple",
       name: "foodConsume",
+      displayName: 'Food consume',
     ),
     QuestionModel(
       quesstion: "Which of the following issues do you frequently experience?",
@@ -72,6 +77,7 @@ class SecondQuestionController extends GetxController {
       ],
       type: "multiple",
       name: "issuesFrequentlyExperience",
+      displayName: 'Issue',
     ),
   ];
   final List<QuestionModel> maleHormonalGi = [
@@ -80,6 +86,7 @@ class SecondQuestionController extends GetxController {
       answers: ['Single', 'Married', 'Divorced', 'Widowed'],
       type: "single",
       name: "maritalStatus",
+      displayName: 'Marital status',
     ),
     QuestionModel(
       quesstion: "Which of the following foods do you consume daily?",
@@ -95,6 +102,7 @@ class SecondQuestionController extends GetxController {
       ],
       type: "multiple",
       name: "foodConsume",
+      displayName: 'Food consume',
     ),
     QuestionModel(
       quesstion: "Which of the following issues do you frequently experience?",
@@ -107,6 +115,7 @@ class SecondQuestionController extends GetxController {
       ],
       type: "multiple",
       name: "issuesFrequentlyExperience",
+      displayName: 'Issue',
     ),
   ];
 
@@ -186,28 +195,23 @@ class SecondQuestionController extends GetxController {
   }
 
   Future<void> secQuestionApi(gender) async {
+    isloading.value = true;
+
     try {
       final formattedAnswers = formatAnswersForApi(gender);
       print('Formatted Answers: $formattedAnswers'); // Debug print
 
       final body = jsonEncode(formattedAnswers);
-      final response = await http.post(Uri.parse(EndPoints.secPage),
-          headers: {
-            'Content-Type':
-                'application/json', // This should match the API's expected content type
-            'Accept': 'application/json',
-          },
-          body: body);
+      final response = await dioConsumer.post(EndPoints.secPage, body: body);
 
-      print('Request Body: $body');
-      print('Response: ${response.body}');
-      print('Status Code: ${response.statusCode}');
       if (response.statusCode == StatusCode.ok) {
         await profileController.getQuestionDetails();
         Get.back();
         Get.back();
       }
+      isloading.value = false;
     } catch (e) {
+      isloading.value = false;
       print(e);
     }
   }

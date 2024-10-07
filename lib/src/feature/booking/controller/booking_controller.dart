@@ -1,12 +1,13 @@
 import 'dart:convert';
 
+import 'package:gens/src/core/api/api_services.dart';
 import 'package:gens/src/core/api/end_points.dart';
+import 'package:gens/src/core/api/injection_container.dart';
 import 'package:gens/src/core/api/netwok_info.dart';
 import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/booking/view/widget/collection/booking_success.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -15,6 +16,7 @@ class BookingController extends GetxController {
   CalendarFormat calendarFormat = CalendarFormat.month;
   final Rx<DateTime> focusedDay = DateTime.now().obs;
   final Rx<DateTime?> selectedDay = Rx<DateTime?>(null);
+  final DioConsumer dioConsumer = sl<DioConsumer>();
 
   // Use these date and time formats
   DateFormat dateFormat =
@@ -82,12 +84,8 @@ class BookingController extends GetxController {
           "status": "Pending"
         });
 
-        final response = await http.post(Uri.parse(EndPoints.postBooking),
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-            body: body);
+        final response =
+            await dioConsumer.post(EndPoints.postBooking, body: body);
 
         if (response.statusCode == StatusCode.created) {
           if (type == "reschadule") {
@@ -121,12 +119,8 @@ class BookingController extends GetxController {
   Future<void> deleteBooking(context, id) async {
     if (await networkInfo.isConnected) {
       try {
-        final response = await http.delete(
-          Uri.parse("${EndPoints.postBooking}/$id"),
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
+        final response = await dioConsumer.delete(
+          "${EndPoints.postBooking}/$id",
         );
 
         if (response.statusCode == 204) {
@@ -158,10 +152,10 @@ class BookingController extends GetxController {
     workingHors.clear();
     if (await networkInfo.isConnected) {
       isLoading.value = true;
-      final response = await http.get(Uri.parse(
-          "${EndPoints.timeslotsForDay}/$vendorId/$day/${dateFormat.format(focusedDay.value)}"));
+      final response = await dioConsumer.get(
+          "${EndPoints.timeslotsForDay}/$vendorId/$day/${dateFormat.format(focusedDay.value)}");
       if (response.statusCode == StatusCode.ok) {
-        final List<dynamic> jsonData = json.decode(response.body)['timeSlots'];
+        final List<dynamic> jsonData = json.decode(response.data)['timeSlots'];
 
         // Casting jsonData to List<String>
         workingHors.value = jsonData.map((e) => e.toString()).toList();

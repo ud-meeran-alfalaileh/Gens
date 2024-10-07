@@ -4,7 +4,7 @@ import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/core/utils/app_button.dart';
-import 'package:gens/src/core/utils/loading_page.dart';
+import 'package:gens/src/feature/dashboard/view/widget/collection/dashboard_shimmer.dart';
 import 'package:gens/src/feature/doctor_profile/model/service_model.dart';
 import 'package:gens/src/feature/vendor_dashboard/view/widget/collection/bednor_dashboard_collection.dart';
 import 'package:gens/src/feature/vendor_dashboard/view/widget/text/vendor_dashboard_text.dart';
@@ -32,82 +32,84 @@ class _VendorServiceWidgetState extends State<VendorServiceWidget> {
   Widget build(BuildContext context) {
     return SafeArea(
       bottom: false,
-      child: Obx(
-        () => Stack(
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  vendorHeader(context),
-                  Obx(
-                    () => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              VendorDashboardText.mainText("My Services"),
-                              GestureDetector(
-                                onTap: () {
-                                  Get.to(() => const AddServiceWidget(
-                                        type: 'add',
-                                      ));
-                                },
-                                child: ServicesText.mainText("Add services +"),
-                              )
-                            ],
-                          ),
-                          20.0.kH,
-                          controller.services.isEmpty
-                              ? SingleChildScrollView(
-                                  child: Column(
-                                    children: [
-                                      100.0.kH,
-                                      Image.asset(
-                                        'assets/image/empty-box.png',
-                                        width: 200,
-                                      ),
-                                      10.0.kH,
-                                      VendorDashboardText.emptyText(
-                                          "Currently, there are no Services add for you"),
-                                    ],
-                                  ),
-                                )
-                              : ListView.separated(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    final service = controller.services[index];
-                                    return GestureDetector(
-                                      onTap: () {
-                                        servicePopUp(context, service);
-                                      },
-                                      child: vendorServicesContainer(
-                                          context, service),
-                                    );
-                                  },
-                                  separatorBuilder: (context, index) {
-                                    return 15.0.kH;
-                                  },
-                                  itemCount: controller.services.length,
-                                ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  100.0.kH
-                ],
-              ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18.0),
+              child: vendorHeader(context,1),
             ),
-            controller.isUpdating.value
-                ? loadingPage(context)
-                : const SizedBox.shrink()
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      VendorDashboardText.mainText("My Services"),
+                      GestureDetector(
+                        onTap: () {
+                          Get.to(() => const AddServiceWidget(
+                                type: 'add',
+                              ));
+                        },
+                        child: ServicesText.mainText("Add services +"),
+                      )
+                    ],
+                  ),
+                ),
+                20.0.kH,
+                Obx(
+                  () => controller.isUpdating.value
+                      ? dashboardShimmer()
+                      : controller.services.isEmpty
+                          ? Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 18.0),
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    100.0.kH,
+                                    Image.asset(
+                                      'assets/image/empty-box.png',
+                                      width: 200,
+                                    ),
+                                    10.0.kH,
+                                    VendorDashboardText.emptyText(
+                                        "Currently, there are no Services add for you"),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : ListView.separated(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 18.0),
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                final service = controller.services[index];
+                                return GestureDetector(
+                                  onTap: () {
+                                    servicePopUp(context, service);
+                                  },
+                                  child:
+                                      vendorServicesContainer(context, service),
+                                );
+                              },
+                              separatorBuilder: (context, index) {
+                                return 15.0.kH;
+                              },
+                              itemCount: controller.services.length,
+                            ),
+                )
+              ],
+            ),
+            100.0.kH
           ],
         ),
       ),

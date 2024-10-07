@@ -82,12 +82,10 @@ class ForgetPasswordWidget extends StatelessWidget {
                       width: context.screenWidth * .7,
                       child: AppButton(
                           onTap: () {
-                            print(controller.email.text);
-                            controller.errorText.value =
+                             controller.errorText.value =
                                 controller.pageOneValidateAllFields()!;
                             controller.nEmail.value =
                                 controller.email.text.trim();
-                            print(controller.nEmail.value);
                             if (controller.errorText.value == "valid") {
                               controller.sendEmail(context);
                             }

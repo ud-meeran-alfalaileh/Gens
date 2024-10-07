@@ -8,6 +8,7 @@ import 'package:gens/src/feature/doctor_profile/model/service_model.dart';
 import 'package:gens/src/feature/login/model/login_form_model.dart';
 import 'package:gens/src/feature/login/view/widgte/collection/auth_form_widget.dart';
 import 'package:gens/src/feature/vendor_services/controller/vendor_services_controller.dart';
+import 'package:gens/src/feature/vendor_services/view/widget/main_widget/add_post_instruction.dart';
 import 'package:gens/src/feature/vendor_services/view/widget/text/services_text.dart';
 import 'package:get/get.dart';
 
@@ -133,7 +134,7 @@ class _AddServiceWidgetState extends State<AddServiceWidget> {
                             width: context.screenWidth * .5,
                             // height: context.screenHeight * .05,
                             child: AppButton(
-                                onTap: () {
+                                onTap: () async {
                                   if (controller.serviceImage.value == '' ||
                                       controller.description.text.isEmpty ||
                                       controller.title.text.isEmpty ||
@@ -144,9 +145,11 @@ class _AddServiceWidgetState extends State<AddServiceWidget> {
                                         Colors.red);
                                   } else {
                                     widget.type == 'edit'
-                                        ? controller.updateService(
+                                        ? await controller.updateService(
                                             widget.serviceId!.serviceId)
-                                        : controller.addService();
+                                        : controller.addService().whenComplete(
+                                            () =>
+                                                addServiceServyPopUp(context));
                                   }
                                 },
                                 title: widget.type == 'edit' ? "Edit" : "Add")),
@@ -173,4 +176,84 @@ class _AddServiceWidgetState extends State<AddServiceWidget> {
       ),
     );
   }
+}
+
+Future<dynamic> addServiceServyPopUp(
+  BuildContext context,
+) {
+  return showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: AppTheme.lightAppColors.background,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        contentPadding: const EdgeInsets.all(10),
+        content: SizedBox(
+          width: context.screenWidth * 0.8,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: CircleAvatar(
+                      backgroundColor: AppTheme.lightAppColors.background,
+                      child: IconButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          icon: Icon(
+                            Icons.close,
+                            color: AppTheme.lightAppColors.primary,
+                          )),
+                    ),
+                  )
+                ],
+              ),
+              10.0.kH,
+              ServicesText.secText(
+                  "Would you like to add any post-care instructions "),
+              10.0.kH,
+              10.0.kH,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  SizedBox(
+                    width: context.screenWidth * .3,
+                    child: AppButton(
+                      onTap: () {
+                        Get.to(() => const AddPostInstructionWidget());
+                      },
+                      title: 'Yes',
+                    ),
+                  ),
+                  Container(
+                    width: context.screenWidth * .3,
+                    height: context.screenHeight * .05,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border:
+                            Border.all(color: AppTheme.lightAppColors.primary)),
+                    child: TextButton(
+                      onPressed: () {
+                        Get.back();
+                        Get.back();
+                      },
+                      child: Text('No',
+                          style: TextStyle(
+                              color: AppTheme.lightAppColors.primary)),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }
