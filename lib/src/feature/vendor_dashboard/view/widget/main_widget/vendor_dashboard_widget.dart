@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
+import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/feature/dashboard/view/widget/collection/dashboard_shimmer.dart';
 import 'package:gens/src/feature/vendor_dashboard/controller/vendor_dashboard_controoler.dart';
 import 'package:gens/src/feature/vendor_dashboard/view/widget/collection/bednor_dashboard_collection.dart';
 import 'package:gens/src/feature/vendor_dashboard/view/widget/text/vendor_dashboard_text.dart';
 import 'package:gens/src/feature/vendor_profile/controller/vendor_profile_controller.dart';
 import 'package:gens/src/feature/vendor_services/view/widget/text/services_text.dart';
+import 'package:gens/src/feature/waiting_list/view/page/vendor_waiting_list.dart';
 import 'package:get/get.dart';
 
 class VendorDashboardWidget extends StatefulWidget {
@@ -45,7 +47,50 @@ class _VendorDashboardWidgetState extends State<VendorDashboardWidget> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Obx(() => vendorHeader(context, controller.waitingList.length)),
+              Obx(() => Stack(
+                    children: [
+                      vendorHeader(context, controller.waitingList.length),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: SizedBox(
+                          width: context.screenWidth * .15,
+                          height: context.screenHeight * .03,
+                          child: Stack(
+                            children: [
+                              IconButton(
+                                  onPressed: () {
+                                    Get.to(() => const VendorWaitingList());
+                                  },
+                                  icon: Icon(
+                                    Icons.calendar_month_outlined,
+                                    size: 30,
+                                    color: AppTheme.lightAppColors.primary,
+                                  )),
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Container(
+                                  width: context.screenWidth * .045,
+                                  height: context.screenHeight * .03,
+                                  decoration: const BoxDecoration(
+                                      color: Colors.red,
+                                      shape: BoxShape.circle),
+                                  child: Center(
+                                    child: Text(
+                                      controller.waitingList.length.toString(),
+                                      style: TextStyle(
+                                          color: AppTheme
+                                              .lightAppColors.background,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  )),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Center(child: vendorDashboardContainerRow(controller)),

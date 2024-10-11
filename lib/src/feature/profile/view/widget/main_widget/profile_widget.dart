@@ -44,11 +44,9 @@ class _ProfileWidgetState extends State<ProfileWidget> {
 
     await productController.getProduct();
     await imageController.getUserthreeImage();
-    await controller.getUser(user.userId, context);
+    // await controller.getUser(user.userId, context);
 
-    await controller
-        .getQuestionDetails()
-        .whenComplete(() => controller.isSkinLoading.value == false);
+  
   }
 
   @override

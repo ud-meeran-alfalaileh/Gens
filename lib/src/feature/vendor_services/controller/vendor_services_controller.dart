@@ -331,13 +331,14 @@ class VendorServicesController extends GetxController {
           "description":
               instructionControllers[i].text // Use the controller's text
         };
-
         final response =
             await dioConsumer.post(EndPoints.medicalPlan, body: body);
+        print(response.data);
+        print(response.data);
 
         if (response.statusCode == StatusCode.created) {
-          // Handle error if necessary
-          // print('Failed to add instruction for day ${i + 1}');
+          postInstructionDays.text = '0';
+          daysOfInstruction.value = 0;
         }
       } catch (e) {
         print(e);

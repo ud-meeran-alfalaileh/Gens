@@ -185,8 +185,8 @@ class DoctorController extends GetxController {
         try {
           final List<dynamic> jsonData = json.decode(response.data);
 
-          List<Vendor> vendors =
-              jsonData.map((json) => Vendor.fromJson(json)).toList();
+            List<Vendor> vendors =
+                jsonData.map((json) => Vendor.fromJson(json)).toList();
           searchDoctors('');
           doctors.value = vendors;
           for (var xx in doctors) {

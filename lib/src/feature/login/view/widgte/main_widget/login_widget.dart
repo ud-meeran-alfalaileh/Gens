@@ -12,6 +12,7 @@ import 'package:gens/src/feature/login/view/widgte/collection/auth_form_widget.d
 import 'package:gens/src/feature/login/view/widgte/text/login_text.dart';
 import 'package:gens/src/feature/register/view/pages/register_main_page.dart';
 import 'package:get/get.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 class LoginWidget extends StatefulWidget {
   const LoginWidget({super.key});
@@ -153,6 +154,14 @@ class _LoginWidgetState extends State<LoginWidget> {
                               children: [
                                 GestureDetector(
                                   onTap: () {
+                                    OneSignal.User.getOnesignalId()
+                                        .then((externalId) {
+                                      if (externalId != null) {
+                                        print('External ID: $externalId');
+                                      } else {
+                                        print('External ID is null');
+                                      }
+                                    });
                                     Get.to(() => const ForgetPasswordPage());
                                   },
                                   child: const Text("Forgot password?"),

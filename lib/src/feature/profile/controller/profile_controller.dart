@@ -82,10 +82,14 @@ class ProfileController extends GetxController {
   void onInit() async {
     await user.loadToken();
     userId.value = user.userId.value;
+    await getUser(user.userId);
+    await getQuestionDetails().whenComplete(() => isSkinLoading.value == false);
     super.onInit();
   }
 
-  Future<void> getUser(id, context) async {
+  Future<void> getUser(
+    id,
+  ) async {
     if (await networkInfo.isConnected) {
       isUserLoading.value = true;
       try {
@@ -113,12 +117,12 @@ class ProfileController extends GetxController {
     } else {
       isUserLoading.value = false;
 
-      showTopSnackBar(
-        Overlay.of(context),
-        CustomSnackBar.error(
-          message: 'No Internet Connection'.tr,
-        ),
-      );
+      // showTopSnackBar(
+      //   Overlay.of(context),
+      //   CustomSnackBar.error(
+      //     message: 'No Internet Connection'.tr,
+      //   ),
+      // );
     }
   }
 
@@ -157,7 +161,7 @@ class ProfileController extends GetxController {
         if (response.statusCode == StatusCode.ok) {
           isUserLoading.value = false;
           showSnackBar("Success", "Data Updated Successfully", Colors.green);
-          getUser(user.userId, context);
+          getUser(user.userId);
         } else {}
       } catch (e) {
         isUserLoading.value = false;
@@ -247,7 +251,9 @@ class ProfileController extends GetxController {
         final response =
             await dioConsumer.post(EndPoints.updateImage, body: body);
         if (response.statusCode == StatusCode.ok) {
-          getUser(userId, context);
+          getUser(
+            userId,
+          );
         }
         isLoadingImg.value = false;
       } catch (e) {

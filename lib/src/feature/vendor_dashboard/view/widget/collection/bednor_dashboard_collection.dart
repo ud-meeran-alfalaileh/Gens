@@ -9,7 +9,6 @@ import 'package:gens/src/feature/history/model/history_model.dart';
 import 'package:gens/src/feature/show_user/view/page/show_user_page.dart';
 import 'package:gens/src/feature/vendor_dashboard/controller/vendor_dashboard_controoler.dart';
 import 'package:gens/src/feature/vendor_dashboard/view/widget/text/vendor_dashboard_text.dart';
-import 'package:gens/src/feature/waiting_list/view/page/vendor_waiting_list.dart';
 import 'package:get/get.dart';
 
 final vendorGController = Get.put(VendorDashboardController());
@@ -42,36 +41,36 @@ Container vendorHeader(BuildContext context, waitingListLength) {
                 fit: BoxFit.fitWidth,
               ),
               const Spacer(),
-              Stack(
-                children: [
-                  IconButton(
-                      onPressed: () {
-                        Get.to(() => const VendorWaitingList());
-                      },
-                      icon: Icon(
-                        Icons.calendar_month_outlined,
-                        size: 30,
-                        color: AppTheme.lightAppColors.primary,
-                      )),
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Container(
-                      width: context.screenWidth * .045,
-                      height: context.screenHeight * .03,
-                      decoration: const BoxDecoration(
-                          color: Colors.red, shape: BoxShape.circle),
-                      child: Center(
-                        child: Text(
-                          waitingListLength.toString(),
-                          style: TextStyle(
-                              color: AppTheme.lightAppColors.background,
-                              fontWeight: FontWeight.w700),
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              )
+              // Stack(
+              //   children: [
+              //     IconButton(
+              //         onPressed: () {
+              //           Get.to(() => const VendorWaitingList());
+              //         },
+              //         icon: Icon(
+              //           Icons.calendar_month_outlined,
+              //           size: 30,
+              //           color: AppTheme.lightAppColors.primary,
+              //         )),
+              //     Align(
+              //       alignment: Alignment.topLeft,
+              //       child: Container(
+              //         width: context.screenWidth * .045,
+              //         height: context.screenHeight * .03,
+              //         decoration: const BoxDecoration(
+              //             color: Colors.red, shape: BoxShape.circle),
+              //         child: Center(
+              //           child: Text(
+              //             waitingListLength.toString(),
+              //             style: TextStyle(
+              //                 color: AppTheme.lightAppColors.background,
+              //                 fontWeight: FontWeight.w700),
+              //           ),
+              //         ),
+              //       ),
+              //     )
+              //   ],
+              // )
             ],
           ),
         ),

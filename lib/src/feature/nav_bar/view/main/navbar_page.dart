@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/core/user.dart';
+import 'package:gens/src/feature/calendar/view/page/calendar_page.dart';
 import 'package:gens/src/feature/dashboard/view/page/dashboard_page.dart';
 import 'package:gens/src/feature/history/view/page/history_page.dart';
 import 'package:gens/src/feature/login/view/pages/login_page.dart';
@@ -66,10 +67,10 @@ class _NavBarPageState extends State<NavBarPage> {
                           return const HistoryPage();
 
                         case 2:
-                          return const ProfilePage();
+                          return const CalendarPage();
 
                         case 3:
-                          return const Scaffold();
+                          return const ProfilePage();
 
                         default:
                           return const Scaffold();
@@ -165,8 +166,8 @@ class _NavBarPageState extends State<NavBarPage> {
                                                       .withOpacity(.9),
                                               BlendMode.srcIn,
                                             ),
-                                            child: SvgPicture.asset(
-                                              'assets/image/calendar.svg',
+                                            child: Image.asset(
+                                              'assets/image/time.png',
                                               height: 30,
                                             ),
                                           ),
@@ -205,9 +206,9 @@ class _NavBarPageState extends State<NavBarPage> {
                                                       .withOpacity(.9),
                                               BlendMode.srcIn,
                                             ),
-                                            child: SvgPicture.asset(
-                                              'assets/image/Profiel.svg',
-                                              width: 30,
+                                            child: Image.asset(
+                                              'assets/image/calendar.png',
+                                              height: 27,
                                             ),
                                           ),
                                         ),
@@ -217,6 +218,46 @@ class _NavBarPageState extends State<NavBarPage> {
                                       },
                                       isSelected:
                                           controller.selectedIndex.value == 2,
+                                      title: '',
+                                    ),
+                                    CustomNavItem(
+                                      icon: Container(
+                                        width: 50,
+                                        height: 50,
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: controller
+                                                        .selectedIndex.value ==
+                                                    3
+                                                ? AppTheme
+                                                    .lightAppColors.maincolor
+                                                : AppTheme
+                                                    .lightAppColors.background),
+                                        child: Center(
+                                          child: ColorFiltered(
+                                            colorFilter: ColorFilter.mode(
+                                              controller.selectedIndex.value ==
+                                                      3
+                                                  ? AppTheme
+                                                      .lightAppColors.primary
+                                                  : AppTheme.lightAppColors
+                                                      .mainTextcolor
+                                                      .withOpacity(.9),
+                                              BlendMode.srcIn,
+                                            ),
+                                            child: SvgPicture.asset(
+                                              'assets/image/Profiel.svg',
+                                              width: 30,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      onTap: () {
+                                        controller.setSelectedIndex(3);
+                                      },
+                                      isSelected:
+                                          controller.selectedIndex.value == 3,
                                       title: ' ',
                                     ),
                                   ],

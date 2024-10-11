@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gens/src/config/sizes/short_text.dart';
 import 'package:gens/src/config/sizes/size_box_extension.dart';
@@ -325,7 +326,7 @@ class _DoctorWidgetState extends State<DoctorWidget> {
   _servicesList(BuildContext context) {
     return SizedBox(
       width: context.screenWidth,
-      child: GridView.builder(
+      child: AlignedGridView.count(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
@@ -338,6 +339,8 @@ class _DoctorWidgetState extends State<DoctorWidget> {
             },
             child: Obx(
               () => Container(
+                  padding: EdgeInsets.all(10),
+                  margin: EdgeInsets.all(4),
                   decoration: BoxDecoration(
                       border:
                           Border.all(color: AppTheme.lightAppColors.maincolor),
@@ -381,8 +384,7 @@ class _DoctorWidgetState extends State<DoctorWidget> {
           );
         },
         itemCount: controller.services.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3, crossAxisSpacing: 20, mainAxisSpacing: 20),
+        crossAxisCount: 3,
       ),
     );
   }

@@ -154,7 +154,7 @@ class AddPostInstructionWidget extends StatelessWidget {
                 ),
               ),
             ),
-            !controller.isLoading.value
+            controller.isLoading.value
                 ? Container(
                     width: context.screenWidth,
                     height: context.screenHeight * .93,
