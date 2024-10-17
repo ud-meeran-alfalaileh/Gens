@@ -77,8 +77,8 @@ class _OtpWidgetState extends State<OtpWidget> {
                   ),
                   10.0.kH,
                   ForgetPasswordText.secText(
-                      "Enter the verification code we just send on your Email"
-                          .tr),
+                    "Enter the verification code we just sent on your Email".tr,
+                  ),
                   (context.screenHeight * .072).kH,
                   Directionality(
                     textDirection: TextDirection.ltr,
@@ -109,14 +109,13 @@ class _OtpWidgetState extends State<OtpWidget> {
                       if (controller.isButtonEnabled.value) {
                         controller.sendEmail(context);
                         _startTimer();
-                      } else {
-                        null;
                       }
                     },
                     child: Text(
                       controller.remainingTime > 0
                           ? 'Resend OTP in ${controller.remainingTime.value} seconds'
-                          : 'Resend',
+                              .tr
+                          : 'Resend'.tr,
                       style: TextStyle(color: AppTheme.lightAppColors.primary),
                     ),
                   ),

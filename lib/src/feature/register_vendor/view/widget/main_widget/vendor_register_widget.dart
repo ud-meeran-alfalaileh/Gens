@@ -69,7 +69,8 @@ class VendorRegisterWidget extends StatelessWidget {
                                   itemCount: 3)),
                         ),
                         Text(
-                          "Enter your basic information to create your account",
+                          "Enter your basic information to create your account"
+                              .tr,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontFamily: 'Inter',
@@ -109,6 +110,7 @@ class VendorRegisterWidget extends StatelessWidget {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(50)),
                             child: PageView(
+                              physics: const NeverScrollableScrollPhysics(),
                               controller: controller.pageController,
                               onPageChanged: (index) {
                                 controller.currentPageIndex.value = index;
@@ -149,7 +151,7 @@ class VendorRegisterWidget extends StatelessWidget {
                                   }
                                 }
                               },
-                              title: "Register"),
+                              title: "Register".tr),
                         )
                       ],
                     ),
@@ -212,7 +214,7 @@ class VendorRegisterWidget extends StatelessWidget {
             children: [
               // Display validation errors at the top of the form
 
-              VendorRegisterText.mainText("Name"),
+              VendorRegisterText.mainText("name".tr),
               AuthForm(
                 formModel: FormModel(
                   icon: Icons.person,
@@ -228,7 +230,7 @@ class VendorRegisterWidget extends StatelessWidget {
               ),
 
               (15.5).kH,
-              VendorRegisterText.mainText("Email"),
+              VendorRegisterText.mainText("loginEmail".tr),
 
               AuthForm(
                 formModel: FormModel(
@@ -243,7 +245,7 @@ class VendorRegisterWidget extends StatelessWidget {
                     onTap: () {}),
               ),
               (20.5).kH,
-              VendorRegisterText.mainText("Password"),
+              VendorRegisterText.mainText("loginPassword".tr),
 
               Obx(
                 () => Stack(
@@ -260,27 +262,29 @@ class VendorRegisterWidget extends StatelessWidget {
                           inputFormat: [],
                           onTap: () {}),
                     ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: IconButton(
-                          onPressed: () {
-                            showPassword.value = !showPassword.value;
-                          },
-                          icon: Padding(
-                            padding: const EdgeInsets.only(top: 5),
-                            child: Icon(
-                              !showPassword.value
-                                  ? Icons.remove_red_eye_outlined
-                                  : Icons.remove_red_eye,
-                              color: AppTheme.lightAppColors.primary,
-                            ),
-                          )),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              showPassword.value = !showPassword.value;
+                            },
+                            icon: Padding(
+                              padding: const EdgeInsets.only(top: 5),
+                              child: Icon(
+                                !showPassword.value
+                                    ? Icons.remove_red_eye_outlined
+                                    : Icons.remove_red_eye,
+                                color: AppTheme.lightAppColors.primary,
+                              ),
+                            )),
+                      ],
                     )
                   ],
                 ),
               ),
               (20.5).kH,
-              VendorRegisterText.mainText("Confirm Password"),
+              VendorRegisterText.mainText("confirmPassword".tr),
 
               Obx(
                 () => Stack(
@@ -297,21 +301,23 @@ class VendorRegisterWidget extends StatelessWidget {
                           inputFormat: [],
                           onTap: () {}),
                     ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: IconButton(
-                          onPressed: () {
-                            showCPassword.value = !showCPassword.value;
-                          },
-                          icon: Padding(
-                            padding: const EdgeInsets.only(top: 5),
-                            child: Icon(
-                              !showCPassword.value
-                                  ? Icons.remove_red_eye_outlined
-                                  : Icons.remove_red_eye,
-                              color: AppTheme.lightAppColors.primary,
-                            ),
-                          )),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              showCPassword.value = !showCPassword.value;
+                            },
+                            icon: Padding(
+                              padding: const EdgeInsets.only(top: 5),
+                              child: Icon(
+                                !showCPassword.value
+                                    ? Icons.remove_red_eye_outlined
+                                    : Icons.remove_red_eye,
+                                color: AppTheme.lightAppColors.primary,
+                              ),
+                            )),
+                      ],
                     )
                   ],
                 ),
@@ -331,7 +337,7 @@ class VendorRegisterWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              VendorRegisterText.mainText("Phone Number"),
+              VendorRegisterText.mainText("phone".tr),
               AuthForm(
                 formModel: FormModel(
                   icon: Icons.phone,
@@ -349,7 +355,7 @@ class VendorRegisterWidget extends StatelessWidget {
                 ),
               ),
               (15.5).kH,
-              VendorRegisterText.mainText("Address"),
+              VendorRegisterText.mainText("Address".tr),
               AuthForm(
                 formModel: FormModel(
                     icon: Icons.location_on_outlined,
@@ -363,7 +369,7 @@ class VendorRegisterWidget extends StatelessWidget {
                     onTap: () {}),
               ),
               (20.5).kH,
-              VendorRegisterText.mainText("Business License"),
+              VendorRegisterText.mainText("Business License".tr),
               Stack(
                 children: [
                   AuthForm(
@@ -407,7 +413,7 @@ class VendorRegisterWidget extends StatelessWidget {
             children: [
               // Display validation errors at the top of the form
 
-              VendorRegisterText.mainText("Pick Three Profile Images"),
+              VendorRegisterText.mainText("Profile Image".tr),
 
               GestureDetector(
                 onTap: () {
@@ -446,7 +452,7 @@ class VendorRegisterWidget extends StatelessWidget {
               ),
 
               (20.5).kH,
-              VendorRegisterText.mainText("Description"),
+              VendorRegisterText.mainText("Description".tr),
 
               AuthForm(
                 formModel: FormModel(
@@ -461,7 +467,7 @@ class VendorRegisterWidget extends StatelessWidget {
                     onTap: () {}),
               ),
               (20.5).kH,
-              VendorRegisterText.mainText("Specialty"),
+              VendorRegisterText.mainText("Specialty".tr),
 
               Center(
                 child: DropdownButtonFormField<String>(

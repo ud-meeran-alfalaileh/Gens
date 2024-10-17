@@ -50,7 +50,7 @@ class BookingWidget extends StatelessWidget {
                       color: AppTheme.lightAppColors.black.withOpacity(.8),
                     )),
                 const Spacer(),
-                DoctorText.mainText("Booking Appointment"),
+                DoctorText.mainText("Booking Appointment".tr),
                 const Spacer(),
                 (30.0).kW,
               ],
@@ -68,7 +68,7 @@ class BookingWidget extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          DoctorText.mainText("Select Date"),
+                          DoctorText.mainText("Select Date".tr),
                         ],
                       ),
                       (context.screenHeight * .02).kH,
@@ -78,7 +78,7 @@ class BookingWidget extends StatelessWidget {
                       (context.screenHeight * .03).kH,
                       Row(
                         children: [
-                          DoctorText.mainText("Select Hour"),
+                          DoctorText.mainText("Select Hour".tr),
                         ],
                       ),
                       (context.screenHeight * .01).kH,
@@ -96,8 +96,7 @@ class BookingWidget extends StatelessWidget {
                                         width: context.screenWidth * .2,
                                       ),
                                       20.0.kW,
-                                      ServicesText.secText(
-                                          "There is no available\n time this day"),
+                                      ServicesText.secText('noTime'.tr),
                                     ],
                                   )
                                 : hourContainer(context, controller),
@@ -107,7 +106,6 @@ class BookingWidget extends StatelessWidget {
                         width: context.screenWidth * .6,
                         child: AppButton(
                             onTap: () {
-                              print(controller.day.value);
                               if (controller.selectedDay.value == null) {
                                 showTopSnackBar(
                                   Overlay.of(context),
@@ -136,7 +134,7 @@ class BookingWidget extends StatelessWidget {
                       ),
                       10.0.kH,
                       Text(
-                        "Don't see you Preference",
+                        "Don't see you Preference".tr,
                         style: TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 14,
@@ -148,22 +146,13 @@ class BookingWidget extends StatelessWidget {
                       10.0.kH,
                       GestureDetector(
                           onTap: () {
-                            if (controller.selectedDay.value == null) {
-                              showTopSnackBar(
-                                Overlay.of(context),
-                                CustomSnackBar.error(
-                                  message: 'Please Select a Day'.tr,
-                                ),
-                              );
-                            } else {
-                              Get.to(() => WaitingListPage(
-                                    dayOfTheWeek: controller.dayOfWeek.value,
-                                    data: controller.dateFormat
-                                        .format(controller.focusedDay.value),
-                                    vendorId: vendorId,
-                                    serviceId: doctorController.srevice.value,
-                                  ));
-                            }
+                            Get.to(() => WaitingListPage(
+                                  dayOfTheWeek: controller.dayOfWeek.value,
+                                  data: controller.dateFormat
+                                      .format(controller.focusedDay.value),
+                                  vendorId: vendorId,
+                                  serviceId: doctorController.srevice.value,
+                                ));
                           },
                           child: Container(
                             padding: const EdgeInsets.all(10),
@@ -175,7 +164,7 @@ class BookingWidget extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 Text(
-                                  "Join the Wishing List",
+                                  "Join the Wishing List".tr,
                                   style: TextStyle(
                                     fontFamily: 'Inter',
                                     fontSize: 15,

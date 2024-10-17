@@ -51,7 +51,9 @@ class _VendorDashboardWidgetState extends State<VendorDashboardWidget> {
                     children: [
                       vendorHeader(context, controller.waitingList.length),
                       Align(
-                        alignment: Alignment.topRight,
+                        alignment: Get.locale!.languageCode == "en"
+                            ? Alignment.topRight
+                            : Alignment.topLeft,
                         child: SizedBox(
                           width: context.screenWidth * .15,
                           height: context.screenHeight * .03,
@@ -67,7 +69,9 @@ class _VendorDashboardWidgetState extends State<VendorDashboardWidget> {
                                     color: AppTheme.lightAppColors.primary,
                                   )),
                               Align(
-                                alignment: Alignment.topLeft,
+                                alignment: Get.locale!.languageCode == "en"
+                                    ? Alignment.topLeft
+                                    : Alignment.topRight,
                                 child: Container(
                                   width: context.screenWidth * .045,
                                   height: context.screenHeight * .03,
@@ -99,22 +103,31 @@ class _VendorDashboardWidgetState extends State<VendorDashboardWidget> {
                 () => controller.isLaoding.value
                     ? dashboardShimmer()
                     : controller.allVendorBooking.isEmpty
-                        ? Column(
-                            children: [
-                              100.0.kH,
-                              Image.asset(
-                                'assets/image/empty-box.png',
-                                width: 200,
-                              ),
-                              10.0.kH,
-                              VendorDashboardText.emptyText(
-                                  "Currently, there are no bookings available for you"),
-                            ],
+                        ? Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                100.0.kH,
+                                Image.asset(
+                                  'assets/image/empty-box.png',
+                                  width: 200,
+                                ),
+                                10.0.kH,
+                                VendorDashboardText.emptyText(
+                                    "Currently, there are no bookings available for you"
+                                        .tr),
+                              ],
+                            ),
                           )
                         : Obx(
                             () => controller.isFilterd.value
                                 ? controller.filteredBooking.isEmpty
                                     ? Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         children: [
                                           100.0.kH,
                                           Image.asset(
@@ -122,8 +135,17 @@ class _VendorDashboardWidgetState extends State<VendorDashboardWidget> {
                                             width: 200,
                                           ),
                                           10.0.kH,
-                                          VendorDashboardText.emptyText(
-                                              "Currently, there are no bookings available for you"),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              VendorDashboardText.emptyText(
+                                                  "Currently, there are no bookings available for you"
+                                                      .tr),
+                                            ],
+                                          )
                                         ],
                                       )
                                     : SizedBox(
@@ -164,7 +186,7 @@ class _VendorDashboardWidgetState extends State<VendorDashboardWidget> {
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 20),
                                         child: VendorDashboardText.mainText(
-                                            "Today Booking"),
+                                            "Today Booking".tr),
                                       ),
                                       20.0.kH,
                                       controller.todayVendorBooking.isEmpty
@@ -181,7 +203,8 @@ class _VendorDashboardWidgetState extends State<VendorDashboardWidget> {
                                                 ),
                                                 20.0.kW,
                                                 ServicesText.secText(
-                                                    "there is no booking for today"),
+                                                    "there is no booking for today"
+                                                        .tr),
                                               ],
                                             )
                                           : SizedBox(
@@ -211,7 +234,7 @@ class _VendorDashboardWidgetState extends State<VendorDashboardWidget> {
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 20),
                                         child: VendorDashboardText.mainText(
-                                            "Upcoming Booking"),
+                                            "Upcoming Booking".tr),
                                       ),
                                       20.0.kH,
                                       SizedBox(

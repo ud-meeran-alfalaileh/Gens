@@ -29,38 +29,40 @@ class _UserWaitingListWidgetState extends State<UserWaitingListWidget> {
   Widget build(BuildContext context) {
     return SafeArea(
       bottom: false,
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                  onPressed: () {
-                    Get.back();
+      child: Obx(
+        () => Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    icon: Icon(
+                      Icons.arrow_back_ios,
+                      color: AppTheme.lightAppColors.black.withOpacity(.8),
+                    )),
+                const Spacer(),
+                DoctorText.mainText("Waiting list".tr),
+                const Spacer(),
+                (30.0).kW,
+              ],
+            ),
+            Expanded(
+              child: ListView.separated(
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return _buildHistoryContainer(
+                        controller.waitingList[index], context);
                   },
-                  icon: Icon(
-                    Icons.arrow_back_ios,
-                    color: AppTheme.lightAppColors.black.withOpacity(.8),
-                  )),
-              const Spacer(),
-              DoctorText.mainText("Waiting Appointment"),
-              const Spacer(),
-              (30.0).kW,
-            ],
-          ),
-          Expanded(
-            child: ListView.separated(
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return _buildHistoryContainer(
-                      controller.waitingList[index], context);
-                },
-                separatorBuilder: (context, index) {
-                  return 20.0.kH;
-                },
-                itemCount: controller.waitingList.length),
-          )
-        ],
+                  separatorBuilder: (context, index) {
+                    return 20.0.kH;
+                  },
+                  itemCount: controller.waitingList.length),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -127,20 +129,20 @@ class _UserWaitingListWidgetState extends State<UserWaitingListWidget> {
           const Divider(),
           Row(
             children: [
-              WaitingListText.thirdText("Date Range"),
+              WaitingListText.thirdText("Range Date".tr),
               const Spacer(),
               WaitingListText.thirdText(history.startDate),
-              WaitingListText.thirdText(" To "),
+              WaitingListText.thirdText("To1".tr),
               WaitingListText.thirdText(history.endDate),
             ],
           ),
           20.0.kH,
           Row(
             children: [
-              WaitingListText.thirdText("Time Range"),
+              WaitingListText.thirdText("Time Range".tr),
               const Spacer(),
               WaitingListText.thirdText(history.startTime),
-              WaitingListText.thirdText(" To "),
+              WaitingListText.thirdText("To1".tr),
               WaitingListText.thirdText(history.endTime),
             ],
           ),

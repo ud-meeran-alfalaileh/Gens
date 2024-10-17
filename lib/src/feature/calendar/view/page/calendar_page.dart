@@ -9,7 +9,7 @@ class CalendarPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.lightAppColors.background,
-      body:  CalendarWidget(),
+      body:  const CalendarWidget(),
     );
   }
 }

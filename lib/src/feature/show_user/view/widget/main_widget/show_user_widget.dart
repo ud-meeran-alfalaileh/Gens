@@ -81,8 +81,14 @@ class _ShowUserWidgetState extends State<ShowUserWidget> {
                                   "${controller.userData.value!.fName} ${controller.userData.value!.secName}")),
                               ProfileText.secText(
                                   controller.userData.value!.phone),
-                              ProfileText.secText(
-                                  "Age: ${controller.calculatedAge.toString()}"),
+                              Row(
+                                children: [
+                                  ProfileText.secText("Age".tr),
+                                  ProfileText.secText(controller
+                                      .calculatedAge.value
+                                      .toString()),
+                                ],
+                              ),
                             ],
                           )
                         ],

@@ -26,7 +26,7 @@ class _SittingWidgetState extends State<SittingWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final localController = Get.put(localizationController());
+    final localController = Get.put(LocalizationController());
 
     return Column(
       children: [

@@ -40,7 +40,7 @@ class _VendorServiceWidgetState extends State<VendorServiceWidget> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18.0),
-              child: vendorHeader(context,1),
+              child: vendorHeader(context, 1),
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -51,14 +51,14 @@ class _VendorServiceWidgetState extends State<VendorServiceWidget> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      VendorDashboardText.mainText("My Services"),
+                      VendorDashboardText.mainText("My Services".tr),
                       GestureDetector(
                         onTap: () {
                           Get.to(() => const AddServiceWidget(
                                 type: 'add',
                               ));
                         },
-                        child: ServicesText.mainText("Add services +"),
+                        child: ServicesText.mainText("Add services +".tr),
                       )
                     ],
                   ),
@@ -81,7 +81,8 @@ class _VendorServiceWidgetState extends State<VendorServiceWidget> {
                                     ),
                                     10.0.kH,
                                     VendorDashboardText.emptyText(
-                                        "Currently, there are no Services add for you"),
+                                        "Currently, there are no Services add for you"
+                                            .tr),
                                   ],
                                 ),
                               ),
@@ -156,7 +157,9 @@ class _VendorServiceWidgetState extends State<VendorServiceWidget> {
             ],
           ),
           Align(
-            alignment: Alignment.bottomRight,
+            alignment: Get.locale!.languageCode == 'en'
+                ? Alignment.bottomRight
+                : Alignment.bottomLeft,
             child: ServicesText.mainText("${service.price.toString()} JD"),
           )
         ],
@@ -225,7 +228,7 @@ class _VendorServiceWidgetState extends State<VendorServiceWidget> {
                         onTap: () {
                           controller.deleteService(service.serviceId);
                         },
-                        title: 'Delete',
+                        title: 'Delete'.tr,
                       ),
                     ),
                     Container(
@@ -244,7 +247,7 @@ class _VendorServiceWidgetState extends State<VendorServiceWidget> {
                                 serviceId: service,
                               ));
                         },
-                        child: Text('Edit',
+                        child: Text('Edit'.tr,
                             style: TextStyle(
                                 color: AppTheme.lightAppColors.primary)),
                       ),

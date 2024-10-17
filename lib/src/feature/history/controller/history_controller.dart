@@ -52,8 +52,7 @@ class HistoryController extends GetxController {
         final response = await dioConsumer.get(
           "${EndPoints.getBooking}${user.userId.value}/details",
         );
-        print(response.data);
-        if (response.statusCode == StatusCode.ok) {
+         if (response.statusCode == StatusCode.ok) {
           final List<dynamic> jsonData = json.decode(response.data);
 
           List<History> servicesData =
@@ -89,8 +88,7 @@ class HistoryController extends GetxController {
         final response = await dioConsumer.get(
           "${EndPoints.addWaitingList}/user/${user.userId.value}",
         );
-        print(response.data);
-        print(response.statusCode);
+        
         if (response.statusCode == StatusCode.ok) {
           final List<dynamic> jsonData = json.decode(response.data);
 

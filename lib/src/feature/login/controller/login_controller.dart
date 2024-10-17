@@ -10,6 +10,7 @@ import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/nav_bar/view/main/main_app_page.dart';
 import 'package:get/get.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -52,6 +53,16 @@ class LoginController extends GetxController {
     return null;
   }
 
+  Future<void> loginUser(String externalId) async {
+    try {
+      await OneSignal.login(externalId);
+
+      print("User logged in with external ID: $externalId");
+    } catch (e) {
+      print(e);
+    }
+  }
+
   User user = User();
   Future<void> login(context) async {
     if (await networkInfo.isConnected) {
@@ -66,10 +77,13 @@ class LoginController extends GetxController {
         if (response.statusCode == StatusCode.ok) {
           final jsonData = json.decode(response.data);
           final type = jsonData['userType'];
+          final number = jsonData['phone'];
+          print(number.toString());
           if (type == 'User') {
             final token = jsonData['userId'];
             await user.saveId(token);
             user.userId.value = token;
+            await loginUser(number.toString());
             showTopSnackBar(
               Overlay.of(context),
               CustomSnackBar.success(
@@ -84,16 +98,19 @@ class LoginController extends GetxController {
           } else {
             final jsonData = json.decode(response.data);
             final token = jsonData['vendorId'];
+            final number = jsonData['phone'];
+            print("the phone number $number");
             await user.saveVendorId(token);
             user.vendorId.value = token;
+
             showTopSnackBar(
               Overlay.of(context),
               CustomSnackBar.success(
                 message: "loginSuccess".tr,
               ),
             );
+            await loginUser(number.toString());
             isLoading.value = false;
-
             Get.offAll(const MainAppPage());
             phoneNumber.clear();
             password.clear();
@@ -111,6 +128,7 @@ class LoginController extends GetxController {
           unauthorized.value = true;
         }
       } catch (e) {
+        print(e);
         isLoading.value = false;
         showTopSnackBar(
           Overlay.of(context),

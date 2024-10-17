@@ -4,6 +4,7 @@ import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/feature/doctor_profile/view/widget/text/doctor_text.dart';
 import 'package:gens/src/feature/vendor_dashboard/controller/vendor_dashboard_controoler.dart';
+import 'package:gens/src/feature/vendor_dashboard/view/widget/text/vendor_dashboard_text.dart';
 import 'package:gens/src/feature/waiting_list/model/waiting_list_model.dart';
 import 'package:gens/src/feature/waiting_list/view/widget/text/waiting_list_text.dart';
 import 'package:get/get.dart';
@@ -29,23 +30,40 @@ class VendorWaitingListWidget extends StatelessWidget {
                     color: AppTheme.lightAppColors.black.withOpacity(.8),
                   )),
               const Spacer(),
-              DoctorText.mainText("Waiting list"),
+              DoctorText.mainText("Waiting list".tr),
               const Spacer(),
               (30.0).kW,
             ],
           ),
-          Expanded(
-            child: ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return _buildWaitingListContainer(context, controller, index);
-                },
-                separatorBuilder: (context, index) {
-                  return 20.0.kH;
-                },
-                itemCount: controller.waitingList.length),
-          )
+          controller.waitingList.isEmpty
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    100.0.kH,
+                    Image.asset(
+                      'assets/image/empty-box.png',
+                      width: 200,
+                    ),
+                    10.0.kH,
+                    VendorDashboardText.emptyText(
+                        "Currently, there are no bookings available for you"
+                            .tr),
+                  ],
+                )
+              : Expanded(
+                  child: ListView.separated(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return _buildWaitingListContainer(
+                            context, controller, index);
+                      },
+                      separatorBuilder: (context, index) {
+                        return 20.0.kH;
+                      },
+                      itemCount: controller.waitingList.length),
+                )
         ],
       ),
     );
@@ -89,11 +107,11 @@ class VendorWaitingListWidget extends StatelessWidget {
           const Divider(),
           Row(
             children: [
-              WaitingListText.thirdText("Date Range"),
-              Spacer(),
+              WaitingListText.thirdText("Date Range".tr),
+              const Spacer(),
               WaitingListText.thirdText(
                   controller.waitingList[index].startDate),
-              WaitingListText.thirdText(" To "),
+              WaitingListText.thirdText("To1".tr),
               WaitingListText.thirdText(controller.waitingList[index].endDate),
             ],
           ),
@@ -104,7 +122,7 @@ class VendorWaitingListWidget extends StatelessWidget {
               const Spacer(),
               WaitingListText.thirdText(
                   controller.waitingList[index].startTime),
-              WaitingListText.thirdText(" To "),
+              WaitingListText.thirdText("To1"),
               Text(controller.waitingList[index].endTime),
             ],
           ),
@@ -121,9 +139,9 @@ class VendorWaitingListWidget extends StatelessWidget {
                     ),
                   )
                 : controller.waitingList[index].status == "Accept"
-                    ? Text('done')
+                    ?   Text('Done'.tr)
                     : controller.waitingList[index].status == "Reject"
-                        ? Text('Reject')
+                        ?  Text('Reject'.tr)
                         : Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [

@@ -77,7 +77,7 @@ class _DashboradWidgetState extends State<DashboradWidget> {
                                         DashboardText.thirdText(doctorController
                                             .filteredDoctors.length
                                             .toString()),
-                                        DashboardText.secText(" founds".tr),
+                                        DashboardText.secText("founds".tr),
                                       ],
                                     ),
                                   ),
@@ -93,7 +93,7 @@ class _DashboradWidgetState extends State<DashboradWidget> {
                                                         .5,
                                                   ),
                                                   VendorDashboardText.emptyText(
-                                                      "Currently, there are no Doctor available for you"),
+                                                      "errorDoctor".tr),
                                                 ],
                                               )
                                             : _buildDoctorList(),

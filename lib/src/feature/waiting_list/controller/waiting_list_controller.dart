@@ -64,8 +64,8 @@ class WaitingListController extends GetxController {
       // Check if dates are empty
       if (formattedStart.value.isEmpty || formattedEnd.value.isEmpty) {
         Get.snackbar(
-          "Input Error",
-          "Please select both start and end dates.",
+          "Error".tr,
+          "Please select both start and end dates.".tr,
           snackPosition: SnackPosition.BOTTOM,
         );
         return;
@@ -74,8 +74,8 @@ class WaitingListController extends GetxController {
       // Check if start time and end time are empty
       if (startTime.text.isEmpty || endTime.text.isEmpty) {
         Get.snackbar(
-          "Input Error",
-          "Please enter both start and end times.",
+          "Error".tr,
+          "Please enter both start and end times.".tr,
           snackPosition: SnackPosition.BOTTOM,
         );
         return;
@@ -91,8 +91,8 @@ class WaitingListController extends GetxController {
         // Check if start time is after end time
         if (startTimeValue.isAfter(endTimeValue)) {
           Get.snackbar(
-            "Input Error",
-            "Start time cannot be greater than end time.",
+            "Error".tr,
+            "Start time cannot be greater than end time.".tr,
             snackPosition: SnackPosition.BOTTOM,
           );
           return;
@@ -127,7 +127,7 @@ class WaitingListController extends GetxController {
         print(response.data);
       } catch (e) {
         Get.snackbar(
-          "Format Error",
+          "Error",
           "Please enter a valid time in HH:mm format.",
           snackPosition: SnackPosition.BOTTOM,
         );

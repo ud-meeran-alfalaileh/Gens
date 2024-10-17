@@ -45,14 +45,18 @@ Container pendingReviewContainer(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // Displaying the service name and details
-        DashboardText.reviewText(
-          "Please rate your experience with '${review.serviceTitle}' by '${review.vendorName}' to help us improve.",
-        ),
+        Get.locale!.languageCode == "en"
+            ? DashboardText.reviewText(
+                "Please rate your experience with '${review.serviceTitle}' by '${review.vendorName}' to help us improve.",
+              )
+            : DashboardText.reviewText(
+                "يرجى تقييم تجربتك مع '${review.serviceTitle}' بواسطة '${review.vendorName}' لمساعدتنا على التحسين.",
+              ),
         10.0.kH,
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            DashboardText.reviewSecText('On '),
+            DashboardText.reviewSecText('On '.tr),
             DashboardText.reviewThText('${review.bookedDate} '),
           ],
         ),
@@ -60,7 +64,7 @@ Container pendingReviewContainer(
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            DashboardText.reviewSecText(' at '),
+            DashboardText.reviewSecText(' at '.tr),
             DashboardText.reviewThText(review.bookedTime)
           ],
         ),
@@ -86,9 +90,9 @@ Container pendingReviewContainer(
         ),
         const SizedBox(height: 20),
 
-        const Text(
-          "Write a review message:",
-          style: TextStyle(fontSize: 16),
+        Text(
+          "Write a review message:".tr,
+          style: const TextStyle(fontFamily: "Inter", fontSize: 16),
         ),
         Stack(
           children: [
@@ -105,7 +109,9 @@ Container pendingReviewContainer(
                     onTap: () {})),
             Obx(
               () => Align(
-                  alignment: Alignment.topRight,
+                  alignment: Get.locale!.languageCode == "en"
+                      ? Alignment.topRight
+                      : Alignment.topLeft,
                   child: doctorController.addingImage.value
                       ? Container(
                           width: 50,
@@ -142,7 +148,7 @@ Container pendingReviewContainer(
                 onTap: () {
                   doctorController.postReview(review.reviewId, 'Done');
                 },
-                title: 'Submit',
+                title: 'Submit'.tr,
               ),
             ),
             SizedBox(
@@ -153,7 +159,7 @@ Container pendingReviewContainer(
                   doctorController.serviceImage.value = "";
                   doctorController.messageController.text = "";
                 },
-                title: 'later',
+                title: 'later'.tr,
               ),
             ),
           ],
@@ -178,21 +184,25 @@ Container absentReviewContainer(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         10.0.kH,
-        DashboardText.reviewText(
-          "Did you attend your appointment for '${doctorController.reviewPinding.first.serviceTitle}' by '${doctorController.reviewPinding.first.vendorName}'?",
-        ),
+        Get.locale!.languageCode == 'en'
+            ? DashboardText.reviewText(
+                "Did you attend your appointment for '${doctorController.reviewPinding.first.serviceTitle}' by '${doctorController.reviewPinding.first.vendorName}'?",
+              )
+            : DashboardText.reviewText(
+                "هل حضرت موعدك لـ '${doctorController.reviewPinding.first.serviceTitle}' بواسطة '${doctorController.reviewPinding.first.vendorName}'؟",
+              ),
         10.0.kH,
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            DashboardText.reviewSecText('On '),
+            DashboardText.reviewSecText('On '.tr),
             DashboardText.reviewThText('${review.bookedDate} '),
           ],
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            DashboardText.reviewSecText(' at '),
+            DashboardText.reviewSecText(' at '.tr),
             DashboardText.reviewThText(review.bookedTime)
           ],
         ),
@@ -211,7 +221,7 @@ Container absentReviewContainer(
                         // doctorController.isAbsent.value = true;
                         doctorController.postReview(review.reviewId, 'Pending');
                       },
-                      title: 'Yes',
+                      title: 'Yes'.tr,
                     ),
                   ),
                   SizedBox(
@@ -220,7 +230,7 @@ Container absentReviewContainer(
                       onTap: () {
                         doctorController.isAbsent.value = true;
                       },
-                      title: 'No',
+                      title: 'No'.tr,
                     ),
                   ),
                 ],
@@ -232,9 +242,9 @@ Container absentReviewContainer(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "let us know the reason below",
-                    style: TextStyle(fontSize: 14),
+                  Text(
+                    "let us know the reason below".tr,
+                    style: const TextStyle(fontSize: 14, fontFamily: "Inter"),
                   ),
                   Stack(
                     children: [
@@ -243,7 +253,7 @@ Container absentReviewContainer(
                           formModel: FormModel(
                               controller: doctorController.messageController,
                               enableText: false,
-                              hintText: "Enter you message here",
+                              hintText: "Enter you message here".tr,
                               invisible: false,
                               validator: null,
                               type: TextInputType.text,
@@ -264,7 +274,7 @@ Container absentReviewContainer(
                             doctorController.postReview(
                                 review.reviewId, "No-show");
                           },
-                          title: 'Submit',
+                          title: 'Submit'.tr,
                         ),
                       ),
                       SizedBox(
@@ -274,7 +284,7 @@ Container absentReviewContainer(
                             doctorController.postReview(
                                 review.reviewId, "Pending");
                           },
-                          title: 'Attended',
+                          title: 'Attended'.tr,
                         ),
                       ),
                     ],

@@ -17,28 +17,17 @@ class CalendarWidget extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Obx(() {
-            // Ensure events are loaded before building the calendar
-            if (controller.event.isEmpty) {
-              return const Center(
-                  child: CircularProgressIndicator()); // Show loading indicator
-            }
-
             return SfCalendar(
               view: CalendarView.month,
               onTap: (CalendarTapDetails details) {
                 if (details.targetElement == CalendarElement.calendarCell) {
-                  DateTime selectedDate = details.date!;
-                  // Get.to(() => DayCalendarView(selectedDate: selectedDate));
+                  details.date!;
                 }
               },
               onLongPress: (CalendarLongPressDetails cc) {
-                DateTime selectedDate = cc.date!;
-
-                // Get.to(() => DayCalendarView(selectedDate: selectedDate));
+                cc.date!;
               },
-
               dataSource: MeetingDataSource(controller.event.map((event) {
-                print("Mapping event: ${event.description} on ${event.date}");
                 return Meeting(
                   event.description, // Use event description directly
                   event.date, // Start time
@@ -48,12 +37,10 @@ class CalendarWidget extends StatelessWidget {
                   false, // Not an all-day event
                 );
               }).toList()),
-
               monthViewSettings: const MonthViewSettings(
                 appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
                 showAgenda: true,
               ),
-
               headerStyle: CalendarHeaderStyle(
                 backgroundColor: AppTheme.lightAppColors.background,
                 textAlign: TextAlign.center,
@@ -71,12 +58,10 @@ class CalendarWidget extends StatelessWidget {
                   color: Colors.black87,
                 ),
               ),
-              todayHighlightColor:
-                  AppTheme.lightAppColors.primary, // Highlight today in red
-              cellBorderColor: Colors.grey, // Cell border color
+              todayHighlightColor: AppTheme.lightAppColors.primary,
+              cellBorderColor: Colors.grey,
               selectionDecoration: BoxDecoration(
-                color: AppTheme.lightAppColors.bordercolor
-                    .withOpacity(0.3), // Selected cell background color
+                color: AppTheme.lightAppColors.bordercolor.withOpacity(0.3),
                 border:
                     Border.all(color: AppTheme.lightAppColors.black, width: 2),
                 borderRadius: BorderRadius.circular(4),
@@ -89,43 +74,6 @@ class CalendarWidget extends StatelessWidget {
   }
 }
 
-// class DayCalendarView extends StatelessWidget {
-//   final DateTime selectedDate;
-//   const DayCalendarView({super.key, required this.selectedDate});
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Events on ${selectedDate.toLocal()}'),
-//       ),
-//       body: Obx(() {
-//         final controller = Get.find<CalenderControllerr>();
-//         // Filter events for the selected date
-//         final dailyEvents = controller.event.where((event) {
-//           return event.date.year == selectedDate.year &&
-//               event.date.month == selectedDate.month &&
-//               event.date.day == selectedDate.day;
-//         }).map((event) {
-//           return Meeting(
-//             event.serviceName,
-//             event.date,
-//             event.date
-//                 .add(const Duration(hours: 1)), // Assuming 1 hour duration
-//             const Color(0xFF0F8644),
-//             false,
-//           );
-//         }).toList();
-//         return SfCalendar(
-//           view: CalendarView.day,
-//           initialDisplayDate: selectedDate,
-//           dataSource: MeetingDataSource(dailyEvents),
-//         );
-//       }),
-//     );
-//   }
-// }
-
-// Meeting class definition
 class Meeting {
   Meeting(this.eventName, this.from, this.to, this.background, this.isAllDay);
 

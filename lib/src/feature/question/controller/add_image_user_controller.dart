@@ -56,8 +56,7 @@ class AddImageUserController extends GetxController {
       if (updatedImages[i] != null) {
         String downloadUrl = await _uploadImageToFirebase(updatedImages[i]!);
         newImageUrls.add(downloadUrl);
-        print("Uploaded image $i URL: $downloadUrl");
-      } else {
+       } else {
         print("Image at index $i is not updated");
         newImageUrls.add(imageUrls[i]); // Keep old image URL if not updated
       }

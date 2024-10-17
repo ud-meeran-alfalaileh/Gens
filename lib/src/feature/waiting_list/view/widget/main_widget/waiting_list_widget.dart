@@ -62,7 +62,7 @@ class _WaitingListWidgetState extends State<WaitingListWidget> {
                                 AppTheme.lightAppColors.black.withOpacity(.8),
                           )),
                       const Spacer(),
-                      WaitingListText.mainText("Join the Waiting List"),
+                      WaitingListText.mainText("Join the Wishing List".tr),
                       const Spacer(),
                       (30.0).kW,
                     ],
@@ -77,18 +77,28 @@ class _WaitingListWidgetState extends State<WaitingListWidget> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          WaitingListText.secText("Range Date"),
+                          WaitingListText.secText("Range Date".tr),
                           controller.formattedEnd.value == '' ||
                                   controller.formattedStart.value == ''
-                              ? WaitingListText.thirdText('Select Your Date')
+                              ? WaitingListText.thirdText("Select Date".tr)
                               : Column(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    WaitingListText.thirdText(
-                                        "From ${controller.formattedStart.value}"),
-                                    WaitingListText.thirdText(
-                                        "To ${controller.formattedEnd.value}"),
+                                    Row(
+                                      children: [
+                                        WaitingListText.thirdText("From".tr),
+                                        WaitingListText.thirdText(
+                                            controller.formattedStart.value),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        WaitingListText.thirdText("To".tr),
+                                        WaitingListText.thirdText(
+                                            controller.formattedEnd.value),
+                                      ],
+                                    )
                                   ],
                                 )
                         ],
@@ -98,7 +108,7 @@ class _WaitingListWidgetState extends State<WaitingListWidget> {
                   40.0.kH,
                   Row(
                     children: [
-                      WaitingListText.secText("Select Hour"),
+                      WaitingListText.secText("Select Hour".tr),
                       const Spacer(),
                       SizedBox(
                         width: context.screenWidth * .22,
@@ -108,7 +118,7 @@ class _WaitingListWidgetState extends State<WaitingListWidget> {
                             onTap: () {},
                             enableText: false,
                             controller: controller.startTime,
-                            hintText: "00:00",
+                            hintText: "00",
                             invisible: false,
                             validator: null,
                             type: TextInputType.phone,
@@ -121,7 +131,7 @@ class _WaitingListWidgetState extends State<WaitingListWidget> {
                         ),
                       ),
                       5.0.kW,
-                      WaitingListText.thirdText('To'),
+                      WaitingListText.thirdText('To'.tr),
                       5.0.kW,
                       SizedBox(
                         width: context.screenWidth * .22,
@@ -131,7 +141,7 @@ class _WaitingListWidgetState extends State<WaitingListWidget> {
                             onTap: () {},
                             enableText: false,
                             controller: controller.endTime,
-                            hintText: "00:00",
+                            hintText: "00",
                             invisible: false,
                             validator: null,
                             type: TextInputType.phone,
@@ -148,7 +158,7 @@ class _WaitingListWidgetState extends State<WaitingListWidget> {
                   40.0.kH,
                   Row(
                     children: [
-                      ServicesText.secText("Message"),
+                      ServicesText.secText("Message".tr),
                     ],
                   ),
                   AuthForm(
@@ -156,7 +166,7 @@ class _WaitingListWidgetState extends State<WaitingListWidget> {
                       formModel: FormModel(
                           controller: controller.description,
                           enableText: false,
-                          hintText: "Message",
+                          hintText: "Message".tr,
                           invisible: false,
                           validator: null,
                           type: TextInputType.text,
@@ -168,13 +178,13 @@ class _WaitingListWidgetState extends State<WaitingListWidget> {
                         controller.addWaitingList(
                             widget.vendorId, widget.serviceId, context);
                       },
-                      title: "Join Waiting list"),
+                      title: "Join Waiting list".tr),
                   20.0.kH,
                 ],
               ),
             ),
           ),
-          Obx(() => !controller.isLoading.value
+          Obx(() => controller.isLoading.value
               ? Container(
                   width: context.screenWidth,
                   height: context.screenHeight,

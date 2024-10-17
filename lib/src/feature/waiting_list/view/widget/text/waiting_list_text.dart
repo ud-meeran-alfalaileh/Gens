@@ -24,7 +24,7 @@ class WaitingListText {
     );
   }
 
-  static thirdText(title) {
+  static thirdText(title,) {
     return Text(
       title,
       style: TextStyle(

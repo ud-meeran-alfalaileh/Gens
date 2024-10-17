@@ -72,9 +72,9 @@ class _LoginWidgetState extends State<LoginWidget> {
                               width: context.screenWidth * .6,
                               fit: BoxFit.cover,
                             ),
-                            LoginText.mainText("Hi, Welcome Back! "),
+                            LoginText.mainText("Hi, Welcome Back!".tr),
                             10.0.kH,
-                            LoginText.secText("Hope you’re doing fine."),
+                            LoginText.secText("Hope you’re doing fine.".tr),
                             Obx(() {
                               return errorText.value != "valid"
                                   ? Column(
@@ -129,23 +129,26 @@ class _LoginWidgetState extends State<LoginWidget> {
                                       inputFormat: [],
                                       onTap: () {}),
                                 ),
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: IconButton(
-                                      onPressed: () {
-                                        showPassword.value =
-                                            !showPassword.value;
-                                      },
-                                      icon: Padding(
-                                        padding: const EdgeInsets.only(top: 5),
-                                        child: Icon(
-                                          !showPassword.value
-                                              ? Icons.remove_red_eye_outlined
-                                              : Icons.remove_red_eye,
-                                          color:
-                                              AppTheme.lightAppColors.primary,
-                                        ),
-                                      )),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    IconButton(
+                                        onPressed: () {
+                                          showPassword.value =
+                                              !showPassword.value;
+                                        },
+                                        icon: Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 5),
+                                          child: Icon(
+                                            !showPassword.value
+                                                ? Icons.remove_red_eye_outlined
+                                                : Icons.remove_red_eye,
+                                            color:
+                                                AppTheme.lightAppColors.primary,
+                                          ),
+                                        )),
+                                  ],
                                 )
                               ],
                             ),
@@ -164,7 +167,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                     });
                                     Get.to(() => const ForgetPasswordPage());
                                   },
-                                  child: const Text("Forgot password?"),
+                                  child: Text("Forgot password?".tr),
                                 ),
                               ],
                             ),
@@ -178,7 +181,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                     controller.login(context);
                                   }
                                 },
-                                title: 'login'.tr,
+                                title: 'Login'.tr,
                               ),
                             ),
                             10.0.kH,

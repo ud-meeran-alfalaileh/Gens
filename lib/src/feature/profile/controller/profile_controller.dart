@@ -19,6 +19,7 @@ import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -328,6 +329,7 @@ class ProfileController extends GetxController {
 
   void logout() async {
     await user.clearId();
+    OneSignal.logout();
     Get.off(() => const LoginPage());
   }
 

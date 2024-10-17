@@ -36,7 +36,7 @@ class ForgetPasswordWidget extends StatelessWidget {
                   ),
                   (context.screenHeight * .1).kH,
                   ForgetPasswordText.mainText(
-                    'Forget Password? '.tr,
+                    "Forgot password?".tr,
                   ),
                   10.0.kH,
                   ForgetPasswordText.secText(
@@ -82,7 +82,7 @@ class ForgetPasswordWidget extends StatelessWidget {
                       width: context.screenWidth * .7,
                       child: AppButton(
                           onTap: () {
-                             controller.errorText.value =
+                            controller.errorText.value =
                                 controller.pageOneValidateAllFields()!;
                             controller.nEmail.value =
                                 controller.email.text.trim();

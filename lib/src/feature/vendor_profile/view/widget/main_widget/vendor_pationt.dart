@@ -34,13 +34,13 @@ class _VendorPationtState extends State<VendorPationt> {
                     context,
                     "assets/image/profile-2.svg",
                     controller.vendor.value.pastBookings.toString(),
-                    "patients"),
+                    "patients".tr),
                 doctorRowCircle(
                     context,
                     "assets/image/review.svg",
                     storyShortenText(
                         controller.vendor.value.avgRating.toString()),
-                    "rating"),
+                    "rating".tr),
                 doctorRowCircle(context, "assets/image/messages.svg",
                     controller.vendor.value.reviewCount.toString(), "reviews"),
               ],
@@ -48,13 +48,13 @@ class _VendorPationtState extends State<VendorPationt> {
             30.0.kH,
             Row(
               children: [
-                ProfileText.mainText("Reviews"),
+                ProfileText.mainText("Reviews".tr),
                 const Spacer(),
                 GestureDetector(
                   onTap: () {
                     _showReviewsBottomSheet(context);
                   },
-                  child: ProfileText.secText("See all"),
+                  child: ProfileText.secText(" see more".tr),
                 )
               ],
             ),
@@ -184,8 +184,8 @@ class _VendorPationtState extends State<VendorPationt> {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  const Text(
-                    "All Reviews",
+                  Text(
+                    "All Reviews".tr,
                     // style: Theme.of(context).textTheme.headline6,
                   ),
                   10.0.kH,

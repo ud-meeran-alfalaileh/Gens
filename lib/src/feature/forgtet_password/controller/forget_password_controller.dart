@@ -31,8 +31,8 @@ class ForgetPasswordController extends GetxController {
     } else {
       showTopSnackBar(
         Overlay.of(context),
-        const CustomSnackBar.error(
-          message: 'Verification Code is not Correct',
+          CustomSnackBar.error(
+          message: 'Verification Code is not Correct'.tr,
         ),
       );
     }
@@ -98,7 +98,7 @@ class ForgetPasswordController extends GetxController {
     } else {
       isLoading.value = false;
 
-      showSnackBar("Email does not exist.", "Error", Colors.red);
+      showSnackBar("Email does not exist.".tr, "Error".tr, Colors.red);
     }
   }
 
@@ -112,11 +112,11 @@ class ForgetPasswordController extends GetxController {
           await dioConsumer.post(EndPoints.resetPassword, body: body);
 
       if (response.statusCode == StatusCode.ok) {
-        showSnackBar("Password changed successfully \n try login now",
+        showSnackBar("Password changed successfully \n try login now".tr,
             "Success", Colors.green);
         Get.offAll(() => const LoginPage());
       } else {
-        showSnackBar("Error", "Please cheack you email", Colors.red);
+        showSnackBar("Error".tr, "Please cheack you email", Colors.red);
         Get.offAll(() => const ForgetPasswordPage());
       }
       isLoading.value = false;

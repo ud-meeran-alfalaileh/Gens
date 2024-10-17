@@ -43,9 +43,9 @@ class RegisterWidget extends StatelessWidget {
                     width: context.screenWidth * .6,
                     fit: BoxFit.cover,
                   ),
-                  LoginText.mainText("Create Account"),
+                  LoginText.mainText("Create Account".tr),
                   10.0.kH,
-                  LoginText.secText("We are here to help you!"),
+                  LoginText.secText("We are here to help you!".tr),
                   Align(
                     alignment: Alignment.center,
                     child: Obx(
@@ -92,7 +92,7 @@ class RegisterWidget extends StatelessWidget {
                         },
                         title: controller.currentPageIndex.value == 0
                             ? 'next'.tr
-                            : 'register'.tr,
+                            : 'Register'.tr,
                       ),
                     ),
                   ),
@@ -302,16 +302,13 @@ class RegisterWidget extends StatelessWidget {
       },
     );
 
-    if (selectedDate != null) {
-      DateTime dateOnly =
-          DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
+    DateTime dateOnly =
+        DateTime(selectedDate!.year, selectedDate.month, selectedDate.day);
 
-      // Format the date as YYYY-MM-DD
-      String formattedDate = DateFormat('yyyy-MM-dd').format(dateOnly);
+    // Format the date as YYYY-MM-DD
+    String formattedDate = DateFormat('yyyy-MM-dd').format(dateOnly);
 
-      controller.dateOfBirth.text = formattedDate;
-      print("Selected date: $formattedDate");
-    }
+    controller.dateOfBirth.text = formattedDate;
   }
 
   registerPageTwo(BuildContext context, RegisterController controller) {
@@ -376,21 +373,23 @@ class RegisterWidget extends StatelessWidget {
                       inputFormat: [],
                       onTap: () {}),
                 ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: IconButton(
-                      onPressed: () {
-                        showPassword.value = !showPassword.value;
-                      },
-                      icon: Padding(
-                        padding: const EdgeInsets.only(top: 5),
-                        child: Icon(
-                          !showPassword.value
-                              ? Icons.remove_red_eye_outlined
-                              : Icons.remove_red_eye,
-                          color: AppTheme.lightAppColors.primary,
-                        ),
-                      )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          showPassword.value = !showPassword.value;
+                        },
+                        icon: Padding(
+                          padding: const EdgeInsets.only(top: 5),
+                          child: Icon(
+                            !showPassword.value
+                                ? Icons.remove_red_eye_outlined
+                                : Icons.remove_red_eye,
+                            color: AppTheme.lightAppColors.primary,
+                          ),
+                        )),
+                  ],
                 )
               ],
             ),
@@ -411,21 +410,23 @@ class RegisterWidget extends StatelessWidget {
                       inputFormat: [],
                       onTap: () {}),
                 ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: IconButton(
-                      onPressed: () {
-                        showCPassword.value = !showCPassword.value;
-                      },
-                      icon: Padding(
-                        padding: const EdgeInsets.only(top: 5),
-                        child: Icon(
-                          !showCPassword.value
-                              ? Icons.remove_red_eye_outlined
-                              : Icons.remove_red_eye,
-                          color: AppTheme.lightAppColors.primary,
-                        ),
-                      )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          showCPassword.value = !showCPassword.value;
+                        },
+                        icon: Padding(
+                          padding: const EdgeInsets.only(top: 5),
+                          child: Icon(
+                            !showCPassword.value
+                                ? Icons.remove_red_eye_outlined
+                                : Icons.remove_red_eye,
+                            color: AppTheme.lightAppColors.primary,
+                          ),
+                        )),
+                  ],
                 )
               ],
             ),

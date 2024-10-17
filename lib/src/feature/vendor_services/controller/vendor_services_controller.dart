@@ -36,24 +36,27 @@ class VendorServicesController extends GetxController {
   var daysOfInstruction = 0.obs;
   RxString serviceImage = "".obs;
   RxBool isUpdating = false.obs;
-
-  Future<void> pickImages(context) async {
-    final XFile? selectedImages =
+  Future<void> pickImages(BuildContext context) async {
+    final XFile? selectedImage =
         await _picker.pickImage(source: ImageSource.gallery);
-    isUpdating.value = true;
 
-    await uploadImageToFirebase(File(selectedImages!.path), context);
-
-    isUpdating.value = false;
-
-    // imageFiles.value = (File(selectedImages.take(3)).toList());
+    if (selectedImage == null) {
+      return;
+    } else {
+      await uploadImageToFirebase(File(selectedImage.path), context);
+    }
   }
-
+ bool areAllInstructionsFilled() {
+    for (var controller in instructionControllers) {
+      if (controller.text.trim().isEmpty) {
+        return false; // Return false if any controller's text is empty
+      }
+    }
+    return true; // All controllers have non-empty text
+  }
   List<TextEditingController> instructionControllers = [];
 
-  // Method to update the controllers list based on the number of days
   void updateInstructionControllers(int days) {
-    // Adjust the length of the list to match the number of days
     while (instructionControllers.length < days) {
       instructionControllers.add(TextEditingController());
     }
@@ -73,6 +76,8 @@ class VendorServicesController extends GetxController {
 
   Future<String?> uploadImageToFirebase(File pickedFile, context) async {
     try {
+      isUpdating.value = true;
+
       // Create a reference to Firebase Storage
       final storageRef = FirebaseStorage.instance
           .ref()

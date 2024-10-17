@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences package
 
 // ignore: camel_case_types
-class localizationController extends GetxController {
-  RxBool showButton = false.obs;
-
+class LocalizationController extends GetxController {
+      RxBool showButton = false.obs;
+          
   late SharedPreferences prefs; // SharedPreferences instance
   void loadLanguage() async {
     prefs = await SharedPreferences.getInstance();

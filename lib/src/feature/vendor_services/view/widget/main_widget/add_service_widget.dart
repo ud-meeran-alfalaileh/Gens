@@ -55,7 +55,7 @@ class _AddServiceWidgetState extends State<AddServiceWidget> {
                         ],
                       ),
                       Center(
-                        child: ServicesText.addMainText("Add service"),
+                        child: ServicesText.addMainText("Add service".tr),
                       ),
                       20.0.kH,
                       Row(
@@ -87,42 +87,43 @@ class _AddServiceWidgetState extends State<AddServiceWidget> {
                           SizedBox(
                             width: context.screenWidth * .5,
                             child: ServicesText.secText(
-                                "pick image that will represend the service you will provide"),
+                                "pick image that will represend the service you will provide"
+                                    .tr),
                           ),
                         ],
                       ),
                       20.0.kH,
-                      ServicesText.secText("Service Name"),
+                      ServicesText.secText("Service Name".tr),
                       AuthForm(
                           formModel: FormModel(
                               controller: controller.title,
                               enableText: false,
-                              hintText: "Service Name",
+                              hintText: "Service Name".tr,
                               invisible: false,
                               validator: null,
                               type: TextInputType.text,
                               inputFormat: [],
                               onTap: () {})),
                       20.0.kH,
-                      ServicesText.secText("Description"),
+                      ServicesText.secText("Description".tr),
                       AuthForm(
                           maxLine: 4,
                           formModel: FormModel(
                               controller: controller.description,
                               enableText: false,
-                              hintText: "Description",
+                              hintText: "Description".tr,
                               invisible: false,
                               validator: null,
                               type: TextInputType.text,
                               inputFormat: [],
                               onTap: () {})),
                       20.0.kH,
-                      ServicesText.secText("Price"),
+                      ServicesText.secText("Price".tr),
                       AuthForm(
                           formModel: FormModel(
                               controller: controller.price,
                               enableText: false,
-                              hintText: "Price",
+                              hintText: "Price".tr,
                               invisible: false,
                               validator: null,
                               type: TextInputType.number,
@@ -140,8 +141,8 @@ class _AddServiceWidgetState extends State<AddServiceWidget> {
                                       controller.title.text.isEmpty ||
                                       controller.price.text.isEmpty) {
                                     showSnackBar(
-                                        "Error",
-                                        "Make sure all fields are filed ",
+                                        "Make sure all fields are filed".tr,
+                                        "Error".tr,
                                         Colors.red);
                                   } else {
                                     widget.type == 'edit'
@@ -152,7 +153,9 @@ class _AddServiceWidgetState extends State<AddServiceWidget> {
                                                 addServiceServyPopUp(context));
                                   }
                                 },
-                                title: widget.type == 'edit' ? "Edit" : "Add")),
+                                title: widget.type == 'edit'
+                                    ? "Edit".tr
+                                    : "Add".tr)),
                       )
                     ],
                   ),
@@ -216,7 +219,7 @@ Future<dynamic> addServiceServyPopUp(
               ),
               10.0.kH,
               ServicesText.secText(
-                  "Would you like to add any post-care instructions "),
+                  "Would you like to add any post-care instructions".tr),
               10.0.kH,
               10.0.kH,
               Row(
@@ -228,7 +231,7 @@ Future<dynamic> addServiceServyPopUp(
                       onTap: () {
                         Get.to(() => const AddPostInstructionWidget());
                       },
-                      title: 'Yes',
+                      title: 'Yes'.tr,
                     ),
                   ),
                   Container(
@@ -243,7 +246,7 @@ Future<dynamic> addServiceServyPopUp(
                         Get.back();
                         Get.back();
                       },
-                      child: Text('No',
+                      child: Text('No'.tr,
                           style: TextStyle(
                               color: AppTheme.lightAppColors.primary)),
                     ),

@@ -251,6 +251,7 @@ class RegisterController extends GetxController {
       "message": "otp"
     });
     final response = await dioConsumer.post(EndPoints.senMessage, body: body);
+    print(response.data);
     if (response.statusCode == StatusCode.ok) {
       final jsonData = json.decode(response.data);
       final otpId = jsonData['randomNumber'];
@@ -264,8 +265,8 @@ class RegisterController extends GetxController {
 
       showTopSnackBar(
         Overlay.of(context),
-        const CustomSnackBar.error(
-          message: 'Something went wrong.',
+          CustomSnackBar.error(
+          message: 'Something went wrong.'.tr,
         ),
       );
       isLoading.value = false;
@@ -281,8 +282,8 @@ class RegisterController extends GetxController {
       isLoading.value = false;
       showTopSnackBar(
         Overlay.of(context),
-        const CustomSnackBar.error(
-          message: 'Verification Code is not Correct',
+           CustomSnackBar.error(
+          message: 'Verification Code is not Correct'.tr,
         ),
       );
     }

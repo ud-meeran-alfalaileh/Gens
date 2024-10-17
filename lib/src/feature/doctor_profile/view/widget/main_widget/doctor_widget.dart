@@ -72,7 +72,7 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                                     color: AppTheme.lightAppColors.black
                                         .withOpacity(.8),
                                   )),
-                              DoctorText.mainText("Details"),
+                              DoctorText.mainText("Details".tr),
                               Obx(
                                 () => GestureDetector(
                                   onTap: () async {
@@ -136,14 +136,14 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                                       "assets/image/profile-2.svg",
                                       controller.doctor.value!.pastBookings
                                           .toString(),
-                                      "patients"),
+                                      "patients".tr),
                                   doctorRowCircle(
                                       context,
                                       "assets/image/review.svg",
                                       storyShortenText(controller
                                           .doctor.value!.avgRating
                                           .toString()),
-                                      "rating"),
+                                      "rating".tr),
                                   GestureDetector(
                                     onTap: () {
                                       _showReviewsBottomSheet(context);
@@ -153,12 +153,12 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                                         "assets/image/messages.svg",
                                         controller.doctor.value!.reviewCount
                                             .toString(),
-                                        "reviews"),
+                                        "Reviews".tr),
                                   ),
                                 ],
                               ),
                               (context.screenHeight * .03).kH,
-                              DoctorText.mainText("About Me"),
+                              DoctorText.mainText("About Me".tr),
                               (context.screenHeight * .01).kH,
                               Obx(
                                 () => GestureDetector(
@@ -200,7 +200,7 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                                 ),
                               ),
                               (context.screenHeight * .03).kH,
-                              DoctorText.mainText("Working Time"),
+                              DoctorText.mainText("Working Time".tr),
                               (context.screenHeight * .01).kH,
                               controller.doctor.value!.workingTime != ""
                                   ? Column(
@@ -218,11 +218,18 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                                       ],
                                     )
                                   : const SizedBox.shrink(),
-                              DoctorText.mainText("Services"),
+                              DoctorText.mainText("Services".tr),
                               (context.screenHeight * .01).kH,
                               controller.services.isEmpty
-                                  ? const Text(
-                                      'There is no services for this vendor')
+                                  ? Text(
+                                      'There is no services for this vendor'.tr,
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontFamily: 'Inter',
+                                        color: AppTheme
+                                            .lightAppColors.subTextcolor,
+                                      ),
+                                    )
                                   : _servicesList(context),
                               10.0.kH,
                               Column(
@@ -236,8 +243,11 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.end,
                                           children: [
-                                            Text(
-                                                "Start from ${controller.servicePrice.value.toString()}JOD"),
+                                            Get.locale!.languageCode == "en"
+                                                ? Text(
+                                                    "Start from ${controller.servicePrice.value.toString()}JOD")
+                                                : Text(
+                                                    "ابدأ من ${controller.servicePrice.value.toString()} دينار"),
                                           ],
                                         ),
                                   Text(
@@ -258,13 +268,13 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        DoctorText.mainText("Reviews"),
+                                        DoctorText.mainText("Reviews".tr),
                                         GestureDetector(
                                           onTap: () {
                                             _showReviewsBottomSheet(context);
                                           },
                                           child: Text(
-                                            "See all",
+                                            " see more".tr,
                                             style: TextStyle(
                                                 color: AppTheme
                                                     .lightAppColors.primary),
@@ -297,8 +307,8 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                               AppButton(
                                   onTap: () {
                                     controller.srevice.value == 0
-                                        ? Get.snackbar("Error",
-                                            "Select Service befor Continue")
+                                        ? Get.snackbar("Error".tr,
+                                            "Select Service before Continue".tr)
                                         : Get.to(() => BookingPage(
                                               vendorId: controller
                                                   .doctor.value!.vendorId,
@@ -339,8 +349,8 @@ class _DoctorWidgetState extends State<DoctorWidget> {
             },
             child: Obx(
               () => Container(
-                  padding: EdgeInsets.all(10),
-                  margin: EdgeInsets.all(4),
+                  padding: const EdgeInsets.all(10),
+                  margin: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
                       border:
                           Border.all(color: AppTheme.lightAppColors.maincolor),
@@ -512,9 +522,12 @@ class _DoctorWidgetState extends State<DoctorWidget> {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  const Text(
-                    "All Reviews",
-                    // style: Theme.of(context).textTheme.headline6,
+                  Text(
+                    "All Reviews".tr,
+                    style: TextStyle(
+                        color: AppTheme.lightAppColors.black,
+                        fontFamily: "Inter",
+                        fontSize: 16),
                   ),
                   10.0.kH,
                   Expanded(

@@ -30,6 +30,7 @@ class VendorDashboardText {
     return Padding(
       padding: const EdgeInsets.all(18.0),
       child: Text(
+        
         title,
         textAlign: TextAlign.center,
         style: TextStyle(

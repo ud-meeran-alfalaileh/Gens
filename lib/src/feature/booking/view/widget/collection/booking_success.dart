@@ -30,15 +30,18 @@ successBookingDialog(context, focusedDay, hourSelected) {
             children: [
               SvgPicture.asset("assets/image/Image.svg"),
               (context.screenHeight * .06).kH,
-              DoctorText.mainText("Congratulations!"),
-              BookingText.mainText(
-                  "Your appointment is confirmed for ${DateFormat.yMMMMd().format(focusedDay)}, at $hourSelected"),
+              DoctorText.mainText("Congratulations!".tr),
+              Get.locale!.languageCode == "en"
+                  ? BookingText.mainText(
+                      "Your appointment is confirmed for ${DateFormat.yMMMMd().format(focusedDay)}, at $hourSelected")
+                  : BookingText.mainText(
+                      "تم تأكيد موعدك لـ ${DateFormat.yMMMMd().format(focusedDay)}، في $hourSelected"),
               (context.screenHeight * .03).kH,
               AppButton(
                   onTap: () {
                     Get.offAll(() => const NavBarPage());
                   },
-                  title: "Done"),
+                  title: "Done".tr),
               (context.screenHeight * .05).kH,
             ],
           ),

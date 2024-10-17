@@ -104,7 +104,8 @@ doctorDashboardContainer(
                     ),
                     15.0.kW,
                     DashboardText.ratingText(
-                        "${model.numberOfBooking.toString()} Reviews"),
+                        "${model.reviewCount.toString()} "),
+                    DashboardText.ratingText('Reviews'.tr),
                   ],
                 )
               ],

@@ -34,7 +34,7 @@ class RegisterMainPage extends StatelessWidget {
                   ],
                 ),
                 100.0.kH,
-                VendorDashboardText.registerText("Register as:"),
+                VendorDashboardText.registerText("Register as:".tr),
                 30.0.kH,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -59,7 +59,7 @@ class RegisterMainPage extends StatelessWidget {
                               width: context.screenWidth * .3,
                             ),
                             15.0.kH,
-                            DashboardText.mainText("User")
+                            DashboardText.mainText("User".tr)
                           ],
                         ),
                       ),
@@ -83,7 +83,7 @@ class RegisterMainPage extends StatelessWidget {
                               width: context.screenWidth * .3,
                             ),
                             15.0.kH,
-                            DashboardText.mainText("Clinic")
+                            DashboardText.mainText("Clinic".tr)
                           ],
                         ),
                       ),

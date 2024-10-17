@@ -82,7 +82,7 @@ class VendorUpdateProfile extends StatelessWidget {
                 //     ),
                 //   ),
                 // ),
-                VendorProfileText.secText("Woking Hours "),
+                VendorProfileText.secText("Working Time".tr),
                 5.0.kH,
                 Row(
                   children: [
@@ -92,7 +92,7 @@ class VendorUpdateProfile extends StatelessWidget {
                 ),
                 10.0.kH,
 
-                VendorRegisterText.mainText("Description"),
+                VendorRegisterText.mainText("Description".tr),
                 AuthForm(
                   maxLine: 4,
                   formModel: FormModel(
@@ -115,7 +115,7 @@ class VendorUpdateProfile extends StatelessWidget {
                           onTap: () {
                             controller.updateUser(context);
                           },
-                          title: "Update")),
+                          title: "Update".tr)),
                 )
               ],
             ),

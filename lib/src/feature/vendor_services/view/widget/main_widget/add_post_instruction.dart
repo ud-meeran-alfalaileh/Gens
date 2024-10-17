@@ -27,10 +27,11 @@ class AddPostInstructionWidget extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    DashboardText.mainText("Service Post instruction"),
+                    DashboardText.mainText("Service Post instruction".tr),
                     20.0.kH,
                     Text(
-                      "How many days should these post-care instructions be followed?",
+                      "How many days should these post-care instructions be followed?"
+                          .tr,
                       textAlign: TextAlign.start,
                       style: TextStyle(
                           color: AppTheme.lightAppColors.mainTextcolor,
@@ -58,8 +59,8 @@ class AddPostInstructionWidget extends StatelessWidget {
                                         controller
                                             .updateInstructionControllers(0);
                                         showSnackBar(
-                                            "Please enter a valid number",
-                                            "Error",
+                                            "Please enter a valid number".tr,
+                                            "Error".tr,
                                             Colors.red);
                                       }
                                     } else {
@@ -70,7 +71,7 @@ class AddPostInstructionWidget extends StatelessWidget {
                                   },
                                   controller: controller.postInstructionDays,
                                   enableText: false,
-                                  hintText: "Days",
+                                  hintText: "Days".tr,
                                   invisible: false,
                                   validator: null,
                                   type: TextInputType.number,
@@ -81,7 +82,8 @@ class AddPostInstructionWidget extends StatelessWidget {
                     ),
                     60.0.kH,
                     Text(
-                      "Please list any specific aftercare guidelines, such as things the patient should avoid or steps to follow during this period.",
+                      "Please list any specific aftercare guidelines, such as things the patient should avoid or steps to follow during this period."
+                          .tr,
                       textAlign: TextAlign.start,
                       style: TextStyle(
                           color: AppTheme.lightAppColors.mainTextcolor,
@@ -110,12 +112,23 @@ class AddPostInstructionWidget extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  "Day ${index + 1}",
-                                  style: const TextStyle(
-                                      fontFamily: "Inter",
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Day".tr,
+                                      style: const TextStyle(
+                                          fontFamily: "Inter",
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    Text(
+                                      " ${index + 1}",
+                                      style: const TextStyle(
+                                          fontFamily: "Inter",
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  ],
                                 ),
                                 AuthForm(
                                     maxLine: 2,
@@ -123,7 +136,7 @@ class AddPostInstructionWidget extends StatelessWidget {
                                         controller: controller
                                             .instructionControllers[index],
                                         enableText: false,
-                                        hintText: "Post Instructions",
+                                        hintText: "Post Instructions".tr,
                                         invisible: false,
                                         validator: null,
                                         type: TextInputType.text,
@@ -140,15 +153,20 @@ class AddPostInstructionWidget extends StatelessWidget {
                               : controller.daysOfInstruction.value),
                     ),
                     AppButton(
-                        onTap: () {
-                          if (controller.postInstructionDays.text.isEmpty) {
-                            showSnackBar(
-                                "Please Fill the Field", "Error", Colors.red);
-                          } else {
-                            controller.addInstruction();
-                          }
-                        },
-                        title: "Add Instruction"),
+                      onTap: () {
+                        print('object');
+                        if (controller.postInstructionDays.text.isEmpty ||
+                            !controller.areAllInstructionsFilled()) {
+                          showSnackBar("Make sure all fields are filed".tr,
+                              "Error".tr, Colors.red);
+                          print('object');
+                        } else {
+                          print('object');
+                          controller.addInstruction();
+                        }
+                      },
+                      title: "Add Instruction".tr,
+                    ),
                     100.0.kH,
                   ],
                 ),
@@ -165,7 +183,7 @@ class AddPostInstructionWidget extends StatelessWidget {
                       ),
                     ),
                   )
-                : SizedBox.shrink()
+                : const SizedBox.shrink()
           ],
         ),
       ),

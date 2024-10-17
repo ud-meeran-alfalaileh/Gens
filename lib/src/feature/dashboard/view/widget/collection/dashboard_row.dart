@@ -23,7 +23,7 @@ SingleChildScrollView dashboardContainerRow(DashboardController controller) {
                   controller.setSelectedIndex(0);
                 },
                 isSelected: controller.selectedIndex.value == 0,
-                title: "All"),
+                title: "All".tr),
           ),
           20.0.kW,
           DashboardContainer(
@@ -33,7 +33,7 @@ SingleChildScrollView dashboardContainerRow(DashboardController controller) {
                   controller.setSelectedIndex(1);
                 },
                 isSelected: controller.selectedIndex.value == 1,
-                title: "Centers"),
+                title: "Centers".tr),
           ),
           20.0.kW,
           DashboardContainer(
@@ -44,7 +44,7 @@ SingleChildScrollView dashboardContainerRow(DashboardController controller) {
                   controller.setSelectedIndex(2);
                 },
                 isSelected: controller.selectedIndex.value == 2,
-                title: "Freelancer"),
+                title: "Freelancer".tr),
           ),
           20.0.kW,
           20.0.kW,

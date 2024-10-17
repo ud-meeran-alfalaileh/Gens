@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gens/src/config/localization/lang_list.dart';
+import 'package:gens/src/config/localization/locale_constant.dart';
 import 'package:gens/src/config/sizes/short_text.dart';
 import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
@@ -45,8 +47,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     await productController.getProduct();
     await imageController.getUserthreeImage();
     // await controller.getUser(user.userId, context);
-
-  
   }
 
   @override
@@ -164,21 +164,38 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           ProfileText.mainText(nameShortText(
               "${controller.userData.value?.fName} ${controller.userData.value?.secName}")),
           5.0.kH,
-          ProfileText.secText(
+          ProfileText.secText1(
               "+962${controller.removeLeadingZero(controller.userData.value!.phone)}"),
           5.0.kH,
-          ProfileText.secText("Age : ${controller.dateOfBirth.text}"),
-          SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(
-                  width: context.screenWidth * .46,
-                  child: ProfileText.secText(
-                      "Skin goals : ${controller.question.value?.mainSkincareGoals}"),
+          Row(
+            children: [
+              ProfileText.secText("Age".tr),
+              ProfileText.secText(controller.dateOfBirth.text),
+            ],
+          ),
+          controller.question.value?.mainSkincareGoals == null
+              ? const SizedBox.shrink()
+              : SingleChildScrollView(
+                  child: Get.locale!.languageCode == 'en'
+                      ? Column(
+                          children: [
+                            SizedBox(
+                              width: context.screenWidth * .46,
+                              child: ProfileText.secText(
+                                  "Skin goals : ${controller.question.value?.mainSkincareGoals}"),
+                            )
+                          ],
+                        )
+                      : Column(
+                          children: [
+                            SizedBox(
+                              width: context.screenWidth * .46,
+                              child: ProfileText.secText(
+                                  "أهداف : ${controller.question.value?.mainSkincareGoals}"),
+                            )
+                          ],
+                        ),
                 )
-              ],
-            ),
-          )
         ],
       ),
     );
@@ -208,19 +225,84 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   }
 
   Padding _buildHeaderButton() {
+    final localController = Get.put(LocalizationController());
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          GestureDetector(
-            onTap: () {
-              Get.to(() => const UpdateProfile());
-            },
-            child: Image.asset(
+          PopupMenuButton<int>(
+            color: AppTheme.lightAppColors.background,
+            icon: Image.asset(
               "assets/image/settings.png",
               height: 25,
             ),
+            onSelected: (value) {
+              if (value == 1) {
+                Get.to(() => const UpdateProfile());
+              } else if (value == 2) {
+                // Add any other actions here
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 1,
+                child: Row(
+                  children: [
+                    Icon(Icons.edit, color: Colors.black),
+                    SizedBox(width: 8),
+                    Text("Edit Profile"),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 2,
+                child: Row(
+                  children: [
+                    Icon(Icons.favorite, color: Colors.black),
+                    SizedBox(width: 8),
+                    Text(
+                      "Edit Profile",
+                      style: TextStyle(
+                          color: AppTheme.lightAppColors.black,
+                          fontFamily: "Inter"),
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text("Select Language"),
+                        content: Text(
+                            "Choose a language for your profile settings."),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              localController.updateLanguage(
+                                  Languages.locale[1]['locale']);
+
+                              Navigator.of(context).pop();
+                            },
+                            child: Text("Arabic"),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              localController.updateLanguage(
+                                  Languages.locale[0]['locale']);
+                              Navigator.of(context).pop();
+                            },
+                            child: Text("English"),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
           ),
           10.0.kW,
           GestureDetector(

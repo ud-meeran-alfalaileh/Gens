@@ -173,10 +173,10 @@ vendorBookingContainerToday(BuildContext context, index, VendorBooking model) {
                       ? Column(
                           children: [
                             statusWidget(model, statusUpadating, context,
-                                "Upcoming", 'Accept'),
+                                "Upcoming", 'Accept'.tr),
                             10.0.kH,
                             statusWidgetReject(model, statusUpadating, context,
-                                "Rejected", 'Reject'),
+                                "Rejected", 'Reject'.tr),
                           ],
                         )
                       : model.status == "Upcoming"
@@ -185,10 +185,10 @@ vendorBookingContainerToday(BuildContext context, index, VendorBooking model) {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 statusWidgetToday(model, statusUpadating,
-                                    context, "Done", "Done", index),
+                                    context, "Done", "Done".tr, index),
                                 5.0.kH,
                                 statusWidgetToday(model, statusUpadating,
-                                    context, "Absent", "Absent", index),
+                                    context, "Absent", "Absent".tr, index),
                               ],
                             )
                           : const Text("Done")
@@ -331,15 +331,15 @@ vendorBookingContainer(BuildContext context, index, VendorBooking model) {
                       ? Column(
                           children: [
                             statusWidget(model, statusUpadating, context,
-                                "Upcoming", 'Accept'),
+                                "Upcoming", 'Accept'.tr),
                             10.0.kH,
                             statusWidgetReject(model, statusUpadating, context,
-                                "Rejected", 'Reject'),
+                                "Rejected", 'Reject'.tr),
                           ],
                         )
                       : model.status == "Upcoming"
                           ? statusWidget(model, statusUpadating, context,
-                              "Waiting", 'Waiting')
+                              "Waiting", 'Waiting'.tr)
                           : Text(model.status)
             ])
           ],
@@ -428,7 +428,7 @@ SingleChildScrollView vendorDashboardContainerRow(
                   controller.setSelectedIndex(0);
                 },
                 isSelected: controller.selectedIndex.value == 0,
-                title: "All"),
+                title: "All".tr),
           ),
           20.0.kW,
           DashboardContainer(
@@ -438,7 +438,7 @@ SingleChildScrollView vendorDashboardContainerRow(
                   controller.setSelectedIndex(1);
                 },
                 isSelected: controller.selectedIndex.value == 1,
-                title: "Today"),
+                title: "Today".tr),
           ),
           20.0.kW,
           DashboardContainer(
@@ -448,7 +448,7 @@ SingleChildScrollView vendorDashboardContainerRow(
                   controller.setSelectedIndex(2);
                 },
                 isSelected: controller.selectedIndex.value == 2,
-                title: "Waiting"),
+                title: "Waiting".tr),
           ),
           20.0.kW,
           DashboardContainer(
@@ -459,7 +459,7 @@ SingleChildScrollView vendorDashboardContainerRow(
                   controller.setSelectedIndex(3);
                 },
                 isSelected: controller.selectedIndex.value == 3,
-                title: "Upcoming"),
+                title: "Upcoming".tr),
           ),
           20.0.kW,
           20.0.kW,
@@ -486,7 +486,13 @@ Future<dynamic> pendingDialog(BuildContext context, model, statusUpadating) {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Text('Do you want to remove the time from the schedule'),
+              Text(
+                'Do you want to remove the time from the schedule'.tr,
+                style: TextStyle(
+                    fontFamily: "Inter",
+                    fontSize: 16,
+                    color: AppTheme.lightAppColors.black),
+              ),
               20.0.kH,
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -503,7 +509,7 @@ Future<dynamic> pendingDialog(BuildContext context, model, statusUpadating) {
                               statusUpadating,
                               true);
                         },
-                        title: "Yes"),
+                        title: "Yes".tr),
                   ),
                   TextButton(
                       onPressed: () async {
@@ -512,7 +518,7 @@ Future<dynamic> pendingDialog(BuildContext context, model, statusUpadating) {
                             model.id, model, statusUpadating, false);
                       },
                       child: Text(
-                        "No",
+                        "No".tr,
                         style:
                             TextStyle(color: AppTheme.lightAppColors.primary),
                       )),

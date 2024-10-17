@@ -63,7 +63,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                       children: [
                         (context.screenWidth * .15).kW,
                         const Spacer(),
-                        HistoryText.headerText("My Bookings"),
+                        HistoryText.headerText("My Bookings".tr),
                         const Spacer(),
                         IconButton(
                             onPressed: () {
@@ -81,9 +81,9 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        _buildNavItem(0, 'Pending'),
-                        _buildNavItem(1, 'Upcoming'),
-                        _buildNavItem(2, 'Done'),
+                        _buildNavItem(0, 'Pending'.tr),
+                        _buildNavItem(1, 'Upcoming'.tr),
+                        _buildNavItem(2, 'DoneBooking'.tr),
                       ],
                     ),
                     // (context.screenHeight * .03).kH,
@@ -95,6 +95,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
+                                    (context.screenHeight * .1).kH,
                                     Image.asset(
                                       "assets/image/no.png",
                                       width: context.screenWidth * .2,
@@ -102,7 +103,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                                     ),
                                     20.0.kW,
                                     ServicesText.secText(
-                                        "There Is No Available booking"),
+                                        "There Is No Available booking".tr),
                                   ],
                                 )
                               : SizedBox(

@@ -34,7 +34,7 @@ class VendorHistoryWidget extends StatelessWidget {
                             color: AppTheme.lightAppColors.primary,
                           )),
                       const Spacer(),
-                      ProfileText.mainText("History"),
+                      ProfileText.mainText("history".tr),
                       const Spacer(),
                       40.0.kW
                     ],
@@ -50,7 +50,8 @@ class VendorHistoryWidget extends StatelessWidget {
                             ),
                             10.0.kH,
                             VendorDashboardText.emptyText(
-                                "Currently, there are no History available for you"),
+                                "Currently, there are no History available for you"
+                                    .tr),
                           ],
                         )
                       : SizedBox(
@@ -146,8 +147,14 @@ class VendorHistoryWidget extends StatelessWidget {
                     ],
                   ),
                   3.0.kH,
-                  VendorDashboardText.timeText(
-                      "From ${model.startTime} to ${model.endTime}")
+                  Row(
+                    children: [
+                      VendorDashboardText.timeText("From".tr),
+                      VendorDashboardText.timeText(" ${model.startTime} "),
+                      VendorDashboardText.timeText("To".tr),
+                      VendorDashboardText.timeText(model.endTime)
+                    ],
+                  )
                 ],
               ),
             ])

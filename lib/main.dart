@@ -69,7 +69,7 @@ class _MyAppState extends State<MyApp> {
       controller: EventController(),
       child: GetMaterialApp(
           title: 'Gens',
-          locale: const Locale('en', 'US'),
+          locale: const Locale('ar', 'JO'),
           translations: LocalStrings(),
           theme: AppTheme.light,
           debugShowCheckedModeBanner: false,

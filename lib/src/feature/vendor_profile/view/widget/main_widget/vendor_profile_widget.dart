@@ -182,7 +182,7 @@ class _VendorProfileWidgetState extends State<VendorProfileWidget> {
                     transition: Transition.downToUp);
               },
               isSelected: controller.selectedIndex.value == 2,
-              title: 'History'.tr,
+              title: 'history'.tr,
             ),
             VendorProfileRow(
               onTap: () {

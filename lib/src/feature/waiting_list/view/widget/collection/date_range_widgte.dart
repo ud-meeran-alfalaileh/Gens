@@ -36,7 +36,7 @@ class DateRangeWidget extends GetView<WaitingListController> {
                         color: AppTheme.lightAppColors.black.withOpacity(.8),
                       )),
                   const Spacer(),
-                  DoctorText.mainText("Date Range"),
+                  DoctorText.mainText("Range Date".tr),
                   const Spacer(),
                   (30.0).kW,
                 ],
@@ -57,7 +57,7 @@ class DateRangeWidget extends GetView<WaitingListController> {
                         Get.back();
                       }
                     },
-                    title: ("Confirm")),
+                    title: ("Confirm".tr)),
               ),
             ],
           ),
@@ -167,12 +167,16 @@ class DateRangeWidget extends GetView<WaitingListController> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: AppTheme.lightAppColors.background,
           title: const Text("Notice"),
-          content:
-              const Text("The doctor does not work on Fridays or Sundays."),
+          content: Text(
+            "The doctor does not work on some selected day".tr,
+            style: TextStyle(
+                color: AppTheme.lightAppColors.black, fontFamily: "Inter"),
+          ),
           actions: [
             TextButton(
-              child: const Text("OK"),
+              child: const Text("Done"),
               onPressed: () {
                 Navigator.of(context).pop();
               },

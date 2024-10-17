@@ -411,12 +411,13 @@ class SkinDetailsPage extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    SkinText.questionText('Create Profile '),
-                    ProfileText.secText('5 min'),
+                    SkinText.questionText('Create Profile'.tr),
+                    ProfileText.secText('5 min'.tr),
                   ],
                 ),
                 SkinText.secText(
-                    'To continue building your profile, start Questionnaire.')
+                    'To continue building your profile, start Questionnaire.'
+                        .tr)
               ],
             )
           ],

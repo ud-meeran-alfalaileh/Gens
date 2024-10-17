@@ -63,7 +63,7 @@ dependencies:
   flutter_phone_direct_caller: ^2.1.1
   file_picker: ^8.1.2
   calendar_view: ^1.2.0
-  onesignal_flutter: ^5.2.6
+  onesignal_flutter: ^5.2.1
   syncfusion_flutter_calendar: ^27.1.52
 
 

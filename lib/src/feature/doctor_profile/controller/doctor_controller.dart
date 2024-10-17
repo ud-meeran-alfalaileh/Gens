@@ -103,9 +103,8 @@ class DoctorController extends GetxController {
         "vendorId": vendorId,
         "isFav": true,
       });
-      final response = await dioConsumer.post(EndPoints.postFav, body: body);
-      print(response);
-      getFav(vendorId);
+    await dioConsumer.post(EndPoints.postFav, body: body);
+       getFav(vendorId);
     }
   }
 
@@ -180,8 +179,7 @@ class DoctorController extends GetxController {
     if (await networkInfo.isConnected) {
       final response = await dioConsumer.get(EndPoints.getVendor);
 
-      print(response.data);
-      if (response.statusCode == StatusCode.ok) {
+       if (response.statusCode == StatusCode.ok) {
         try {
           final List<dynamic> jsonData = json.decode(response.data);
 

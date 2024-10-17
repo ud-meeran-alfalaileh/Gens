@@ -20,14 +20,8 @@ class SpalshController extends GetxController {
     bool? isFirstTimee = prefs.getBool('isFirstTime');
 
     // Handle the null case
-    if (isFirstTimee == null) {
-      // If it's the first time, set the value to true and save it
-      isFirstTime.value = true;
-      await prefs.setBool('isFirstTime', true);
-    } else {
-      isFirstTime.value = isFirstTimee;
-    }
-
+    isFirstTime.value = isFirstTimee!;
+  
     // To verify the value of isFirstTime
   }
 

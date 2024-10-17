@@ -15,6 +15,7 @@ import 'package:gens/src/feature/login/view/pages/login_page.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 // ignore: depend_on_referenced_packages
 // For extracting filename
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -132,6 +133,8 @@ class VendorProfileController extends GetxController {
 
   void logout() async {
     await user.clearVendorId();
+    OneSignal.logout();
+
     Get.offAll(() => const LoginPage());
   }
 

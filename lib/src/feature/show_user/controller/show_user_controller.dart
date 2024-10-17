@@ -62,7 +62,8 @@ class ShowUserController extends GetxController {
       }
     } catch (e) {
       print(e);
-      // showSnackBar("Error", e, Colors.red);
+        isLoading.value = false;
+
     }
   }
 
@@ -70,7 +71,7 @@ class ShowUserController extends GetxController {
     isLoading.value = true;
     final response =
         await dioConsumer.get('${EndPoints.getProductDetail}$userId');
-    print(response.body);
+    print(response.data);
     if (response.statusCode == StatusCode.ok) {
       var data = jsonDecode(response.data);
       isLoading.value = true;
