@@ -6,8 +6,10 @@ import 'package:gens/src/core/utils/app_button.dart';
 import 'package:gens/src/feature/dashboard/model/dashboard_filter_model.dart';
 import 'package:gens/src/feature/dashboard/view/widget/collection/profile_containers.dart';
 import 'package:gens/src/feature/history/model/history_model.dart';
+import 'package:gens/src/feature/login/model/login_form_model.dart';
 import 'package:gens/src/feature/show_user/view/page/show_user_page.dart';
 import 'package:gens/src/feature/vendor_dashboard/controller/vendor_dashboard_controoler.dart';
+import 'package:gens/src/feature/vendor_dashboard/view/widget/collection/note_form.dart';
 import 'package:gens/src/feature/vendor_dashboard/view/widget/text/vendor_dashboard_text.dart';
 import 'package:get/get.dart';
 
@@ -15,9 +17,8 @@ final vendorGController = Get.put(VendorDashboardController());
 
 Container vendorHeader(BuildContext context, waitingListLength) {
   return Container(
-    width: context.screenWidth * 0.99,
-    height: context.screenHeight * .08,
-    padding: const EdgeInsets.symmetric(horizontal: 10),
+    // width: context.screenWidth * 0.99,
+    // padding: const EdgeInsets.symmetric(horizontal: 10),
     decoration: BoxDecoration(
       color: AppTheme.lightAppColors.background,
     ),
@@ -28,16 +29,9 @@ Container vendorHeader(BuildContext context, waitingListLength) {
           child: Row(
             children: [
               Image.asset(
-                "assets/image/headerLogo.png",
-                height: 30,
-                width: 30,
-                fit: BoxFit.cover,
-              ),
-              10.0.kW,
-              Image.asset(
                 "assets/image/Logo2 2.png",
-                height: 40,
-                width: 80,
+                height: 50,
+                width: 100,
                 fit: BoxFit.fitWidth,
               ),
               const Spacer(),
@@ -80,7 +74,8 @@ Container vendorHeader(BuildContext context, waitingListLength) {
   );
 }
 
-vendorBookingContainerToday(BuildContext context, index, VendorBooking model) {
+vendorBookingContainerToday(BuildContext context, index, VendorBooking model,
+    VendorDashboardController controller) {
   RxBool statusUpadating = false.obs;
 
   return Obx(
@@ -184,15 +179,66 @@ vendorBookingContainerToday(BuildContext context, index, VendorBooking model) {
                               mainAxisAlignment: MainAxisAlignment.end,
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                statusWidgetToday(model, statusUpadating,
-                                    context, "Done", "Done".tr, index),
+                                statusWidgetToday(
+                                  model,
+                                  statusUpadating,
+                                  context,
+                                  "Done",
+                                  "Done".tr,
+                                  index,
+                                ),
                                 5.0.kH,
-                                statusWidgetToday(model, statusUpadating,
-                                    context, "Absent", "Absent".tr, index),
+                                statusWidgetToday(
+                                  model,
+                                  statusUpadating,
+                                  context,
+                                  "Absent",
+                                  "Absent".tr,
+                                  index,
+                                ),
                               ],
                             )
                           : const Text("Done")
-            ])
+            ]),
+            model.showNote
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      10.0.kH,
+                      VendorDashboardText.thirdText("Note"),
+                      7.0.kH,
+                      NoteForm(
+                        formModel: FormModel(
+                            controller: controller.noteMessage,
+                            enableText: false,
+                            hintText: "Add Note..",
+                            invisible: false,
+                            validator: null,
+                            type: TextInputType.text,
+                            inputFormat: [],
+                            onTap: () {}),
+                      ),
+                      10.0.kH,
+                      AppButton(
+                          onTap: () {
+                            controller.addNote(
+                                model, controller.noteMessage.text.trim());
+                          },
+                          title: "Submit".tr)
+                    ],
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      10.0.kH,
+                      model.note == ""
+                          ? const SizedBox.shrink()
+                          : VendorDashboardText.thirdText("Note"),
+                      VendorDashboardText.timeText(model.note)
+                    ],
+                  )
           ],
         ),
       ),
@@ -200,31 +246,37 @@ vendorBookingContainerToday(BuildContext context, index, VendorBooking model) {
   );
 }
 
-GestureDetector statusWidgetToday(VendorBooking model, RxBool statusUpadating,
-    BuildContext context, status, title, index) {
+GestureDetector statusWidgetToday(
+  VendorBooking model,
+  RxBool statusUpadating,
+  BuildContext context,
+  String status,
+  String title,
+  int index,
+  // Pass showNote as a parameter
+) {
   return GestureDetector(
     onTap: () async {
-      // print(object)
-      print(status);
       model.status == "Pending"
           ? pendingDialog(context, model, statusUpadating)
-          : await vendorGController.updateBookingStatus(
-              '$status', model.id, model, statusUpadating, true);
+          : await vendorGController.updateBookingStatus('$status', model.id,
+              model, statusUpadating, true, model.userPhoneNumber);
+
       if (status == "Absent" || status == "Done") {
         vendorGController.filteredBooking.remove(model);
       }
-      // model.status = "Upcoming";
     },
     child: Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       height: context.screenHeight * .04,
       decoration: BoxDecoration(
-          color: model.status == "Done"
-              ? Colors.green
-              : title == "Didn't show"
-                  ? Colors.red
-                  : AppTheme.lightAppColors.primary,
-          borderRadius: BorderRadius.circular(20)),
+        color: model.status == "Done"
+            ? Colors.green
+            : title == "Didn't show"
+                ? Colors.red
+                : AppTheme.lightAppColors.primary,
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: Center(
         child: Text(
           title,
@@ -340,8 +392,9 @@ vendorBookingContainer(BuildContext context, index, VendorBooking model) {
                       : model.status == "Upcoming"
                           ? statusWidget(model, statusUpadating, context,
                               "Waiting", 'Waiting'.tr)
-                          : Text(model.status)
-            ])
+                          : Text(model.status),
+            ]),
+            16.0.kH,
           ],
         ),
       ),
@@ -357,8 +410,8 @@ GestureDetector statusWidget(VendorBooking model, RxBool statusUpadating,
           ? pendingDialog(context, model, statusUpadating)
           : status == 'Waiting'
               ? null
-              : vendorGController.updateBookingStatus(
-                  '$status', model.id, model, statusUpadating, true);
+              : vendorGController.updateBookingStatus('$status', model.id,
+                  model, statusUpadating, true, model.userPhoneNumber);
       // model.status = "Upcoming";
     },
     child: Container(
@@ -388,15 +441,15 @@ GestureDetector statusWidgetReject(VendorBooking model, RxBool statusUpadating,
     BuildContext context, status, title) {
   return GestureDetector(
     onTap: () {
-      vendorGController.updateBookingStatus(
-          '$status', model.id, model, statusUpadating, true);
+      vendorGController.updateBookingStatus('$status', model.id, model,
+          statusUpadating, true, model.userPhoneNumber);
       // model.status = "Upcoming";
     },
     child: Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       height: context.screenHeight * .04,
       decoration: BoxDecoration(
-          color: AppTheme.lightAppColors.bordercolor,
+          color: AppTheme.lightAppColors.secondaryColor,
           borderRadius: BorderRadius.circular(20)),
       child: Center(
         child: Text(
@@ -411,60 +464,76 @@ GestureDetector statusWidgetReject(VendorBooking model, RxBool statusUpadating,
   );
 }
 
-SingleChildScrollView vendorDashboardContainerRow(
-    VendorDashboardController controller) {
-  return SingleChildScrollView(
-    scrollDirection: Axis.horizontal,
-    child: Obx(
-      () => Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          DashboardContainer(
-            model: DashboardFilterModel(
-                onTap: () {
-                  controller.filterBooking("");
+vendorDashboardContainerRow(VendorDashboardController controller) {
+  return Container(
+    // color: AppTheme,
+    child: SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Obx(
+        () => Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            DashboardContainer(
+              model: DashboardFilterModel(
+                  onTap: () {
+                    controller.filterBooking("");
 
-                  controller.setSelectedIndex(0);
-                },
-                isSelected: controller.selectedIndex.value == 0,
-                title: "All".tr),
-          ),
-          20.0.kW,
-          DashboardContainer(
-            model: DashboardFilterModel(
-                onTap: () {
-                  controller.filterBooking("Today");
-                  controller.setSelectedIndex(1);
-                },
-                isSelected: controller.selectedIndex.value == 1,
-                title: "Today".tr),
-          ),
-          20.0.kW,
-          DashboardContainer(
-            model: DashboardFilterModel(
-                onTap: () {
-                  controller.filterBooking("Pending");
-                  controller.setSelectedIndex(2);
-                },
-                isSelected: controller.selectedIndex.value == 2,
-                title: "Waiting".tr),
-          ),
-          20.0.kW,
-          DashboardContainer(
-            model: DashboardFilterModel(
-                onTap: () {
-                  controller.filterBooking("Upcoming");
+                    controller.setSelectedIndex(0);
+                    controller.setPageIndex(0);
+                  },
+                  isSelected: controller.selectedIndex.value == 0,
+                  title: "All".tr),
+            ),
+            20.0.kW,
+            DashboardContainer(
+              model: DashboardFilterModel(
+                  onTap: () {
+                    controller.filterBooking("Today");
+                    controller.setSelectedIndex(1);
+                    controller.setPageIndex(0);
+                  },
+                  isSelected: controller.selectedIndex.value == 1,
+                  title: "Today".tr),
+            ),
+            20.0.kW,
+            DashboardContainer(
+              model: DashboardFilterModel(
+                  onTap: () {
+                    controller.filterBooking("Pending");
+                    controller.setSelectedIndex(2);
+                    controller.setPageIndex(0);
+                  },
+                  isSelected: controller.selectedIndex.value == 2,
+                  title: "Waiting".tr),
+            ),
+            20.0.kW,
+            DashboardContainer(
+              model: DashboardFilterModel(
+                  onTap: () {
+                    controller.filterBooking("Upcoming");
+                    controller.setPageIndex(0);
+                    controller.setSelectedIndex(3);
+                  },
+                  isSelected: controller.selectedIndex.value == 3,
+                  title: "Upcoming".tr),
+            ),
+            20.0.kW,
+            DashboardContainer(
+              model: DashboardFilterModel(
+                  onTap: () {
+                    controller.setSelectedIndex(4);
 
-                  controller.setSelectedIndex(3);
-                },
-                isSelected: controller.selectedIndex.value == 3,
-                title: "Upcoming".tr),
-          ),
-          20.0.kW,
-          20.0.kW,
-          20.0.kW,
-        ],
+                    controller.setPageIndex(1);
+                  },
+                  isSelected: controller.selectedIndex.value == 4,
+                  title: "Done".tr),
+            ),
+            20.0.kW,
+            20.0.kW,
+            20.0.kW,
+          ],
+        ),
       ),
     ),
   );
@@ -507,15 +576,21 @@ Future<dynamic> pendingDialog(BuildContext context, model, statusUpadating) {
                               model.id,
                               model,
                               statusUpadating,
-                              true);
+                              true,
+                              model.userPhoneNumber);
                         },
                         title: "Yes".tr),
                   ),
                   TextButton(
                       onPressed: () async {
                         Get.back();
-                        await vendorGController.updateBookingStatus('Upcoming',
-                            model.id, model, statusUpadating, false);
+                        await vendorGController.updateBookingStatus(
+                            'Upcoming',
+                            model.id,
+                            model,
+                            statusUpadating,
+                            false,
+                            model.userPhoneNumber);
                       },
                       child: Text(
                         "No".tr,

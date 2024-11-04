@@ -18,10 +18,12 @@ class BookingWidget extends StatelessWidget {
       {super.key,
       required this.vendorId,
       required this.type,
+      required this.vendorPhone,
       required this.bookId});
   final int? bookId;
   final String type;
   final int vendorId;
+  final String vendorPhone;
 
   @override
   Widget build(BuildContext context) {
@@ -59,140 +61,138 @@ class BookingWidget extends StatelessWidget {
         ),
         SliverToBoxAdapter(
           child: Obx(
-            () => Stack(
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.only(left: 20, right: 10, bottom: 30),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          DoctorText.mainText("Select Date".tr),
-                        ],
+            () => controller.isBooking.value
+                ? Container(
+                    width: context.screenWidth,
+                    height: context.screenHeight,
+                    color: AppTheme.lightAppColors.black.withOpacity(0.1),
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: AppTheme.lightAppColors.primary,
                       ),
-                      (context.screenHeight * .02).kH,
-                      Obx(
-                        () => calendarContainer(controller, vendorId),
-                      ),
-                      (context.screenHeight * .03).kH,
-                      Row(
-                        children: [
-                          DoctorText.mainText("Select Hour".tr),
-                        ],
-                      ),
-                      (context.screenHeight * .01).kH,
-                      Obx(
-                        () => controller.isLoading.value
-                            ? CircularProgressIndicator(
-                                color: AppTheme.lightAppColors.primary,
-                              )
-                            : controller.workingHors.isEmpty
-                                ? Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        "assets/image/no.png",
-                                        width: context.screenWidth * .2,
-                                      ),
-                                      20.0.kW,
-                                      ServicesText.secText('noTime'.tr),
-                                    ],
-                                  )
-                                : hourContainer(context, controller),
-                      ),
-                      (context.screenHeight * .02).kH,
-                      SizedBox(
-                        width: context.screenWidth * .6,
-                        child: AppButton(
-                            onTap: () {
-                              if (controller.selectedDay.value == null) {
-                                showTopSnackBar(
-                                  Overlay.of(context),
-                                  CustomSnackBar.error(
-                                    message: 'Please Select a Day'.tr,
-                                  ),
-                                );
-                              } else if (controller.hourSelected.value == "") {
-                                showTopSnackBar(
-                                  Overlay.of(context),
-                                  CustomSnackBar.error(
-                                    message: 'Please Select a Hour'.tr,
-                                  ),
-                                );
-                              } else {
-                                controller.isBooking.value = true;
-                                controller.postBooking(
-                                    doctorController.srevice.value,
-                                    vendorId,
-                                    context,
-                                    type,
-                                    bookId);
-                              }
-                            },
-                            title: "Book Appointment".tr),
-                      ),
-                      10.0.kH,
-                      Text(
-                        "Don't see you Preference".tr,
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 14,
-                          color: AppTheme.lightAppColors.black,
-                          fontWeight: FontWeight
-                              .w500, // Use FontWeight.bold for the bold variant
+                    ),
+                  )
+                : Padding(
+                    padding:
+                        const EdgeInsets.only(left: 20, right: 10, bottom: 30),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            DoctorText.mainText("Select Date".tr),
+                          ],
                         ),
-                      ),
-                      10.0.kH,
-                      GestureDetector(
-                          onTap: () {
-                            Get.to(() => WaitingListPage(
-                                  dayOfTheWeek: controller.dayOfWeek.value,
-                                  data: controller.dateFormat
-                                      .format(controller.focusedDay.value),
-                                  vendorId: vendorId,
-                                  serviceId: doctorController.srevice.value,
-                                ));
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            width: context.screenWidth * .6,
-                            decoration: BoxDecoration(
-                                color: AppTheme.lightAppColors.bordercolor,
-                                borderRadius: BorderRadius.circular(20)),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Text(
-                                  "Join the Wishing List".tr,
-                                  style: TextStyle(
-                                    fontFamily: 'Inter',
-                                    fontSize: 15,
-                                    color: AppTheme.lightAppColors.background,
-                                    fontWeight: FontWeight
-                                        .w500, // Use FontWeight.bold for the bold variant
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ))
-                    ],
-                  ),
-                ),
-                controller.isBooking.value
-                    ? Container(
-                        width: context.screenWidth,
-                        height: context.screenHeight,
-                        color: AppTheme.lightAppColors.black.withOpacity(0.1),
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            color: AppTheme.lightAppColors.primary,
+                        (context.screenHeight * .02).kH,
+                        Obx(
+                          () => calendarContainer(controller, vendorId),
+                        ),
+                        (context.screenHeight * .03).kH,
+                        Row(
+                          children: [
+                            DoctorText.mainText("Select Hour".tr),
+                          ],
+                        ),
+                        (context.screenHeight * .01).kH,
+                        Obx(
+                          () => controller.isLoading.value
+                              ? CircularProgressIndicator(
+                                  color: AppTheme.lightAppColors.primary,
+                                )
+                              : controller.workingHors.isEmpty
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset(
+                                          "assets/image/no.png",
+                                          width: context.screenWidth * .2,
+                                        ),
+                                        20.0.kW,
+                                        ServicesText.secText('noTime'.tr),
+                                      ],
+                                    )
+                                  : hourContainer(context, controller),
+                        ),
+                        (context.screenHeight * .02).kH,
+                        SizedBox(
+                          width: context.screenWidth * .6,
+                          child: AppButton(
+                              onTap: () {
+                                if (controller.selectedDay.value == null) {
+                                  showTopSnackBar(
+                                    Overlay.of(context),
+                                    CustomSnackBar.error(
+                                      message: 'Please Select a Day'.tr,
+                                    ),
+                                  );
+                                } else if (controller.hourSelected.value ==
+                                    "") {
+                                  showTopSnackBar(
+                                    Overlay.of(context),
+                                    CustomSnackBar.error(
+                                      message: 'Please Select a Hour'.tr,
+                                    ),
+                                  );
+                                } else {
+                                  // controller.isBooking.value = true;
+                                  controller.postBooking(
+                                      doctorController.srevice.value,
+                                      vendorId,
+                                      context,
+                                      type,
+                                      bookId,
+                                      vendorPhone);
+                                }
+                              },
+                              title: "Book Appointment".tr),
+                        ),
+                        10.0.kH,
+                        Text(
+                          "Don't see you Preference".tr,
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 14,
+                            color: AppTheme.lightAppColors.black,
+                            fontWeight: FontWeight
+                                .w500, // Use FontWeight.bold for the bold variant
                           ),
                         ),
-                      )
-                    : const SizedBox.shrink()
-              ],
-            ),
+                        10.0.kH,
+                        GestureDetector(
+                            onTap: () {
+                              Get.to(() => WaitingListPage(
+                                    
+                                    vendorId: vendorId,
+                                    serviceId: doctorController.srevice.value,
+                                    vendorPhone: vendorPhone.toString(),
+                                  ));
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              width: context.screenWidth * .6,
+                              decoration: BoxDecoration(
+                                  color: AppTheme.lightAppColors.bordercolor,
+                                  borderRadius: BorderRadius.circular(20)),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Text(
+                                    "Join the Wishing List".tr,
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 15,
+                                      color: AppTheme.lightAppColors.background,
+                                      fontWeight: FontWeight
+                                          .w500, // Use FontWeight.bold for the bold variant
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ))
+                      ],
+                    ),
+                  ),
           ),
         ),
       ]),

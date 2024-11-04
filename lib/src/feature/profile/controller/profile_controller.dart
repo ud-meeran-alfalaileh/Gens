@@ -202,6 +202,8 @@ class ProfileController extends GetxController {
 
   Future<String?> uploadImageToFirebase(File pickedFile, context) async {
     try {
+      isLoadingImg.value = true;
+
       // Create a reference to Firebase Storage
       final storageRef = FirebaseStorage.instance
           .ref()
@@ -221,13 +223,40 @@ class ProfileController extends GetxController {
   }
 
   Future<void> pickImages(context) async {
-    isLoadingImg.value = true;
     try {
       final pickedFile =
           await ImagePicker().pickImage(source: ImageSource.gallery);
+
       if (pickedFile != null) {
         File image = File(pickedFile.path);
-        isUpdating.value = true;
+        isUpdating.value = false;
+        Get.back();
+
+        await uploadImageToFirebase(image, context);
+
+        isUpdating.value = false;
+      }
+    } catch (e) {
+      isUpdating.value = false;
+
+      if (Get.isDialogOpen ?? false) {
+        Get.back();
+        openAppSettings();
+      }
+      throw Exception('Error picking image: $e');
+    }
+  }
+
+  Future<void> takeImages(context) async {
+    // await requestPermissions();
+
+    try {
+      final pickedFile =
+          await ImagePicker().pickImage(source: ImageSource.camera);
+
+      if (pickedFile != null) {
+        File image = File(pickedFile.path);
+        isUpdating.value = false;
 
         await uploadImageToFirebase(image, context);
 
@@ -235,11 +264,14 @@ class ProfileController extends GetxController {
         isUpdating.value = false;
       }
     } catch (e) {
+      isUpdating.value = false;
+
       if (Get.isDialogOpen ?? false) {
         Get.back();
+        isUpdating.value = false;
+
         openAppSettings();
       }
-      throw Exception('Error picking image: $e');
     }
   }
 

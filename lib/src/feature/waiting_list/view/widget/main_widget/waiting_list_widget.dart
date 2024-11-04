@@ -15,15 +15,12 @@ import 'package:get/get.dart';
 class WaitingListWidget extends StatefulWidget {
   const WaitingListWidget(
       {super.key,
-      required this.dayOfTheWeek,
-      required this.data,
       required this.serviceId,
+      required this.vendorPhone,
       required this.vendorId});
   final int vendorId;
+  final String vendorPhone;
   final int serviceId;
-
-  final String dayOfTheWeek;
-  final String data;
 
   @override
   State<WaitingListWidget> createState() => _WaitingListWidgetState();
@@ -80,7 +77,17 @@ class _WaitingListWidgetState extends State<WaitingListWidget> {
                           WaitingListText.secText("Range Date".tr),
                           controller.formattedEnd.value == '' ||
                                   controller.formattedStart.value == ''
-                              ? WaitingListText.thirdText("Select Date".tr)
+                              ? Row(
+                                  children: [
+                                    WaitingListText.selectDateText(
+                                        "Select Date".tr),
+                                    Icon(
+                                      Icons.arrow_right_sharp,
+                                      color: AppTheme
+                                          .lightAppColors.secondaryColor,
+                                    )
+                                  ],
+                                )
                               : Column(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -114,11 +121,15 @@ class _WaitingListWidgetState extends State<WaitingListWidget> {
                         width: context.screenWidth * .22,
                         height: context.screenHeight * .05,
                         child: AuthForm(
+                          ontap: () {
+                            controller.workingTime(
+                                context, controller.startTime);
+                          },
                           formModel: FormModel(
                             onTap: () {},
-                            enableText: false,
+                            enableText: true,
                             controller: controller.startTime,
-                            hintText: "00",
+                            hintText: "00:00", // For hour-only
                             invisible: false,
                             validator: null,
                             type: TextInputType.phone,
@@ -136,20 +147,28 @@ class _WaitingListWidgetState extends State<WaitingListWidget> {
                       SizedBox(
                         width: context.screenWidth * .22,
                         height: context.screenHeight * .05,
-                        child: AuthForm(
-                          formModel: FormModel(
-                            onTap: () {},
-                            enableText: false,
-                            controller: controller.endTime,
-                            hintText: "00",
-                            invisible: false,
-                            validator: null,
-                            type: TextInputType.phone,
-                            inputFormat: [
-                              MaxValueTextInputFormatter(maxValue: 23),
-                              LengthLimitingTextInputFormatter(2),
-                              FilteringTextInputFormatter.digitsOnly,
-                            ],
+                        child: GestureDetector(
+                          child: AuthForm(
+                            ontap: () {
+                              controller.workingTime(
+                                  context, controller.endTime);
+                            },
+                            formModel: FormModel(
+                              onTap: () {
+                                controller.workingTime(
+                                    context, controller.endTime);
+                              },
+                              enableText: true,
+                              controller: controller.endTime,
+                              hintText: "00:00", // For full hh:mm format
+                              invisible: false,
+                              validator: null,
+                              type: TextInputType.phone,
+                              inputFormat: [
+                                TimeInputFormatter(),
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -176,7 +195,10 @@ class _WaitingListWidgetState extends State<WaitingListWidget> {
                   AppButton(
                       onTap: () {
                         controller.addWaitingList(
-                            widget.vendorId, widget.serviceId, context);
+                            widget.vendorId,
+                            widget.serviceId,
+                            context,
+                            widget.vendorPhone.toString());
                       },
                       title: "Join Waiting list".tr),
                   20.0.kH,
@@ -213,11 +235,30 @@ class MaxValueTextInputFormatter extends TextInputFormatter {
     if (newValue.text.isEmpty) return newValue;
 
     final int value = int.tryParse(newValue.text) ?? 0;
-
     if (value > maxValue) {
       return oldValue;
     }
 
     return newValue;
+  }
+}
+
+class TimeInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    if (newValue.text.length > 5) return oldValue;
+
+    String text = newValue.text.replaceAll(":", "");
+
+    // Insert colon after two digits if not already present
+    if (text.length >= 3) {
+      text = text.substring(0, 2) + ":" + text.substring(2);
+    }
+
+    return TextEditingValue(
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
+    );
   }
 }

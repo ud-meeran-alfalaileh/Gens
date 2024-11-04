@@ -17,14 +17,26 @@ import 'package:gens/src/feature/question/view/widget/text/question_text.dart';
 import 'package:get/get.dart';
 
 class QuestionPage extends StatefulWidget {
-  const QuestionPage({super.key, required this.gender});
+  const QuestionPage({super.key, required this.gender, required this.type});
   final String gender;
+  final String type;
 
   @override
   State<QuestionPage> createState() => _QuestionPageState();
 }
 
 class _QuestionPageState extends State<QuestionPage> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.type == "Empty") {
+      // Schedule navigation after the current frame is built
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Get.to(() => FirstQuestionPageView(gender: widget.gender));
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(FirstQuestionController());
@@ -100,9 +112,10 @@ class _QuestionPageState extends State<QuestionPage> {
                                       }, 50),
                                       profileController
                                               .isFirstDataIncomplete.value
-                                          ? const Icon(
+                                          ? Icon(
                                               Icons.error,
-                                              color: Colors.red,
+                                              color: AppTheme.lightAppColors
+                                                  .secondaryColor,
                                             )
                                           : const SizedBox.shrink()
                                     ],
@@ -119,9 +132,10 @@ class _QuestionPageState extends State<QuestionPage> {
                                       }, 100),
                                       profileController
                                               .isSecDataIncomplete.value
-                                          ? const Icon(
+                                          ? Icon(
                                               Icons.error,
-                                              color: Colors.red,
+                                              color: AppTheme.lightAppColors
+                                                  .secondaryColor,
                                             )
                                           : const SizedBox.shrink()
                                     ],
@@ -142,9 +156,10 @@ class _QuestionPageState extends State<QuestionPage> {
                                       }, 150),
                                       profileController
                                               .isThirdDataIncomplete.value
-                                          ? const Icon(
+                                          ? Icon(
                                               Icons.error,
-                                              color: Colors.red,
+                                              color: AppTheme.lightAppColors
+                                                  .secondaryColor,
                                             )
                                           : const SizedBox.shrink()
                                     ],
@@ -160,9 +175,10 @@ class _QuestionPageState extends State<QuestionPage> {
                                       }, 250),
                                       profileController
                                               .isFifthDataIncomplete.value
-                                          ? const Icon(
+                                          ? Icon(
                                               Icons.error,
-                                              color: Colors.red,
+                                              color: AppTheme.lightAppColors
+                                                  .secondaryColor,
                                             )
                                           : const SizedBox.shrink()
                                     ],
@@ -182,9 +198,10 @@ class _QuestionPageState extends State<QuestionPage> {
                                     }, 200),
                                     profileController
                                             .isFourthDataIncomplete.value
-                                        ? const Icon(
+                                        ? Icon(
                                             Icons.error,
-                                            color: Colors.red,
+                                            color: AppTheme
+                                                .lightAppColors.secondaryColor,
                                           )
                                         : const SizedBox.shrink()
                                   ],
@@ -195,9 +212,10 @@ class _QuestionPageState extends State<QuestionPage> {
                                       Get.to(() => const UserThreeImage());
                                     }, 300),
                                     imageController.isImageDataIncomplere.value
-                                        ? const Icon(
+                                        ? Icon(
                                             Icons.error,
-                                            color: Colors.red,
+                                            color: AppTheme
+                                                .lightAppColors.secondaryColor,
                                           )
                                         : const SizedBox.shrink()
                                   ],

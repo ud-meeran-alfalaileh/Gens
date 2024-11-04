@@ -110,7 +110,6 @@ class VendorRegisterWidget extends StatelessWidget {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(50)),
                             child: PageView(
-                              physics: const NeverScrollableScrollPhysics(),
                               controller: controller.pageController,
                               onPageChanged: (index) {
                                 controller.currentPageIndex.value = index;
@@ -144,10 +143,10 @@ class VendorRegisterWidget extends StatelessWidget {
                                 } else if (controller.currentPageIndex.value ==
                                     2) {
                                   errorText.value =
-                                      controller.pageThreeValidateAllFields()!;
+                                      controller.allValidateAllFields()!;
                                   if (errorText.value == "valid") {
                                     errorText.value = "";
-                                    controller.sendEmail(context);
+                                    controller.checkExist(context);
                                   }
                                 }
                               },

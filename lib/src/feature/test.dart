@@ -1,141 +1,82 @@
-// import 'package:calendar_view/calendar_view.dart';
-// import 'package:flutter/material.dart';
-// import 'package:gens/src/feature/calendar/controller/calender_controller.dart';
-// import 'package:get/get.dart';
+import 'dart:async';
+import 'dart:math';
 
-// class CalendarWidget extends StatefulWidget {
-//   const CalendarWidget({super.key});
+import 'package:flutter/material.dart';
+import 'package:gens/src/config/sizes/sizes.dart';
 
-//   @override
-//   State<CalendarWidget> createState() => _CalendarWidgetState();
-// }
+void main() {
+  runApp(MyApp());
+}
 
-// class _CalendarWidgetState extends State<CalendarWidget> {
-//   final GlobalKey<DayViewState> dayViewKey = GlobalKey<DayViewState>();
-//   final CalenderControllerr controller = Get.put(CalenderControllerr());
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Rotate and Pause Image'),
+        ),
+        body: Center(
+          child: RotatingImage(),
+        ),
+      ),
+    );
+  }
+}
 
-//   @override
-//   void initState() {
-//     super.initState();
-//     // Call the method to fetch calendar events when the widget initializes
-//   }
+class RotatingImage extends StatefulWidget {
+  @override
+  _RotatingImageState createState() => _RotatingImageState();
+}
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return SafeArea(
-//       child: Column(
-//         children: [
-//           Row(
-//             mainAxisAlignment: MainAxisAlignment.end,
-//             children: [
-//               IconButton(
-//                 onPressed: () {
-//                   setState(() {
-//                     controller.isMonthView.value =
-//                         !controller.isMonthView.value;
-//                   });
-//                 },
-//                 icon: Icon(controller.isMonthView.value
-//                     ? Icons.calendar_today
-//                     : Icons.calendar_month),
-//               )
-//             ],
-//           ),
-//           Expanded(
-//             child: Obx(() {
-//               // Use the observable list of events from the controller
-//               final events = controller.event;
+class _RotatingImageState extends State<RotatingImage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  bool _rotated = false;
+  Timer? _timer;
 
-//               // Clear previous events in the controller
- 
-//               // Add events to the controller
-//               for (var event in events) {
-//                 controller.eventController.add(CalendarEventData(
-//                   title: event.description,
-//                   description: event.description,
-//                   date: event.date,
-//                   startTime: event.date,
-//                   endTime:
-//                       event.date.add(Duration(hours: 1)), // Example duration
-//                 ));
-//               }
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    );
 
-//               if (controller.isMonthView.value) {
-//                 return MonthView(
-//                   controller: controller.eventController,
-//                   onCellTap: (cell, eventArranger) {
-//                     // When a day is tapped, switch to DayView
-//                     controller.isMonthView.value = false;
+    _startRotationCycle();
+  }
 
-//                     // Jump to the selected date in the DayView
-//                     dayViewKey.currentState?.jumpToDate(cell.first.date);
-//                   },
-//                   // You can add the onEventTap here if supported
-//                   onEventTap: (event) {
-//                     // Show event details in a dialog when tapped
-//                     showEventDetails(event.description!, event.title);
-//                   },
-//                   headerStyle: HeaderStyle(
-//                     decoration: BoxDecoration(color: Colors.blue[100]),
-//                     titleAlign: TextAlign.center,
-//                     headerTextStyle:
-//                         TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-//                   ),
-//                 );
-//               } else {
-//                 return DayView(
-//                   key: dayViewKey,
-//                   controller: controller.eventController,
-//                   backgroundColor: Colors.white,
-//                   headerStyle: HeaderStyle(
-//                     decoration: BoxDecoration(color: Colors.blue[100]),
-//                     titleAlign: TextAlign.center,
-//                     headerTextStyle:
-//                         TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-//                   ),
-//                   onDateTap: (date) {
-//                     // Handle date tap if needed
-//                   },
-//                   onEventTap: (event, data) {
-//                     // Display event details on tap
-//                     showEventDetails(event.first.description!, event.first.title);
-//                   },
-//                 );
-//               }
-//             }),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
+  void _startRotationCycle() {
+    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      if (_rotated) {
+        _controller.reverse();
+      } else {
+        _controller.forward();
+      }
+      _rotated = !_rotated;
+    });
+  }
 
-//   void showEventDetails(
-//     String event,
-//     String title,
-//   ) {
-//     // Display a dialog with event details
-//     showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return AlertDialog(
-//           title: Text(title),
-//           content: Column(
-//             mainAxisSize: MainAxisSize.min,
-//             children: [
-//               Text("Description: $event"),
-//               // Additional details can be added here if needed
-//             ],
-//           ),
-//           actions: <Widget>[
-//             TextButton(
-//               child: Text("Close"),
-//               onPressed: () {
-//                 Navigator.of(context).pop();
-//               },
-//             ),
-//           ],
-//         );
-//       },
-//     );
-//   }
-// }
+  @override
+  void dispose() {
+    _controller.dispose();
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      child: Image.asset(
+          width: context.screenWidth * .5,
+          'assets/image/hourglass.png'), // Replace with your image path
+      builder: (BuildContext context, Widget? child) {
+        return Transform.rotate(
+          angle: _controller.value * pi, // Rotates 180 degrees
+          child: child,
+        );
+      },
+    );
+  }
+}

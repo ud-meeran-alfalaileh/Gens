@@ -9,12 +9,25 @@ import 'package:gens/src/feature/waiting_list/model/waiting_list_model.dart';
 import 'package:gens/src/feature/waiting_list/view/widget/text/waiting_list_text.dart';
 import 'package:get/get.dart';
 
-class VendorWaitingListWidget extends StatelessWidget {
+class VendorWaitingListWidget extends StatefulWidget {
   const VendorWaitingListWidget({super.key});
 
   @override
+  State<VendorWaitingListWidget> createState() =>
+      _VendorWaitingListWidgetState();
+}
+
+class _VendorWaitingListWidgetState extends State<VendorWaitingListWidget> {
+  final controller = Get.put(VendorDashboardController());
+
+  @override
+  void initState() {
+    super.initState();
+    controller.getWaitingList();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final controller = Get.put(VendorDashboardController());
     return SafeArea(
       child: Column(
         children: [
@@ -107,7 +120,7 @@ class VendorWaitingListWidget extends StatelessWidget {
           const Divider(),
           Row(
             children: [
-              WaitingListText.thirdText("Date Range".tr),
+              WaitingListText.thirdText("Range Date".tr),
               const Spacer(),
               WaitingListText.thirdText(
                   controller.waitingList[index].startDate),
@@ -118,11 +131,11 @@ class VendorWaitingListWidget extends StatelessWidget {
           10.0.kH,
           Row(
             children: [
-              WaitingListText.thirdText("Time Range"),
+              WaitingListText.thirdText("Time Date".tr),
               const Spacer(),
               WaitingListText.thirdText(
                   controller.waitingList[index].startTime),
-              WaitingListText.thirdText("To1"),
+              WaitingListText.thirdText("To1".tr),
               Text(controller.waitingList[index].endTime),
             ],
           ),
@@ -139,26 +152,29 @@ class VendorWaitingListWidget extends StatelessWidget {
                     ),
                   )
                 : controller.waitingList[index].status == "Accept"
-                    ?   Text('Done'.tr)
+                    ? Text('Done'.tr)
                     : controller.waitingList[index].status == "Reject"
-                        ?  Text('Reject'.tr)
+                        ? Text('Reject'.tr)
                         : Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               statusWidget(
-                                  controller.waitingList[index],
-                                  statusUpadating,
-                                  context,
-                                  'Accept',
-                                  'accept',
-                                  controller),
+                                controller.waitingList[index],
+                                statusUpadating,
+                                context,
+                                'Accept',
+                                'Accept'.tr,
+                                controller.waitingList[index].userPhoneNumber,
+                                controller,
+                              ),
                               10.0.kW,
                               statusWidget(
                                   controller.waitingList[index],
                                   statusUpadating,
                                   context,
                                   'Reject',
-                                  'reject',
+                                  'Reject'.tr,
+                                  controller.waitingList[index].userPhoneNumber,
                                   controller)
                             ],
                           ),
@@ -174,11 +190,12 @@ class VendorWaitingListWidget extends StatelessWidget {
       BuildContext context,
       status,
       title,
+      userPhone,
       VendorDashboardController controller) {
     return GestureDetector(
       onTap: () {
         controller.updateWaitingStatus(
-            status, model.id, model, statusUpadating);
+            status, model.id, model, statusUpadating, userPhone);
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10),

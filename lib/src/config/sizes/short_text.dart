@@ -1,4 +1,4 @@
-String storyShortenText(String text, {int maxLength = 3}) {
+String storyShortenText(String text, {int maxLength = 2}) {
   if (text.length <= maxLength) {
     return text;
   } else {

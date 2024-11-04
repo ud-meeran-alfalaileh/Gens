@@ -8,6 +8,7 @@ import 'package:gens/src/feature/doctor_profile/model/service_model.dart';
 import 'package:gens/src/feature/login/model/login_form_model.dart';
 import 'package:gens/src/feature/login/view/widgte/collection/auth_form_widget.dart';
 import 'package:gens/src/feature/vendor_services/controller/vendor_services_controller.dart';
+import 'package:gens/src/feature/vendor_services/model/pre_service_model.dart';
 import 'package:gens/src/feature/vendor_services/view/widget/main_widget/add_post_instruction.dart';
 import 'package:gens/src/feature/vendor_services/view/widget/text/services_text.dart';
 import 'package:get/get.dart';
@@ -25,7 +26,12 @@ class _AddServiceWidgetState extends State<AddServiceWidget> {
   final controller = Get.put(VendorServicesController());
   @override
   void initState() {
+    // print(widget.serviceId!);
+
     widget.type == 'edit' ? controller.setServiceData(widget.serviceId!) : null;
+    widget.type == 'edit'
+        ? controller.getPreInstruction(widget.serviceId!.serviceId)
+        : null;
     super.initState();
   }
 
@@ -37,6 +43,7 @@ class _AddServiceWidgetState extends State<AddServiceWidget> {
         () => Stack(
           children: [
             SafeArea(
+              bottom: false,
               child: Padding(
                 padding: const EdgeInsets.all(18.0),
                 child: SingleChildScrollView(
@@ -66,22 +73,17 @@ class _AddServiceWidgetState extends State<AddServiceWidget> {
                               controller.pickImages(context);
                             },
                             child: Container(
-                              width: context.screenWidth * .3,
-                              height: context.screenHeight * .14,
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: controller.serviceImage.value != ""
-                                        ? NetworkImage(
-                                            controller.serviceImage.value,
-                                          )
-                                        : const AssetImage(
-                                            "assets/image/addIamge.png"),
-                                  ),
-                                  border: Border.all(
-                                      color: AppTheme.lightAppColors.primary),
-                                  borderRadius: BorderRadius.circular(10)),
-                            ),
+                                width: context.screenWidth * .3,
+                                height: context.screenHeight * .14,
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: AppTheme.lightAppColors.primary),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: controller.serviceImage.value != ""
+                                    ? Image.network(
+                                        controller.serviceImage.value,
+                                      )
+                                    : Image.asset("assets/image/addIamge.png")),
                           ),
                           18.0.kW,
                           SizedBox(
@@ -130,6 +132,32 @@ class _AddServiceWidgetState extends State<AddServiceWidget> {
                               inputFormat: [],
                               onTap: () {})),
                       20.0.kH,
+                      widget.type == 'edit'
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                10.0.kH,
+                                ServicesText.ffText(
+                                    "post-care instructions".tr),
+                                20.0.kH,
+                                ListView.separated(
+                                  shrinkWrap: true,
+                                  itemCount: controller.prescription.length,
+                                  separatorBuilder:
+                                      (BuildContext context, int index) {
+                                    return 15.0.kH;
+                                  },
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return _buildPreScriptRow(
+                                        controller.prescription[index]);
+                                  },
+                                ),
+                              ],
+                            )
+                          : const SizedBox.shrink(),
+                      15.0.kH,
                       Center(
                         child: SizedBox(
                             width: context.screenWidth * .5,
@@ -143,20 +171,19 @@ class _AddServiceWidgetState extends State<AddServiceWidget> {
                                     showSnackBar(
                                         "Make sure all fields are filed".tr,
                                         "Error".tr,
-                                        Colors.red);
+                                        AppTheme.lightAppColors.secondaryColor);
                                   } else {
                                     widget.type == 'edit'
                                         ? await controller.updateService(
                                             widget.serviceId!.serviceId)
-                                        : controller.addService().whenComplete(
-                                            () =>
-                                                addServiceServyPopUp(context));
+                                        : controller.addService(context);
                                   }
                                 },
                                 title: widget.type == 'edit'
                                     ? "Edit".tr
                                     : "Add".tr)),
-                      )
+                      ),
+                      60.0.kH,
                     ],
                   ),
                 ),
@@ -176,6 +203,42 @@ class _AddServiceWidgetState extends State<AddServiceWidget> {
                 : const SizedBox.shrink()
           ],
         ),
+      ),
+    );
+  }
+
+  _buildPreScriptRow(Prescription prescription) {
+    return GestureDetector(
+      onTap: () {
+        controller.preDescription.text = prescription.description;
+        editPrescription(context, controller, prescription);
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Get.locale!.languageCode == 'en'
+                  ? ServicesText.secText(
+                      "Day: ${prescription.day.toString()}",
+                    )
+                  : ServicesText.secText(
+                      "يوم : ${prescription.day.toString()}",
+                    ),
+              ServicesText.thirdText(
+                prescription.description,
+              ),
+            ],
+          ),
+          const Spacer(),
+          Icon(
+            Icons.arrow_forward_ios_sharp,
+            color: AppTheme.lightAppColors.black,
+          )
+        ],
       ),
     );
   }
@@ -247,6 +310,93 @@ Future<dynamic> addServiceServyPopUp(
                         Get.back();
                       },
                       child: Text('No'.tr,
+                          style: TextStyle(
+                              color: AppTheme.lightAppColors.primary)),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+Future<dynamic> editPrescription(BuildContext context,
+    VendorServicesController controller, Prescription prescription) {
+  return showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: AppTheme.lightAppColors.background,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        contentPadding: const EdgeInsets.all(10),
+        content: SizedBox(
+          width: context.screenWidth * 0.8,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: CircleAvatar(
+                      backgroundColor: AppTheme.lightAppColors.background,
+                      child: IconButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          icon: Icon(
+                            Icons.close,
+                            color: AppTheme.lightAppColors.primary,
+                          )),
+                    ),
+                  )
+                ],
+              ),
+              10.0.kH,
+              ServicesText.secText("Description".tr),
+              10.0.kH,
+              AuthForm(
+                  formModel: FormModel(
+                      controller: controller.preDescription,
+                      enableText: false,
+                      hintText: "Description".tr,
+                      invisible: false,
+                      validator: null,
+                      type: TextInputType.text,
+                      inputFormat: [],
+                      onTap: null)),
+              10.0.kH,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  SizedBox(
+                    width: context.screenWidth * .3,
+                    child: AppButton(
+                      onTap: () {
+                        controller.editPreInstruction(prescription);
+                      },
+                      title: 'Edit'.tr,
+                    ),
+                  ),
+                  Container(
+                    width: context.screenWidth * .3,
+                    height: context.screenHeight * .05,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border:
+                            Border.all(color: AppTheme.lightAppColors.primary)),
+                    child: TextButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      child: Text('Cancel'.tr,
                           style: TextStyle(
                               color: AppTheme.lightAppColors.primary)),
                     ),

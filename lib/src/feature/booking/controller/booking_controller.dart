@@ -4,6 +4,7 @@ import 'package:gens/src/core/api/api_services.dart';
 import 'package:gens/src/core/api/end_points.dart';
 import 'package:gens/src/core/api/injection_container.dart';
 import 'package:gens/src/core/api/netwok_info.dart';
+import 'package:gens/src/core/api/notification_controller.dart';
 import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/booking/view/widget/collection/booking_success.dart';
@@ -32,6 +33,7 @@ class BookingController extends GetxController {
   final RxInt month = 0.obs;
   final RxInt year = 0.obs;
   final RxString dayOfWeek = "".obs;
+  final notificationController = Get.put(NotificationController());
   // late List<DateTime> timeSlots;
   @override
   void onInit() {
@@ -62,7 +64,9 @@ class BookingController extends GetxController {
   }
 
   User user = User();
-  Future<void> postBooking(serviceId, vendorId, context, type, bookId) async {
+  Future<void> postBooking(
+      serviceId, vendorId, context, type, bookId, vendorPhone) async {
+    isBooking.value = true;
     if (await networkInfo.isConnected) {
       try {
         // Parse the selected start time
@@ -90,10 +94,26 @@ class BookingController extends GetxController {
         if (response.statusCode == StatusCode.created) {
           if (type == "reschadule") {
             await deleteBooking(context, bookId);
+            notificationController.sendNotification(NotificationModel(
+                title: "Appointment Rescheduled",
+                message:
+                    "User has rescheduled their appointment. Please review the updated booking details.",
+                imageURL: "",
+                externalIds: vendorPhone));
+          } else {
+            notificationController.sendNotification(NotificationModel(
+                title: "New Appointment Booking Request",
+                message:
+                    "someone is requesting to book an appointment. Please review the details and confirm availability.",
+                imageURL: "",
+                externalIds: vendorPhone));
           }
+
           isBooking.value = false;
           successBookingDialog(context, focusedDay.value, hourSelected.value);
         } else {
+          isBooking.value = false;
+
           Get.snackbar(
             "Error Accure While Booking",
             "Try again later",
@@ -101,6 +121,8 @@ class BookingController extends GetxController {
           );
         }
       } catch (e) {
+        isBooking.value = false;
+
         Get.snackbar(
           "Error Accure While Booking",
           "Try again later",
@@ -108,6 +130,8 @@ class BookingController extends GetxController {
         );
       }
     } else {
+      isBooking.value = false;
+
       Get.snackbar(
         "No Internet Connection",
         "Please check your network settings",
@@ -154,8 +178,11 @@ class BookingController extends GetxController {
       isLoading.value = true;
       final response = await dioConsumer.get(
           "${EndPoints.timeslotsForDay}/$vendorId/$day/${dateFormat.format(focusedDay.value)}");
+      print(response.data);
       if (response.statusCode == StatusCode.ok) {
         final List<dynamic> jsonData = json.decode(response.data)['timeSlots'];
+        print(
+            "${EndPoints.timeslotsForDay}/$vendorId/$day/${dateFormat.format(focusedDay.value)}");
 
         // Casting jsonData to List<String>
         workingHors.value = jsonData.map((e) => e.toString()).toList();

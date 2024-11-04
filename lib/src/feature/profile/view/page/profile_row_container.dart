@@ -51,6 +51,7 @@ profileContainerRow(ProfileController controller) {
             onPressed: () {
               Get.to(() => QuestionPage(
                     gender: controller.userData.value!.gender,
+                    type: 'notEmpty',
                   ));
             },
             icon: Icon(

@@ -6,6 +6,7 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
       required this.background,
       required this.black,
       required this.maincolor,
+      required this.secondaryColor,
       required this.bordercolor,
       required this.mainTextcolor,
       required this.thirdTextcolor,
@@ -16,6 +17,7 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
   final Color background;
   final Color black;
   final Color maincolor;
+  final Color secondaryColor;
   final Color bordercolor;
   final Color containercolor;
   final Color subTextcolor;
@@ -28,6 +30,7 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
       Color? background,
       Color? buttoncolor,
       Color? containercolor,
+      Color? secondaryColor,
       Color? bordercolor,
       Color? black,
       Color? thirdTextcolor,
@@ -38,6 +41,7 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
         black: black ?? this.black,
         background: background ?? this.background,
         containercolor: containercolor ?? this.containercolor,
+        secondaryColor: secondaryColor ?? this.secondaryColor,
         maincolor: maincolor,
         bordercolor: bordercolor ?? this.bordercolor,
         thirdTextcolor: thirdTextcolor ?? this.thirdTextcolor,
@@ -60,6 +64,7 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
       background: Color.lerp(background, other.background, t)!,
       thirdTextcolor: Color.lerp(thirdTextcolor, other.thirdTextcolor, t)!,
       containercolor: Color.lerp(containercolor, other.containercolor, t)!,
+      secondaryColor: Color.lerp(secondaryColor, other.secondaryColor, t)!,
       maincolor: Color.lerp(maincolor, other.maincolor, t)!,
       bordercolor: Color.lerp(bordercolor, other.bordercolor, t)!,
       mainTextcolor: Color.lerp(mainTextcolor, other.mainTextcolor, t)!,

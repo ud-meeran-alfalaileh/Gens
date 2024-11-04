@@ -28,12 +28,13 @@ void showPopupButtons(BuildContext context, ProfileController controller) {
             }, "library".tr, Icons.image_outlined),
             const Divider(),
             10.0.kH,
-            // profileImageButton(context, () {
-            //   controller.takeImages();
-            // }, "camera".tr, Icons.camera_alt_outlined),
+            profileImageButton(context, () {
+              controller.takeImages(context);
+            }, "camera".tr, Icons.camera_alt_outlined),
             // profileImageButton(context, () {
             //   // controller.takeImages(token);
-            // }, "Remove current picture", Icons.delete_outline_outlined),
+            // },
+            // "Remove current picture", Icons.delete_outline_outlined),
           ],
         ),
       );

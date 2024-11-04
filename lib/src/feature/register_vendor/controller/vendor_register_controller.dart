@@ -18,6 +18,7 @@ import 'package:gens/src/feature/vendor_navbar.dart/view/widget/main_widget/vend
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -43,6 +44,7 @@ class VendorRegisterController extends GetxController {
   RxBool isUpdating = false.obs;
   RxInt remainingTime = 30.obs;
   RxBool isButtonEnabled = false.obs;
+  RxBool isExist = false.obs;
 
   RxInt selectedIndex = 0.obs;
   final RxInt currentPageIndex = 0.obs;
@@ -82,8 +84,6 @@ class VendorRegisterController extends GetxController {
 
   validUserName(String name) {
     if (name.isEmpty) {
-      return "nameValidation".tr;
-    } else if (name.length < 5) {
       return "nameValidation".tr;
     }
     return null;
@@ -125,7 +125,7 @@ class VendorRegisterController extends GetxController {
   }
 
   validVendorType(String type) {
-    if (type.isEmpty) {
+    if (type == null) {
       return "please file speciality".tr;
     }
     return null;
@@ -171,11 +171,48 @@ class VendorRegisterController extends GetxController {
     // Validate each form field and collect errors
     final imageError = validImageList(imageFiles.value);
     final descriptinError = validDescription(description.text);
-    final specialityError = validVendorType(selectType.value!);
+
+    // Safely check selectType.value before validation
+    final specialityError = selectType.value != null
+        ? validVendorType(selectType.value!)
+        : "please select a speciality".tr;
 
     if (imageError != null) errors.add("- $imageError");
     if (descriptinError != null) errors.add("- $descriptinError");
     if (specialityError != null) errors.add("- $specialityError");
+
+    if (errors.isNotEmpty) {
+      return errors.first;
+    }
+    return "valid";
+  }
+
+  String? allValidateAllFields() {
+    RxList<String?> errors = <String>[].obs;
+    final nameError = validUserName(name.text);
+    final emailError = vaildEmail(email.text);
+    final passwordError = vaildPassword(password.text);
+    final confirmError = validConfirmPassword(confirmPassword.text);
+    final imageError = validImageList(imageFiles.value);
+    final descriptinError = validDescription(description.text);
+    final specialityError = selectType.value != null
+        ? validVendorType(selectType.value!)
+        : "please select a speciality".tr;
+    final phoneError = validatePhoneNumber(phone.text.trim());
+    final locationError = validLocation(location.text);
+    final businessLicenseError = validBusinessLicense(businessLicense.text);
+
+    if (nameError != null) errors.add("- $nameError");
+    if (emailError != null) errors.add("- $emailError");
+    if (passwordError != null) errors.add("- $passwordError");
+    if (confirmError != null) errors.add("- $confirmError");
+
+    if (imageError != null) errors.add("- $imageError");
+    if (descriptinError != null) errors.add("- $descriptinError");
+    if (specialityError != null) errors.add("- $specialityError");
+    if (phoneError != null) errors.add("- $phoneError");
+    if (locationError != null) errors.add("- $locationError");
+    if (businessLicenseError != null) errors.add("- $businessLicenseError");
 
     if (errors.isNotEmpty) {
       return errors.first;
@@ -209,24 +246,67 @@ class VendorRegisterController extends GetxController {
   }
 
 // Pick multiple images
-  Future<void> pickImages(context) async {
+  Future<void> pickImages(BuildContext context) async {
     imageFiles.value = "";
-    try {
-      final XFile? selectedImages =
-          await _picker.pickImage(source: ImageSource.gallery);
+    // try {
+    //   // Check for storage/gallery permission
+    //   var permissionStatus = await Permission.photos.status;
+
+    //   if (permissionStatus.isDenied) {
+    //     // Request permission
+    //     permissionStatus = await Permission.photos.request();
+
+    //     if (permissionStatus.isDenied || permissionStatus.isPermanentlyDenied) {
+    //       // If permission is denied, show a message or open settings
+    //       permissionStatus = await Permission.photos.request();
+    //       return;
+    //     }
+    //   }
+
+    // Proceed with image picking if permission is granted
+    final XFile? selectedImages =
+        await _picker.pickImage(source: ImageSource.gallery);
+    if (selectedImages != null) {
       isUpdating.value = true;
 
       String? firebaseImage =
-          await uploadImageToFirebase(File(selectedImages!.path), context);
+          await uploadImageToFirebase(File(selectedImages.path), context);
       imageFiles.value = firebaseImage!;
 
       isUpdating.value = false;
-    } catch (e) {
-      isUpdating.value = false;
-
-      print(e);
     }
-    // imageFiles.value = (File(selectedImages.take(3)).toList());
+    // } catch (e) {
+    //   isUpdating.value = false;
+    //   print(e);
+    // }
+  }
+
+  void showPermissionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Permission Required'),
+          content: Text(
+              'Please allow access to your gallery in app settings to pick images.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Open Settings'),
+              onPressed: () {
+                openAppSettings(); // This opens the app settings
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   //license image
@@ -234,9 +314,9 @@ class VendorRegisterController extends GetxController {
     try {
       // Pick an image file using file picker
       FilePickerResult? result = await FilePicker.platform.pickFiles(
-          // Specify the file type to only allow images
-          );
-
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'],
+      );
       if (result != null && result.files.isNotEmpty) {
         File image = File(result.files.single.path!);
         isUpdating.value = true;
@@ -315,49 +395,58 @@ class VendorRegisterController extends GetxController {
     }
   }
 
-  Future workingTime(BuildContext context, TextEditingController text) async {
-    TimeOfDay? newTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-      builder: (context, child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            // Customizing the color of the TimePicker
-            timePickerTheme: TimePickerThemeData(
-              backgroundColor: Colors.white,
-              timeSelectorSeparatorColor:
-                  WidgetStateColor.resolveWith((states) {
-                return Colors.black; // Selected hour/minute text color
-              }),
-              dialBackgroundColor: Colors.black.withOpacity(0.1),
-              dialHandColor: AppTheme.lightAppColors.primary, // Hand color
-              dialTextColor: WidgetStateColor.resolveWith((states) {
-                if (states.contains(WidgetState.selected)) {
-                  return Colors.white; // Selected hour color
-                }
-                return Colors.black; // Default hour color
-              }),
-              dayPeriodColor: AppTheme.lightAppColors.primary,
-              dayPeriodTextColor: AppTheme.lightAppColors.mainTextcolor,
+    Future workingTime(BuildContext context, TextEditingController text) async {
+      TimeOfDay? newTime = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+        builder: (context, child) {
+          return Theme(
+            data: ThemeData.light().copyWith(
+              // Customizing the color of the TimePicker
+              timePickerTheme: TimePickerThemeData(
+                backgroundColor: Colors.white,
+                timeSelectorSeparatorColor:
+                    WidgetStateColor.resolveWith((states) {
+                  return Colors.black; // Selected hour/minute text color
+                }),
+                dialBackgroundColor: Colors.black.withOpacity(0.1),
+                dialHandColor: AppTheme.lightAppColors.primary, // Hand color
+                dialTextColor: WidgetStateColor.resolveWith((states) {
+                  if (states.contains(WidgetState.selected)) {
+                    return Colors.white; // Selected hour color
+                  }
+                  return Colors.black; // Default hour color
+                }),
+                dayPeriodColor: AppTheme.lightAppColors.primary,
+                dayPeriodTextColor: AppTheme.lightAppColors.mainTextcolor,
 
-              hourMinuteColor: Colors.white,
-              hourMinuteTextColor: AppTheme
-                  .lightAppColors.primary, // Color of the selected time (hours)
+                hourMinuteColor: Colors.white,
+                hourMinuteTextColor: AppTheme
+                    .lightAppColors.primary, // Color of the selected time (hours)
+              ),
             ),
-          ),
-          child: child!,
-        );
-      },
-    );
+            child: child!,
+          );
+        },
+      );
 
-    if (newTime != null) {
-      final hour = newTime.hour;
+      if (newTime != null) {
+        final hour = newTime.hour;
 
-      text.text = "$hour:00"; // Display only the hours with 00 minutes
+        text.text = "$hour:00"; // Display only the hours with 00 minutes
+      }
     }
-  }
 
 //date and time
+  final Map<String, String> daysTranslations = {
+    'Monday': 'الإثنين',
+    'Tuesday': 'الثلاثاء',
+    'Wednesday': 'الأربعاء',
+    'Thursday': 'الخميس',
+    'Friday': 'الجمعة',
+    'Saturday': 'السبت',
+    'Sunday': 'الأحد',
+  };
   List<String> allDays = [
     'Monday',
     'Tuesday',
@@ -395,6 +484,7 @@ class VendorRegisterController extends GetxController {
 
   // Function to toggle the day selection
   void toggleDaySelection(String day) {
+    print(day);
     if (selectedDays.contains(day)) {
       selectedDays.remove(day); // Remove if already selected
     } else {
@@ -428,8 +518,8 @@ class VendorRegisterController extends GetxController {
 
       showTopSnackBar(
         Overlay.of(context),
-        const CustomSnackBar.error(
-          message: 'Verification Code is not Correct',
+        CustomSnackBar.error(
+          message: 'Verification Code is not Correct'.tr,
         ),
       );
     }
@@ -442,6 +532,55 @@ class VendorRegisterController extends GetxController {
       return input.replaceFirst(RegExp('^0+'), '');
     }
     return input;
+  }
+
+  Future<void> checkExist(context) async {
+    isUpdating.value = true;
+
+    var body =
+        '"${email.text.trim()}"'; // Ensure the email is a string with quotes
+    final response = await dioConsumer.post(EndPoints.checkExist, body: body);
+
+    if (response.statusCode == StatusCode.ok) {
+      final data = jsonDecode(response.data)['userExits'];
+      isExist.value = data;
+      print(email.value);
+      print('Email already exists');
+      print(data);
+      if (isExist.value == false) {
+        var phoneBody = '"962${removeLeadingZero(phone.text.trim())}"';
+        final checkPhone =
+            await dioConsumer.post(EndPoints.checkExist, body: phoneBody);
+        if (checkPhone.statusCode == StatusCode.ok) {
+          final data = jsonDecode(checkPhone.data)['userExits'];
+          isExist.value = data;
+          if (isExist.value == false) {
+            sendEmail(context);
+          } else {
+            showTopSnackBar(
+              Overlay.of(context),
+              CustomSnackBar.error(
+                message: 'Phone number already exists'.tr,
+              ),
+            );
+            isUpdating.value = false;
+          }
+        }
+
+        //Email already exists
+
+        isUpdating.value = false;
+        //Email already exists
+      } else {
+        showTopSnackBar(
+          Overlay.of(context),
+          CustomSnackBar.error(
+            message: 'Email already exists'.tr,
+          ),
+        );
+        isUpdating.value = false;
+      }
+    }
   }
 
   Future<void> sendEmail(context) async {
@@ -476,8 +615,19 @@ class VendorRegisterController extends GetxController {
     }
   }
 
+  Future<void> loginUser(String externalId) async {
+    try {
+      await OneSignal.login(externalId);
+
+      print("User logged in with external ID: $externalId");
+    } catch (e) {
+      print(e);
+    }
+  }
+
   User user = User();
   Future<void> vendorRegister() async {
+    isLoading.value = true;
     if (await networkInfo.isConnected) {
       try {
         var businessImage = BusinessImages(
@@ -498,11 +648,17 @@ class VendorRegisterController extends GetxController {
             businessImages: [businessImage]));
         final response =
             await dioConsumer.post(EndPoints.vendorRignup, body: body);
+        print(body);
+        print(response.data);
+        print(response.statusCode);
         if (response.statusCode == StatusCode.ok ||
             response.statusCode == StatusCode.created) {
           final jsonData = json.decode(response.data);
           final token = jsonData['vendorId'];
+          final number = jsonData['phone'];
+
           await user.saveVendorId(token);
+          await loginUser(number.toString());
           user.vendorId.value = token;
 
           Get.offAll(const RegisterPageFour());

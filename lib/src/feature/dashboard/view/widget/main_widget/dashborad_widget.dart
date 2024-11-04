@@ -24,7 +24,6 @@ class _DashboradWidgetState extends State<DashboradWidget> {
   final doctorController = Get.put(DoctorController());
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {});
     super.initState();
   }
 
@@ -42,10 +41,8 @@ class _DashboradWidgetState extends State<DashboradWidget> {
                   pinned: false,
                   backgroundColor: Colors.transparent,
                   expandedHeight: context.screenHeight * .1,
-                  flexibleSpace: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 25),
-                    child: _buildHeader(context),
+                  flexibleSpace: Image.asset(
+                    "assets/image/Logo2 2.png",
                   ),
                 ),
                 SliverToBoxAdapter(
@@ -82,7 +79,8 @@ class _DashboradWidgetState extends State<DashboradWidget> {
                                     ),
                                   ),
                                   SizedBox(
-                                    child: doctorController.isLoading.value
+                                    child: doctorController
+                                            .getDoctorLoading.value
                                         ? dashboardShimmer()
                                         : doctorController.doctors.isEmpty
                                             ? Column(
@@ -171,20 +169,6 @@ class _DashboradWidgetState extends State<DashboradWidget> {
           searchController: controller.searchController,
         ),
       ),
-    );
-  }
-
-  Row _buildHeader(BuildContext context) {
-    return Row(
-      children: [
-        const Spacer(),
-        Image.asset(
-          "assets/image/Logo2 2.png",
-          height: context.screenHeight * .032,
-        ),
-        const Spacer(),
-        16.0.kW,
-      ],
     );
   }
 }

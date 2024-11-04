@@ -13,6 +13,8 @@ import 'package:gens/src/core/user.dart';
 import 'package:gens/src/core/utils/snack_bar.dart';
 import 'package:gens/src/feature/doctor_profile/model/service_model.dart';
 import 'package:gens/src/feature/vendor_navbar.dart/view/widget/main_widget/vendor_navbar_page.dart';
+import 'package:gens/src/feature/vendor_services/model/pre_service_model.dart';
+import 'package:gens/src/feature/vendor_services/view/widget/main_widget/add_service_widget.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -26,10 +28,13 @@ class VendorServicesController extends GetxController {
   var instructionId = 0.obs;
   var isLoading = false.obs;
   User user = User();
+  RxList<Prescription> prescription = <Prescription>[].obs;
   final ImagePicker _picker = ImagePicker();
   RxInt serviceId = 0.obs;
   final title = TextEditingController();
   final description = TextEditingController();
+  final preDescription = TextEditingController();
+
   final price = TextEditingController();
   final imageUrl = TextEditingController();
   final postInstructionDays = TextEditingController();
@@ -46,7 +51,8 @@ class VendorServicesController extends GetxController {
       await uploadImageToFirebase(File(selectedImage.path), context);
     }
   }
- bool areAllInstructionsFilled() {
+
+  bool areAllInstructionsFilled() {
     for (var controller in instructionControllers) {
       if (controller.text.trim().isEmpty) {
         return false; // Return false if any controller's text is empty
@@ -54,6 +60,7 @@ class VendorServicesController extends GetxController {
     }
     return true; // All controllers have non-empty text
   }
+
   List<TextEditingController> instructionControllers = [];
 
   void updateInstructionControllers(int days) {
@@ -129,21 +136,13 @@ class VendorServicesController extends GetxController {
 
             services.value = servicesData;
           } catch (e) {
-            Get.snackbar(
-              "Error",
-              "Failed to parse vendor data",
-              snackPosition: SnackPosition.BOTTOM,
-            );
+            services.value = [];
           }
         } else {
-          Get.snackbar(
-            "Error",
-            "Failed to fetch vendors",
-            snackPosition: SnackPosition.BOTTOM,
-          );
+          services.value = [];
         }
       } catch (e) {
-        print("Error while getting vendor services $e");
+        services.value = [];
       }
     }
     isUpdating.value = false;
@@ -237,7 +236,7 @@ class VendorServicesController extends GetxController {
     }
   }
 
-  Future<void> addService() async {
+  Future<void> addService(context) async {
     if (await networkInfo.isConnected) {
       isUpdating.value = true;
       try {
@@ -256,7 +255,7 @@ class VendorServicesController extends GetxController {
             print(serviceId.value);
             showSnackBar("Success", "Service Add Successfully ", Colors.green);
             await Future.delayed(const Duration(seconds: 1));
-
+            addServiceServyPopUp(context);
             await getVendorServices();
 
             clearServiceData();
@@ -344,6 +343,71 @@ class VendorServicesController extends GetxController {
         if (response.statusCode == StatusCode.created) {
           postInstructionDays.text = '0';
           daysOfInstruction.value = 0;
+        }
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
+  Future<void> getPreInstruction(id) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final response =
+            await dioConsumer.get("${EndPoints.medicalPlan}/service/$id");
+        print(response.data);
+
+        if (response.statusCode == StatusCode.ok) {
+          // Decode JSON to List<dynamic> to be properly typed
+          final List<dynamic> responseData = jsonDecode(response.data);
+
+          // Map the List<dynamic> to List<Prescription>
+          final List<Prescription> prescriptions =
+              responseData.map((json) => Prescription.fromJson(json)).toList();
+          prescription.value = prescriptions;
+          print(prescriptions.length);
+        }
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
+  void updateBookingInList(Prescription updatedBooking) {
+    int index =
+        prescription.indexWhere((booking) => booking.id == updatedBooking.id);
+    if (index != -1) {
+      prescription[index] = updatedBooking;
+      prescription.refresh(); // Refresh the list to update the UI
+    }
+  }
+
+  Future<void> editPreInstruction(Prescription model) async {
+    if (await networkInfo.isConnected) {
+      try {
+        var body = jsonEncode({
+          "id": model.id,
+          "medicalPrescriptionId": model.medicalPrescriptionId,
+          "day": model.id,
+          "description": preDescription.text.trim()
+        });
+        final response = await http.put(Uri.parse(EndPoints.medicalPlan),
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: body);
+        if (response.statusCode == StatusCode.ok) {
+          final updatedPre = Prescription(
+              id: model.id,
+              medicalPrescriptionId: model.medicalPrescriptionId,
+              day: model.id,
+              description: preDescription.text.trim());
+
+          // Update the booking list in the controller
+          updateBookingInList(updatedPre);
+
+          Get.back();
         }
       } catch (e) {
         print(e);

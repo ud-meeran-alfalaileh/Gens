@@ -27,61 +27,6 @@ class VendorUpdateProfile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Row(
-                //   children: [
-                //     IconButton(
-                //         onPressed: () {
-                //           Get.back();
-                //         },
-                //         icon: Icon(
-                //           Icons.arrow_back_ios_new_outlined,
-                //           color: AppTheme.lightAppColors.primary,
-                //         )),
-                //     SizedBox(
-                //       width: context.screenWidth * .67,
-                //       child: Center(
-                //         child: ProfileText.mainText("Update your details"),
-                //       ),
-                //     ),
-                //   ],
-                // ),
-                // 20.0.kH,
-                // GestureDetector(
-                //   onTap: () {
-                //     Get.to(() => const EditImagesPage());
-                //   },
-                //   child: SizedBox(
-                //     width: context.screenWidth,
-                //     height: context.screenHeight * .21,
-                //     child: Stack(
-                //       children: [
-                //         Align(
-                //           alignment: Alignment.bottomCenter,
-                //           child: Container(
-                //             width: context.screenWidth,
-                //             height: context.screenHeight * .2,
-                //             decoration: BoxDecoration(
-                //                 borderRadius: BorderRadius.circular(20),
-                //                 image: DecorationImage(
-                //                   fit: BoxFit.cover,
-                //                   image: NetworkImage(controller.image.text),
-                //                 )),
-                //           ),
-                //         ),
-                //         Align(
-                //           alignment: Alignment.topRight,
-                //           child: CircleAvatar(
-                //               backgroundColor:
-                //                   AppTheme.lightAppColors.maincolor,
-                //               child: Icon(
-                //                 Icons.edit,
-                //                 color: AppTheme.lightAppColors.primary,
-                //               )),
-                //         )
-                //       ],
-                //     ),
-                //   ),
-                // ),
                 VendorProfileText.secText("Working Time".tr),
                 5.0.kH,
                 Row(

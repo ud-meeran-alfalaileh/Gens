@@ -1,10 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/core/api/api_services.dart';
 import 'package:gens/src/core/api/end_points.dart';
 import 'package:gens/src/core/api/injection_container.dart';
 import 'package:gens/src/core/api/netwok_info.dart';
+import 'package:gens/src/core/api/notification_controller.dart';
 import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/waiting_list/view/widget/collection/success_dialog.dart';
@@ -33,6 +35,7 @@ class WaitingListController extends GetxController {
   final endTime = TextEditingController();
   final NetworkInfo networkInfo =
       NetworkInfoImpl(connectionChecker: InternetConnectionChecker());
+  final notificationController = Get.put(NotificationController());
 
   User user = User();
   @override
@@ -50,14 +53,55 @@ class WaitingListController extends GetxController {
         : '';
     formattedEnd.value = rangeEndDay.value != null
         ? DateFormat('yyyy-MM-dd').format(rangeEndDay.value!)
-        : '';
+        : DateFormat('yyyy-MM-dd').format(rangeStartDay.value!);
 
     print(formattedStart);
     print(formattedEnd);
   }
+ Future workingTime(BuildContext context, TextEditingController text) async {
+    TimeOfDay? newTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            // Customizing the color of the TimePicker
+            timePickerTheme: TimePickerThemeData(
+              backgroundColor: Colors.white,
+              timeSelectorSeparatorColor:
+                  WidgetStateColor.resolveWith((states) {
+                return Colors.black; // Selected hour/minute text color
+              }),
+              dialBackgroundColor: Colors.black.withOpacity(0.1),
+              dialHandColor: AppTheme.lightAppColors.primary, // Hand color
+              dialTextColor: WidgetStateColor.resolveWith((states) {
+                if (states.contains(WidgetState.selected)) {
+                  return Colors.white; // Selected hour color
+                }
+                return Colors.black; // Default hour color
+              }),
+              dayPeriodColor: AppTheme.lightAppColors.primary,
+              dayPeriodTextColor: AppTheme.lightAppColors.mainTextcolor,
+
+              hourMinuteColor: Colors.white,
+              hourMinuteTextColor: AppTheme
+                  .lightAppColors.primary, // Color of the selected time (hours)
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (newTime != null) {
+      final hour = newTime.hour;
+
+      text.text = "$hour:00"; // Display only the hours with 00 minutes
+    }
+  }
 
   Future<void> addWaitingList(
-      int vendorId, int serviceId, BuildContext context) async {
+      int vendorId, int serviceId, BuildContext context, vendorPhone) async {
     isLoading.value = true;
 
     if (await networkInfo.isConnected) {
@@ -68,6 +112,8 @@ class WaitingListController extends GetxController {
           "Please select both start and end dates.".tr,
           snackPosition: SnackPosition.BOTTOM,
         );
+        isLoading.value = false;
+
         return;
       }
 
@@ -78,6 +124,8 @@ class WaitingListController extends GetxController {
           "Please enter both start and end times.".tr,
           snackPosition: SnackPosition.BOTTOM,
         );
+        isLoading.value = false;
+
         return;
       }
 
@@ -95,6 +143,8 @@ class WaitingListController extends GetxController {
             "Start time cannot be greater than end time.".tr,
             snackPosition: SnackPosition.BOTTOM,
           );
+          isLoading.value = false;
+
           return;
         }
 
@@ -115,22 +165,27 @@ class WaitingListController extends GetxController {
           "message": description.text,
           "status": "Waiting"
         });
+
         print(body);
 
         final response =
             await dioConsumer.post(EndPoints.addWaitingList, body: body);
-
-        if (response.statusCode == StatusCode.ok) {
+        print(response.data);
+        if (response.statusCode == StatusCode.ok ||
+            response.statusCode == StatusCode.created) {
           isLoading.value = false;
           waitingSuccess(context);
+          notificationController.sendNotification(NotificationModel(
+              title: "User Joined Waiting List",
+              message:
+                  "A user has joined the waiting list for an appointment. Please monitor the list and update availability as needed.",
+              imageURL: "",
+              externalIds: vendorPhone));
         }
+        isLoading.value = false;
+
         print(response.data);
       } catch (e) {
-        Get.snackbar(
-          "Error",
-          "Please enter a valid time in HH:mm format.",
-          snackPosition: SnackPosition.BOTTOM,
-        );
         print(e); // For debugging purposes
       }
     } else {

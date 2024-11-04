@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:gens/src/core/api/api_services.dart';
 import 'package:gens/src/core/api/end_points.dart';
 import 'package:gens/src/core/api/injection_container.dart';
 import 'package:gens/src/core/api/netwok_info.dart';
+import 'package:gens/src/core/api/notification_controller.dart';
 import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/history/model/history_model.dart';
@@ -15,7 +17,12 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:intl/intl.dart';
 
 class VendorDashboardController extends GetxController {
+  final PageController pageController = PageController();
+  final RxInt currentPageIndex = 0.obs;
+  final noteMessage = TextEditingController();
+
   RxBool isLaoding = false.obs;
+  RxBool noteSended = false.obs;
   RxList<VendorBooking> vendorBooking = <VendorBooking>[].obs;
   RxList<VendorBooking> allVendorBooking = <VendorBooking>[].obs;
   RxList<VendorBooking> todayVendorBooking = <VendorBooking>[].obs;
@@ -27,7 +34,7 @@ class VendorDashboardController extends GetxController {
       NetworkInfoImpl(connectionChecker: InternetConnectionChecker());
   RxBool statusUpadating = false.obs;
   RxBool todaycontainer = false.obs;
-
+  final notificationController = Get.put(NotificationController());
   String getFormattedTodayDate() {
     DateTime today = DateTime.now();
     DateFormat formatter = DateFormat('yyyy-MM-dd');
@@ -41,6 +48,16 @@ class VendorDashboardController extends GetxController {
 
   void setSelectedIndex(int index) {
     selectedIndex.value = index;
+  }
+
+// Inside your controller
+  void setPageIndex(int index) {
+    currentPageIndex.value = index;
+    pageController.animateToPage(
+      index,
+      duration: Duration(milliseconds: 300), // adjust duration as needed
+      curve: Curves.easeInOut, // adjust curve as needed
+    );
   }
 
   @override
@@ -125,7 +142,9 @@ class VendorDashboardController extends GetxController {
       int serviceId,
       VendorBooking booking,
       RxBool statusUpadating,
-      bool removeFromSchulde) async {
+      bool removeFromSchulde,
+      externalId) async {
+    print(status);
     if (await networkInfo.isConnected) {
       try {
         statusUpadating.value = true;
@@ -137,19 +156,50 @@ class VendorDashboardController extends GetxController {
           body: body,
         );
         if (response.statusCode == StatusCode.ok) {
+          if (status == "Done") {
+            notificationController.sendNotification(NotificationModel(
+                title: "Appointment Completed",
+                message:
+                    "Your appointment has been successfully completed. We hope the service met your expectations. Thank you!",
+                imageURL: "",
+                externalIds: externalId));
+          }
+          if (status == "Upcoming") {
+            notificationController.sendNotification(NotificationModel(
+                title: "Appointment Approved",
+                message: "Your appointment has been successfully approved.",
+                imageURL: '',
+                externalIds: externalId));
+          }
+          if (status == "Absent") {
+            notificationController.sendNotification(NotificationModel(
+                title: "Appointment Marked as Absent",
+                message:
+                    "You were marked as absent for your scheduled appointment.",
+                imageURL: '',
+                externalIds: externalId));
+          }
+          if (status == "Rejected") {
+            notificationController.sendNotification(NotificationModel(
+                title: 'Rejected Appointment',
+                message:
+                    "Unfortunately, your appointment request has been rejected. ",
+                imageURL: '',
+                externalIds: externalId));
+          }
           // Create a new instance with updated status
           final updatedBooking = VendorBooking(
-            status: status.replaceAll('"', status),
-            userName: booking.userName,
-            userImage: booking.userImage,
-            userPhoneNumber: booking.userPhoneNumber,
-            serviceTitle: booking.serviceTitle,
-            date: booking.date,
-            startTime: booking.startTime,
-            endTime: booking.endTime,
-            id: booking.id,
-            userId: booking.userId,
-          );
+              status: status.replaceAll('"', status),
+              userName: booking.userName,
+              userImage: booking.userImage,
+              userPhoneNumber: booking.userPhoneNumber,
+              serviceTitle: booking.serviceTitle,
+              date: booking.date,
+              startTime: booking.startTime,
+              endTime: booking.endTime,
+              id: booking.id,
+              userId: booking.userId,
+              showNote: status == "Done" ? true : false);
 
           // Update the booking list in the controller
           updateBookingInList(updatedBooking);
@@ -182,6 +232,12 @@ class VendorDashboardController extends GetxController {
       allVendorBooking[allIndex] = updatedBooking;
       allVendorBooking.refresh(); // Refresh the list to update the UI
     }
+    int fillterBook = filteredBooking
+        .indexWhere((booking) => booking.id == updatedBooking.id);
+    if (fillterBook != -1) {
+      filteredBooking[allIndex] = updatedBooking;
+      filteredBooking.refresh(); // Refresh the list to update the UI
+    }
   }
 
   void updateWaitingInList(WaitingListModel updatedWaiting) {
@@ -208,6 +264,8 @@ class VendorDashboardController extends GetxController {
             jsonData.map((json) => WaitingListModel.fromJson(json)).toList();
         waitingList.value = waitingData;
         print("Waining time${waitingList.length}");
+      } else {
+        waitingList.value = [];
       }
     } catch (e) {
       print(e);
@@ -215,11 +273,11 @@ class VendorDashboardController extends GetxController {
   }
 
   Future<void> updateWaitingStatus(
-    String status,
-    int listItemId,
-    WaitingListModel booking,
-    RxBool statusUpadating,
-  ) async {
+      String status,
+      int listItemId,
+      WaitingListModel booking,
+      RxBool statusUpadating,
+      String userPhone) async {
     if (await networkInfo.isConnected) {
       try {
         statusUpadating.value = true;
@@ -236,7 +294,22 @@ class VendorDashboardController extends GetxController {
         print(response.statusCode);
         print(response.body);
         if (response.statusCode == StatusCode.ok) {
-          // Create a new instance with updated status
+          if (status == "Accept") {
+            notificationController.sendNotification(NotificationModel(
+                title: "Waiting List Request Accepted",
+                message:
+                    "Good news! Your request from the waiting list has been accepted. You are now scheduled for an appointment. Please check the details and confirm your availability.",
+                imageURL: "",
+                externalIds: userPhone));
+          }
+          if (status == "Reject") {
+            notificationController.sendNotification(NotificationModel(
+                title: 'Waiting List Request Rejected',
+                message:
+                    "Unfortunately, your request from the waiting list could not be accommodated at this time. Please try again or contact us for further assistance.",
+                imageURL: "",
+                externalIds: userPhone));
+          }
           final updatedBooking = WaitingListModel(
             status: status.replaceAll('"', status),
             userName: booking.userName,
@@ -259,6 +332,49 @@ class VendorDashboardController extends GetxController {
         print(e);
         statusUpadating.value = false;
       }
+    }
+  }
+
+  Future<void> addNote(VendorBooking booking, String note) async {
+    try {
+      // Create the request body as a plain string, encoded properly
+      var body = jsonEncode(
+        note,
+      );
+
+      final response = await http.put(
+        Uri.parse(
+            'https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/Booking/update-note/${booking.id}'),
+        body: body,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      );
+      noteSended.value = true;
+      print(response.body);
+      print(response.statusCode);
+      final updatedBooking = VendorBooking(
+          status: "Done",
+          userName: booking.userName,
+          userImage: booking.userImage,
+          userPhoneNumber: booking.userPhoneNumber,
+          serviceTitle: booking.serviceTitle,
+          date: booking.date,
+          startTime: booking.startTime,
+          endTime: booking.endTime,
+          id: booking.id,
+          userId: booking.userId,
+          showNote: false,
+          note: note
+          );
+
+      // Update the booking list in the controller
+      updateBookingInList(updatedBooking);
+      statusUpadating.value = false;
+      noteMessage.clear();
+    } catch (e) {
+      print(e);
     }
   }
 }

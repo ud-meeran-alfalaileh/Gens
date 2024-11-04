@@ -27,7 +27,7 @@ class _MainAppPageState extends State<MainAppPage> {
       if (controller.isFirstTime.value) {
         return const SpalshPage();
       } else {
-        return const NavBarPage();
+        return const NavBarPage(currentScreen: 0,);
       }
     });
   }

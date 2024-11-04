@@ -13,6 +13,17 @@ class ServicesText {
       ),
     );
   }
+  static addSrviceText(title) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 13,
+        color: AppTheme.lightAppColors.secondaryColor,
+        fontWeight: FontWeight.w500, // Use FontWeight.bold for the bold variant
+      ),
+    );
+  }
 
   static secText(title) {
     return Text(
@@ -34,6 +45,18 @@ class ServicesText {
         fontSize: 16,
         color: AppTheme.lightAppColors.mainTextcolor.withOpacity(0.8),
         fontWeight: FontWeight.w500, // Use FontWeight.bold for the bold variant
+      ),
+    );
+  }
+
+  static ffText(title) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 18,
+        color: AppTheme.lightAppColors.mainTextcolor,
+        fontWeight: FontWeight.w700, // Use FontWeight.bold for the bold variant
       ),
     );
   }

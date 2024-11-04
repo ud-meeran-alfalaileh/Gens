@@ -6,7 +6,6 @@ import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
-import 'package:gens/src/core/utils/app_button.dart';
 import 'package:gens/src/core/utils/loading_page.dart';
 import 'package:gens/src/feature/forgtet_password/view/widget/text/forget_password_text.dart';
 import 'package:gens/src/feature/register_vendor/controller/vendor_register_controller.dart';
@@ -99,10 +98,10 @@ class _OtpWidgetState extends State<OtpVendorWidget> {
                     ),
                   ),
                   (context.screenHeight * .04).kH,
-                  SizedBox(
-                    width: context.screenWidth * .7,
-                    child: AppButton(onTap: () {}, title: "Continue".tr),
-                  ),
+                  // SizedBox(
+                  //   width: context.screenWidth * .7,
+                  //   child: AppButton(onTap: () {}, title: "Continue".tr),
+                  // ),
                   20.0.kH,
                   TextButton(
                     onPressed: () {
@@ -113,12 +112,32 @@ class _OtpWidgetState extends State<OtpVendorWidget> {
                         null;
                       }
                     },
-                    child: Text(
-                      controller.remainingTime > 0
-                          ? 'Resend OTP in ${controller.remainingTime.value} seconds'
-                          : 'Resend',
-                      style: TextStyle(color: AppTheme.lightAppColors.primary),
-                    ),
+                    child: controller.remainingTime > 0
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Resend OTP in '.tr,
+                                style: TextStyle(
+                                    color: AppTheme.lightAppColors.primary),
+                              ),
+                              Text(
+                                controller.remainingTime.value.toString(),
+                                style: TextStyle(
+                                    color: AppTheme.lightAppColors.primary),
+                              ),
+                              Text(
+                                'seconds'.tr,
+                                style: TextStyle(
+                                    color: AppTheme.lightAppColors.primary),
+                              )
+                            ],
+                          )
+                        : Text(
+                            'Resend'.tr,
+                            style: TextStyle(
+                                color: AppTheme.lightAppColors.primary),
+                          ),
                   ),
                   10.0.kH,
                 ],

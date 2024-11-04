@@ -45,7 +45,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     // controller.isUserLoading.value = true;
 
     await productController.getProduct();
-    await imageController.getUserthreeImage();
+    // await imageController.getUserthreeImage();
     // await controller.getUser(user.userId, context);
   }
 
@@ -140,6 +140,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                               case 0:
                                 return SkinDetailsPage(
                                   gender: controller.userData.value!.gender,
+                                  controller: controller,
                                 );
 
                               default:
@@ -173,7 +174,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               ProfileText.secText(controller.dateOfBirth.text),
             ],
           ),
-          controller.question.value?.mainSkincareGoals == null
+          controller.question.value?.mainSkincareGoals == '' ||
+                  controller.question.value?.mainSkincareGoals == null
               ? const SizedBox.shrink()
               : SingleChildScrollView(
                   child: Get.locale!.languageCode == 'en'
@@ -217,7 +219,9 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           backgroundColor: AppTheme.lightAppColors.black.withOpacity(0.1),
           backgroundImage: controller.userData.value!.userImage == "" ||
                   controller.userData.value!.userImage == "string"
-              ? const AssetImage("assets/image/profileIcon.png")
+              ? const AssetImage(
+                  "assets/image/profileIcon.png",
+                )
               : NetworkImage(controller.userData.value!.userImage ?? ''),
         ),
       ),
@@ -232,78 +236,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          PopupMenuButton<int>(
-            color: AppTheme.lightAppColors.background,
-            icon: Image.asset(
-              "assets/image/settings.png",
-              height: 25,
-            ),
-            onSelected: (value) {
-              if (value == 1) {
-                Get.to(() => const UpdateProfile());
-              } else if (value == 2) {
-                // Add any other actions here
-              }
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 1,
-                child: Row(
-                  children: [
-                    Icon(Icons.edit, color: Colors.black),
-                    SizedBox(width: 8),
-                    Text("Edit Profile"),
-                  ],
-                ),
-              ),
-              PopupMenuItem(
-                value: 2,
-                child: Row(
-                  children: [
-                    Icon(Icons.favorite, color: Colors.black),
-                    SizedBox(width: 8),
-                    Text(
-                      "Edit Profile",
-                      style: TextStyle(
-                          color: AppTheme.lightAppColors.black,
-                          fontFamily: "Inter"),
-                    ),
-                  ],
-                ),
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text("Select Language"),
-                        content: Text(
-                            "Choose a language for your profile settings."),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              localController.updateLanguage(
-                                  Languages.locale[1]['locale']);
-
-                              Navigator.of(context).pop();
-                            },
-                            child: Text("Arabic"),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              localController.updateLanguage(
-                                  Languages.locale[0]['locale']);
-                              Navigator.of(context).pop();
-                            },
-                            child: Text("English"),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-              ),
-            ],
-          ),
+          profileSitting(localController),
           10.0.kW,
           GestureDetector(
             onTap: () {
@@ -311,6 +244,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             },
             child: Image.asset(
               "assets/image/lover.png",
+              color: AppTheme.lightAppColors.secondaryColor,
               height: 25,
             ),
           ),
@@ -326,6 +260,89 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           ),
         ],
       ),
+    );
+  }
+
+  PopupMenuButton<int> profileSitting(LocalizationController localController) {
+    return PopupMenuButton<int>(
+      color: AppTheme.lightAppColors.background,
+      icon: Image.asset(
+        "assets/image/settings.png",
+        height: 25,
+      ),
+      onSelected: (value) {
+        if (value == 1) {
+          Get.to(() => const UpdateProfile());
+        } else if (value == 2) {
+          // Add any other actions here
+        }
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          value: 1,
+          child: Row(
+            children: [
+              Icon(Icons.edit, color: Colors.black),
+              8.0.kH,
+              Text(
+                "Edit Profile",
+                style: TextStyle(color: AppTheme.lightAppColors.black),
+              ),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 2,
+          child: Row(
+            children: [
+              Icon(Icons.language, color: Colors.black),
+              SizedBox(width: 8),
+              Text(
+                "Edit Language",
+                style: TextStyle(
+                    color: AppTheme.lightAppColors.black, fontFamily: "Inter"),
+              ),
+            ],
+          ),
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  backgroundColor: AppTheme.lightAppColors.background,
+                  title: Text("Select Language".tr),
+                  content: Text("Choose a language for your Application.".tr),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        localController
+                            .updateLanguage(Languages.locale[1]['locale']);
+
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        "Arabic".tr,
+                        style: TextStyle(color: AppTheme.lightAppColors.black),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        localController
+                            .updateLanguage(Languages.locale[0]['locale']);
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        "English".tr,
+                        style: TextStyle(color: AppTheme.lightAppColors.black),
+                      ),
+                    )
+                  ],
+                );
+              },
+            );
+          },
+        ),
+      ],
     );
   }
 

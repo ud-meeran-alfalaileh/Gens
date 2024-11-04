@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gens/src/config/localization/lang_list.dart';
+import 'package:gens/src/config/localization/locale_constant.dart';
 import 'package:gens/src/config/sizes/short_text.dart';
 import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
@@ -23,9 +25,12 @@ class VendorProfileWidget extends StatefulWidget {
 
 class _VendorProfileWidgetState extends State<VendorProfileWidget> {
   final controller = Get.put(VendorProfileController());
+  late LocalizationController languageController;
 
   @override
   void initState() {
+    languageController = Get.put(LocalizationController());
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       initail();
     });
@@ -125,33 +130,95 @@ class _VendorProfileWidgetState extends State<VendorProfileWidget> {
               borderRadius: BorderRadius.circular(15),
               color: AppTheme.lightAppColors.background,
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    VendorProfileText.mainText(user.name),
-                    const Spacer(),
-                    SvgPicture.asset(
-                      "assets/image/ratingStar.svg",
-                      height: 16,
+            child: Directionality(
+              textDirection: TextDirection.ltr,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        VendorProfileText.mainText(user.name),
+                        const Spacer(),
+                        SvgPicture.asset(
+                          "assets/image/ratingStar.svg",
+                          color: AppTheme.lightAppColors.secondaryColor,
+                          height: 16,
+                        ),
+                        const SizedBox(width: 5),
+                        VendorProfileText.ratingText(
+                            storyShortenText(user.avgRating.toString())),
+                      ],
                     ),
-                    const SizedBox(width: 5),
-                    VendorProfileText.ratingText(
-                        storyShortenText(user.avgRating.toString())),
-                  ],
-                ),
-                const Divider(),
-                VendorProfileText.thirdText(user.type),
-                VendorProfileText.thirdText(user.phone),
-                VendorProfileText.thirdText(user.location),
-              ],
+                  ),
+                  const Divider(),
+                  VendorProfileText.thirdText(user.type),
+                  VendorProfileText.thirdText(user.phone),
+                  VendorProfileText.thirdText(user.location),
+                ],
+              ),
             ),
           ),
         ),
+
+        GestureDetector(
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  backgroundColor: AppTheme.lightAppColors.background,
+                  title: Text("Select Language".tr),
+                  content: Text("Choose a language for your Application.".tr),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        languageController
+                            .updateLanguage(Languages.locale[1]['locale']);
+
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        "Arabic".tr,
+                        style: TextStyle(color: AppTheme.lightAppColors.black),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        languageController
+                            .updateLanguage(Languages.locale[0]['locale']);
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        "English".tr,
+                        style: TextStyle(color: AppTheme.lightAppColors.black),
+                      ),
+                    )
+                  ],
+                );
+              },
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                CircleAvatar(
+                  backgroundColor: AppTheme.lightAppColors.background,
+                  child: Image.asset(
+                    "assets/image/settings.png",
+                    height: 25,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        )
       ],
     );
   }

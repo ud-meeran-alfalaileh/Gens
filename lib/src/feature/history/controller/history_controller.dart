@@ -5,6 +5,7 @@ import 'package:gens/src/core/api/api_services.dart';
 import 'package:gens/src/core/api/end_points.dart';
 import 'package:gens/src/core/api/injection_container.dart';
 import 'package:gens/src/core/api/netwok_info.dart';
+import 'package:gens/src/core/api/notification_controller.dart';
 import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/core/utils/snack_bar.dart';
@@ -25,6 +26,7 @@ class HistoryController extends GetxController {
   RxList<History> filteredList = <History>[].obs;
   RxList<History> bookings = <History>[].obs;
   RxList<UserWaitingList> waitingList = <UserWaitingList>[].obs;
+  final notificationController = Get.put(NotificationController());
 
   void getFilteredList(int index) {
     filteredList.clear();
@@ -52,7 +54,7 @@ class HistoryController extends GetxController {
         final response = await dioConsumer.get(
           "${EndPoints.getBooking}${user.userId.value}/details",
         );
-         if (response.statusCode == StatusCode.ok) {
+        if (response.statusCode == StatusCode.ok) {
           final List<dynamic> jsonData = json.decode(response.data);
 
           List<History> servicesData =
@@ -88,7 +90,7 @@ class HistoryController extends GetxController {
         final response = await dioConsumer.get(
           "${EndPoints.addWaitingList}/user/${user.userId.value}",
         );
-        
+
         if (response.statusCode == StatusCode.ok) {
           final List<dynamic> jsonData = json.decode(response.data);
 
@@ -118,7 +120,7 @@ class HistoryController extends GetxController {
     }
   }
 
-  Future<void> canceleBooking(int book, index) async {
+  Future<void> canceleBooking(int book, index, NotificationModel model) async {
     if (await networkInfo.isConnected) {
       final response = await dioConsumer.delete(
         "${EndPoints.postBooking}/$book",
@@ -126,6 +128,7 @@ class HistoryController extends GetxController {
       if (response.statusCode == StatusCode.noContent) {
         Get.back();
         filteredList.removeAt(index);
+        notificationController.sendNotification(model);
 
         showSnackBar("Success",
             "The reservation has been successfully deleted.", Colors.green);

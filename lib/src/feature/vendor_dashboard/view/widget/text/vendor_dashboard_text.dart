@@ -27,19 +27,14 @@ class VendorDashboardText {
   }
 
   static emptyText(title) {
-    return Padding(
-      padding: const EdgeInsets.all(18.0),
-      child: Text(
-        
-        title,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontFamily: 'Inter',
-          fontSize: 24,
-          color: AppTheme.lightAppColors.black,
-          fontWeight:
-              FontWeight.w400, // Use FontWeight.bold for the bold variant
-        ),
+    return Text(
+      title,
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 16,
+        color: AppTheme.lightAppColors.black,
+        fontWeight: FontWeight.w400, // Use FontWeight.bold for the bold variant
       ),
     );
   }

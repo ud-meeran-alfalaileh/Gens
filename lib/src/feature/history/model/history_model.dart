@@ -63,19 +63,22 @@ class VendorBooking {
   final String startTime;
   final String endTime;
   String status;
+  bool showNote;
+   String note;
 
-  VendorBooking({
-    required this.id,
-    required this.userName,
-    required this.userImage,
-    required this.userId,
-    required this.userPhoneNumber,
-    required this.serviceTitle,
-    required this.date,
-    required this.startTime,
-    required this.endTime,
-    required this.status,
-  });
+  VendorBooking(
+      {required this.id,
+      required this.userName,
+      required this.userImage,
+      required this.userId,
+      required this.userPhoneNumber,
+      required this.serviceTitle,
+      required this.date,
+      required this.startTime,
+      required this.endTime,
+      required this.status,
+      this.showNote = false,
+      this.note = ""});
 
   // Factory method to create a VendorBooking object from a JSON map
   factory VendorBooking.fromJson(Map<String, dynamic> json) {
@@ -90,6 +93,7 @@ class VendorBooking {
       startTime: json['startTime'] ?? '',
       endTime: json['endTime'] ?? '',
       status: json['status'] ?? '',
+      note: json['note'] ?? '',
     );
   }
 

@@ -40,11 +40,10 @@ class RegisterWidget extends StatelessWidget {
                   ),
                   Image.asset(
                     "assets/image/logo.png",
-                    width: context.screenWidth * .6,
+                    width: context.screenWidth * .45,
                     fit: BoxFit.cover,
                   ),
                   LoginText.mainText("Create Account".tr),
-                  10.0.kH,
                   LoginText.secText("We are here to help you!".tr),
                   Align(
                     alignment: Alignment.center,
@@ -56,7 +55,6 @@ class RegisterWidget extends StatelessWidget {
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(50)),
                           child: PageView(
-                            physics: const NeverScrollableScrollPhysics(),
                             controller: controller.pageController,
                             onPageChanged: (index) {
                               controller.currentPageIndex.value = index;
@@ -84,7 +82,12 @@ class RegisterWidget extends StatelessWidget {
                             errorTextPageTwo.value =
                                 controller.validateAllFields()!;
                             if (errorTextPageTwo.value == 'valid') {
-                              controller.sendEmail(context);
+                              errorTextPageTwo.value = errorText.value =
+                                  controller.pageOneValidateAllFields()!;
+                              if (errorText.value == "valid") {
+                                controller.checkExist(context);
+                              }
+
                               // Get.to(() => const OtpWidget());
                               // controller.register(context);
                             }
@@ -289,7 +292,7 @@ class RegisterWidget extends StatelessWidget {
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(1950),
-      lastDate: DateTime(2101),
+      lastDate: DateTime.now(),
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(

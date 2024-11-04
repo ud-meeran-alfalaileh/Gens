@@ -3,6 +3,7 @@ import 'package:gens/src/config/sizes/short_text.dart';
 import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
+import 'package:gens/src/core/api/notification_controller.dart';
 import 'package:gens/src/feature/booking/view/page/booking_page.dart';
 import 'package:gens/src/feature/dashboard/view/widget/collection/dashboard_shimmer.dart';
 import 'package:gens/src/feature/dashboard/view/widget/text/dashboard_text.dart';
@@ -11,6 +12,7 @@ import 'package:gens/src/feature/history/controller/history_controller.dart';
 import 'package:gens/src/feature/history/model/history_model.dart';
 import 'package:gens/src/feature/history/view/page/user_waiting_list.dart';
 import 'package:gens/src/feature/history/view/widget/text/history_text.dart';
+import 'package:gens/src/feature/test.dart';
 import 'package:gens/src/feature/vendor_services/view/widget/text/services_text.dart';
 import 'package:get/get.dart';
 
@@ -66,14 +68,15 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                         HistoryText.headerText("My Bookings".tr),
                         const Spacer(),
                         IconButton(
-                            onPressed: () {
-                              Get.to(() => const UserWaitingListPage());
-                            },
-                            icon: Icon(
-                              Icons.calendar_month_outlined,
-                              size: 30,
-                              color: AppTheme.lightAppColors.primary,
-                            )),
+                          onPressed: () async {
+                            controller.getWaitingList(context);
+                            Get.to(() => const UserWaitingListPage());
+                          },
+                          icon: SizedBox(
+                              height: context.screenHeight * .04,
+                              width: context.screenWidth * .1,
+                              child: RotatingImage()),
+                        ),
                       ],
                     ),
                     (context.screenHeight * .03).kH,
@@ -281,6 +284,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                           vendorId: history.vendorId,
                           type: 'reschadule',
                           bookId: history.id,
+                          vendorPhone: history.vendorPhone,
                         ));
                   },
                   child: Row(
@@ -294,7 +298,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                             borderRadius: BorderRadius.circular(20)),
                         child: Center(
                           child: Text(
-                            "Reschedule",
+                            "Reschedule".tr,
                             style: TextStyle(
                                 color: AppTheme.lightAppColors.background,
                                 fontFamily: "Inter",
@@ -311,12 +315,15 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                               return AlertDialog(
                                 backgroundColor:
                                     AppTheme.lightAppColors.background,
-                                title: const Text(
-                                    "Are you sure you want to delete this reservation?"),
+                                title: Text(
+
+                                    ///String
+                                    "Are you sure you want to delete this reservation?"
+                                        .tr),
                                 actions: [
                                   TextButton(
                                     child: Text(
-                                      "Cancel",
+                                      "Cancel".tr,
                                       style: TextStyle(
                                           color:
                                               AppTheme.lightAppColors.primary),
@@ -326,13 +333,22 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                                     },
                                   ),
                                   TextButton(
-                                    child: const Text(
-                                      "Yes",
-                                      style: TextStyle(color: Colors.red),
+                                    child: Text(
+                                      "Yes".tr,
+                                      style: const TextStyle(color: Colors.red),
                                     ),
                                     onPressed: () async {
+                                      ////Delete
                                       await controller.canceleBooking(
-                                          history.id, index);
+                                        history.id,
+                                        index,
+                                        NotificationModel(
+                                            title: "Appointment Canceled",
+                                            message:
+                                                "The user has canceled their appointment. Please update your schedule accordingly.",
+                                            imageURL: "imageURL",
+                                            externalIds: history.vendorPhone),
+                                      );
                                       Get.back();
                                     },
                                   ),
@@ -349,7 +365,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                               borderRadius: BorderRadius.circular(20)),
                           child: Center(
                             child: Text(
-                              "Cancel",
+                              "Cancel".tr,
                               style: TextStyle(
                                   color: AppTheme.lightAppColors.primary,
                                   fontFamily: "Inter",

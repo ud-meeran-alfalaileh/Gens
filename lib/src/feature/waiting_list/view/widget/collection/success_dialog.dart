@@ -9,7 +9,9 @@ import 'package:gens/src/feature/doctor_profile/view/widget/text/doctor_text.dar
 import 'package:gens/src/feature/nav_bar/view/main/navbar_page.dart';
 import 'package:get/get.dart';
 
-waitingSuccess(context, ) {
+waitingSuccess(
+  context,
+) {
   return showDialog(
     barrierDismissible:
         false, // Prevents closing the dialog when tapping outside
@@ -29,15 +31,15 @@ waitingSuccess(context, ) {
             children: [
               SvgPicture.asset("assets/image/Image.svg"),
               (context.screenHeight * .06).kH,
-              DoctorText.mainText("Congratulations!"),
+              DoctorText.mainText("Congratulations".tr),
               BookingText.mainText(
-                  "Your appointment is Add to the Waiting list "),
+                  "Your appointment is Add to the Waiting list".tr),
               (context.screenHeight * .03).kH,
               AppButton(
                   onTap: () {
-                    Get.offAll(() => const NavBarPage());
+                    Get.offAll(() => const NavBarPage(currentScreen: 0,));
                   },
-                  title: "Done"),
+                  title: "Done".tr),
               (context.screenHeight * .05).kH,
             ],
           ),

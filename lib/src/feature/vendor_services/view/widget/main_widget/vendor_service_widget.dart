@@ -24,8 +24,12 @@ class _VendorServiceWidgetState extends State<VendorServiceWidget> {
   final controller = Get.put(VendorServicesController());
   @override
   void initState() {
-    controller.getVendorServices();
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        controller.getVendorServices();
+      }
+    });
   }
 
   @override
@@ -38,10 +42,7 @@ class _VendorServiceWidgetState extends State<VendorServiceWidget> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18.0),
-              child: vendorHeader(context, 1),
-            ),
+            vendorHeader(context, 1),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -58,7 +59,7 @@ class _VendorServiceWidgetState extends State<VendorServiceWidget> {
                                 type: 'add',
                               ));
                         },
-                        child: ServicesText.mainText("Add services +".tr),
+                        child: ServicesText.addSrviceText("Add services +".tr),
                       )
                     ],
                   ),
@@ -225,6 +226,7 @@ class _VendorServiceWidgetState extends State<VendorServiceWidget> {
                     SizedBox(
                       width: context.screenWidth * .3,
                       child: AppButton(
+                        color: AppTheme.lightAppColors.secondaryColor,
                         onTap: () {
                           controller.deleteService(service.serviceId);
                         },

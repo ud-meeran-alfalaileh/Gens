@@ -34,12 +34,15 @@ class EndPoints {
   static const String getQuestion = '${baseUrl}Questionnaire';
   static const String postInstruction = '${baseUrl}MedicalPrescription';
   static const String medicalPlan = '${baseUrl}MedicalPlan';
-  static const String userCalender = '${baseUrl}UserCalendar/GetUserCalendarDetails/';
+  static const String userCalender =
+      '${baseUrl}UserCalendar/GetUserCalendarDetails/';
 
   static const String getAllFav = '${baseUrl}Favorite/user/Favorites/';
   static const String addImage = '${baseUrl}UserImages/create';
   static const String checkExist = '${baseUrl}User/check-user-exists';
   static const String addWaitingList = '${baseUrl}WaitingList';
+  static const String sendNotification =
+      '${baseUrl}Notification/SendNotificationToAliases';
   static const String postProduct =
       '${baseUrl}Questionnaire/post-product-section';
   static const String getProductDetail =

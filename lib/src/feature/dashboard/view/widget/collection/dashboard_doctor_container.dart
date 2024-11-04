@@ -92,6 +92,7 @@ doctorDashboardContainer(
                   children: [
                     SvgPicture.asset(
                       "assets/image/ratingStar.svg",
+                      color: AppTheme.lightAppColors.secondaryColor,
                       height: 15,
                     ),
                     10.0.kW,

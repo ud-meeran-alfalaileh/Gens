@@ -139,7 +139,7 @@ class _UserWaitingListWidgetState extends State<UserWaitingListWidget> {
           20.0.kH,
           Row(
             children: [
-              WaitingListText.thirdText("Time Range".tr),
+              WaitingListText.thirdText("Time Date".tr),
               const Spacer(),
               WaitingListText.thirdText(history.startTime),
               WaitingListText.thirdText("To1".tr),
@@ -151,7 +151,11 @@ class _UserWaitingListWidgetState extends State<UserWaitingListWidget> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              WaitingListText.secText(history.status),
+              WaitingListText.secText(history.status == "Accept"
+                  ? "Accept".tr
+                  : history.status == "Waiting"
+                      ? "Waiting".tr
+                      : "Reject".tr),
             ],
           )
         ],

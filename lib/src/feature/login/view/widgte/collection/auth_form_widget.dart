@@ -25,6 +25,7 @@ class _AuthFormState extends State<AuthForm> {
     return Center(
       child: SizedBox(
           child: TextFormField(
+            onTap: widget.ontap,
               onChanged: widget.formModel.onChange,
               maxLines: widget.maxLine ?? 1,
               minLines: widget.maxLine ?? 1,

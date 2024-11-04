@@ -77,7 +77,7 @@ class _PassworOtpState extends State<PassworOtp> {
                   ),
                   10.0.kH,
                   ForgetPasswordText.secText(
-                      "Enter the verification code we just send on your Email"
+                      "Enter the verification code we just sent on your Email"
                           .tr),
                   (context.screenHeight * .072).kH,
                   Directionality(
@@ -113,12 +113,32 @@ class _PassworOtpState extends State<PassworOtp> {
                         null;
                       }
                     },
-                    child: Text(
-                      controller.remainingTime > 0
-                          ? 'Resend OTP in ${controller.remainingTime.value} seconds'
-                          : 'Resend',
-                      style: TextStyle(color: AppTheme.lightAppColors.primary),
-                    ),
+                    child: controller.remainingTime > 0
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Resend OTP in '.tr,
+                                style: TextStyle(
+                                    color: AppTheme.lightAppColors.primary),
+                              ),
+                              Text(
+                                controller.remainingTime.value.toString(),
+                                style: TextStyle(
+                                    color: AppTheme.lightAppColors.primary),
+                              ),
+                              Text(
+                                'seconds'.tr,
+                                style: TextStyle(
+                                    color: AppTheme.lightAppColors.primary),
+                              )
+                            ],
+                          )
+                        : Text(
+                            'Resend'.tr,
+                            style: TextStyle(
+                                color: AppTheme.lightAppColors.primary),
+                          ),
                   ),
                   10.0.kH,
                 ],

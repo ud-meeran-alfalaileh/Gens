@@ -30,7 +30,8 @@ class RegisterPageFour extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    VendorRegisterText.thirdText("It will take a few second"),
+                    VendorRegisterText.thirdText(
+                        "It will take a few second".tr),
                     50.0.kH,
                     SpinKitCubeGrid(
                       itemBuilder: (BuildContext context, int index) {
@@ -47,8 +48,8 @@ class RegisterPageFour extends StatelessWidget {
                 ),
               )
             : Container(
-                padding: const EdgeInsets.all(10),
-                color: AppTheme.lightAppColors.maincolor.withOpacity(0.8),
+                padding: const EdgeInsets.all(20),
+                color: AppTheme.lightAppColors.background.withOpacity(0.8),
                 height: context.screenHeight,
                 child: SingleChildScrollView(
                   child: SafeArea(
@@ -58,75 +59,76 @@ class RegisterPageFour extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           20.0.kH,
-                          VendorRegisterText.secText(
-                              "Select the days and hours you're available for patient consultations or clinic services"),
+                          VendorRegisterText.secText('FouthPageHeader'.tr),
                           70.0.kH,
-                          VendorRegisterText.mainText("Select working days"),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: SizedBox(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height * .4,
-                              child: GridView.builder(
-                                physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: controller.allDays.length,
-                                itemBuilder: (context, index) {
-                                  String day = controller.allDays[index];
-                                  return Obx(
-                                    () => GestureDetector(
+                          VendorRegisterText.mainText("Select working days".tr),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height * .4,
+                            child: GridView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: controller.allDays.length,
+                              itemBuilder: (context, index) {
+                                String day = controller.allDays[index];
+
+                                return Obx(
+                                  () {
+                                    bool isSelected =
+                                        controller.selectedDays.contains(day);
+                                    return GestureDetector(
                                       onTap: () =>
                                           controller.toggleDaySelection(day),
                                       child: Container(
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(10),
-                                          color: controller.selectedDays
-                                                  .contains(day)
+                                          color: isSelected
                                               ? AppTheme.lightAppColors.primary
                                               : AppTheme
                                                   .lightAppColors.background,
                                           border: Border.all(
-                                            color: !controller.selectedDays
-                                                    .contains(day)
+                                            color: isSelected
                                                 ? AppTheme
-                                                    .lightAppColors.primary
+                                                    .lightAppColors.background
                                                 : AppTheme
-                                                    .lightAppColors.background,
+                                                    .lightAppColors.primary,
                                           ),
                                         ),
                                         child: Center(
                                           child: Text(
-                                            day,
+                                            Get.locale!.languageCode == "en"
+                                                ? controller.allDays[index]
+                                                : controller
+                                                    .daysTranslations[day]!,
                                             style: TextStyle(
-                                              color: !controller.selectedDays
-                                                      .contains(day)
+                                              color: isSelected
                                                   ? AppTheme
-                                                      .lightAppColors.primary
-                                                  : AppTheme.lightAppColors
-                                                      .background,
+                                                      .lightAppColors.background
+                                                  : AppTheme
+                                                      .lightAppColors.primary,
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  );
-                                },
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisSpacing: 10,
-                                  mainAxisSpacing: 20,
-                                  crossAxisCount: 3,
-                                  childAspectRatio: 1.5,
-                                ),
+                                    );
+                                  },
+                                );
+                              },
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 20,
+                                crossAxisCount: 3,
+                                childAspectRatio: 1.5,
                               ),
                             ),
                           ),
-                          VendorRegisterText.mainText("Select working Hours"),
+                          VendorRegisterText.mainText(
+                              "Select working Hours".tr),
                           Row(
                             children: [
-                              VendorRegisterText.mainText("From"),
-                              const SizedBox(width: 10.0),
+                              VendorRegisterText.mainText("From".tr),
                               Expanded(
                                 child: Stack(
                                   children: [
@@ -160,7 +162,7 @@ class RegisterPageFour extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              VendorRegisterText.mainText("To"),
+                              VendorRegisterText.mainText("To1".tr),
                               const SizedBox(width: 10.0),
                               Expanded(
                                 child: Stack(
@@ -209,16 +211,20 @@ class RegisterPageFour extends StatelessWidget {
                                 onTap: () async {
                                   // Step 1: Check if any day is selected
                                   if (controller.selectedDays.isEmpty) {
-                                    Get.snackbar("Error",
-                                        "Please select at least one working day.");
+                                    Get.snackbar(
+                                        "Error".tr,
+                                        "Please select at least one working day."
+                                            .tr);
                                     return;
                                   }
 
                                   // Step 2: Validate that open and close hours are not empty
                                   if (controller.operHour.text.isEmpty ||
                                       controller.closeHour.text.isEmpty) {
-                                    Get.snackbar("Error",
-                                        "Please select both opening and closing hours.");
+                                    Get.snackbar(
+                                        "Error".tr,
+                                        "Please select both opening and closing hours."
+                                            .tr);
                                     return;
                                   }
 
@@ -230,8 +236,10 @@ class RegisterPageFour extends StatelessWidget {
                                         .parse(controller.closeHour.text);
 
                                     if (openTime.isAfter(closeTime)) {
-                                      Get.snackbar("Error",
-                                          "Opening hours must be earlier than closing hours.");
+                                      Get.snackbar(
+                                          "Error".tr,
+                                          "Opening hours must be earlier than closing hours."
+                                              .tr);
                                       return;
                                     }
                                   } catch (e) {
@@ -283,7 +291,7 @@ class RegisterPageFour extends StatelessWidget {
 
                                   controller.postSchedule();
                                 },
-                                title: 'Continue',
+                                title: 'Continue'.tr,
                               ),
                             ),
                           )

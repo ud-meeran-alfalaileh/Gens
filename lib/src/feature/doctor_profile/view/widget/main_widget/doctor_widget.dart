@@ -29,12 +29,16 @@ class _DoctorWidgetState extends State<DoctorWidget> {
 
   @override
   void initState() {
-    init();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.isLoading.value = true;
+      init();
+    });
+
     super.initState();
   }
 
   Future<void> init() async {
-    await controller.getVendorsById(widget.model);
+    // await controller.getVendorsById(widget.model);
     controller.srevice.value = 0;
     await controller.getVendorServices(widget.model);
   }
@@ -314,6 +318,8 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                                                   .doctor.value!.vendorId,
                                               type: 'New',
                                               bookId: 1,
+                                              vendorPhone: controller
+                                                  .doctor.value!.phone,
                                             ));
                                   },
                                   title: "Book Appointment".tr)
@@ -361,7 +367,7 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                           : AppTheme.lightAppColors.background),
                   child: Center(
                       child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       controller.services[index].imageUrl == ''
@@ -490,17 +496,20 @@ class _DoctorWidgetState extends State<DoctorWidget> {
 
     // Add full stars
     for (int i = 0; i < fullStars; i++) {
-      stars.add(const Icon(Icons.star, color: Colors.amber, size: 16));
+      stars.add(Icon(Icons.star,
+          color: AppTheme.lightAppColors.secondaryColor, size: 16));
     }
 
     // Add half star if applicable
     if (hasHalfStar) {
-      stars.add(const Icon(Icons.star_half, color: Colors.amber, size: 16));
+      stars.add(Icon(Icons.star_half,
+          color: AppTheme.lightAppColors.secondaryColor, size: 16));
     }
 
     // Add empty stars to complete 5 stars display
     for (int i = fullStars + (hasHalfStar ? 1 : 0); i < 5; i++) {
-      stars.add(const Icon(Icons.star_border, color: Colors.amber, size: 16));
+      stars.add(Icon(Icons.star_border,
+          color: AppTheme.lightAppColors.secondaryColor, size: 16));
     }
 
     return stars;

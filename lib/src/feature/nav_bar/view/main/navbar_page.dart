@@ -13,7 +13,8 @@ import 'package:gens/src/feature/vendor_navbar.dart/view/widget/main_widget/vend
 import 'package:get/get.dart';
 
 class NavBarPage extends StatefulWidget {
-  const NavBarPage({super.key});
+  const NavBarPage({super.key, required this.currentScreen});
+  final int currentScreen;
 
   @override
   State<NavBarPage> createState() => _NavBarPageState();
@@ -26,7 +27,7 @@ class _NavBarPageState extends State<NavBarPage> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.selectedIndex(0);
+      controller.selectedIndex(widget.currentScreen??0);
       initialState();
     });
 

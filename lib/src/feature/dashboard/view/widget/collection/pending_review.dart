@@ -3,11 +3,13 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
+import 'package:gens/src/core/api/notification_controller.dart';
 import 'package:gens/src/core/utils/app_button.dart';
 import 'package:gens/src/feature/dashboard/view/widget/text/dashboard_text.dart';
 import 'package:gens/src/feature/doctor_profile/controller/doctor_controller.dart';
 import 'package:gens/src/feature/login/model/login_form_model.dart';
 import 'package:gens/src/feature/login/view/widgte/collection/auth_form_widget.dart';
+import 'package:gens/src/feature/profile/view/widget/collection/profile_collection.dart';
 import 'package:get/get.dart';
 
 Container reviewContainer(BuildContext context) {
@@ -79,9 +81,9 @@ Container pendingReviewContainer(
             itemCount: 5,
             itemPadding:
                 EdgeInsets.symmetric(horizontal: context.screenWidth * .002),
-            itemBuilder: (context, _) => const Icon(
+            itemBuilder: (context, _) => Icon(
               Icons.star,
-              color: Colors.amber,
+              color: AppTheme.lightAppColors.secondaryColor,
             ),
             onRatingUpdate: (rating) {
               doctorController.userRating.value = rating;
@@ -123,7 +125,7 @@ Container pendingReviewContainer(
                         )
                       : IconButton(
                           onPressed: () {
-                            doctorController.pickImages(context);
+                            showPopupButtons(context, doctorController);
                           },
                           icon: Icon(
                             doctorController.serviceImage.value == ""
@@ -146,15 +148,6 @@ Container pendingReviewContainer(
               width: context.screenWidth * .25,
               child: AppButton(
                 onTap: () {
-                  doctorController.postReview(review.reviewId, 'Done');
-                },
-                title: 'Submit'.tr,
-              ),
-            ),
-            SizedBox(
-              width: context.screenWidth * .25,
-              child: AppButton(
-                onTap: () {
                   doctorController.reviewPinding.clear();
                   doctorController.serviceImage.value = "";
                   doctorController.messageController.text = "";
@@ -162,10 +155,63 @@ Container pendingReviewContainer(
                 title: 'later'.tr,
               ),
             ),
+            SizedBox(
+              width: context.screenWidth * .25,
+              child: AppButton(
+                onTap: () {
+                  doctorController.postReview(
+                      review.reviewId,
+                      'Done',
+                      NotificationModel(
+                          title: "title",
+                          message: "message",
+                          imageURL: "imageURL",
+                          externalIds: "externalIds"));
+                },
+                title: 'Submit'.tr,
+              ),
+            ),
           ],
         ),
       ],
     ),
+  );
+}
+
+void showPopupButtons(BuildContext context, DoctorController controller) {
+  showModalBottomSheet(
+    backgroundColor: Colors.transparent,
+    context: context,
+    builder: (BuildContext context) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        height: context.screenHeight * .18,
+        width: context.screenWidth,
+        decoration: BoxDecoration(
+            color: AppTheme.lightAppColors.background,
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(20))),
+        child: Column(
+          children: [
+            SizedBox(
+              height: context.screenHeight * .01,
+            ),
+            profileImageButton(context, () {
+              controller.pickImages(context);
+            }, "library".tr, Icons.image_outlined),
+            const Divider(),
+            10.0.kH,
+            profileImageButton(context, () {
+              controller.takeImages(context);
+            }, "camera".tr, Icons.camera_alt_outlined),
+            // profileImageButton(context, () {
+            //   // controller.takeImages(token);
+            // },
+            // "Remove current picture", Icons.delete_outline_outlined),
+          ],
+        ),
+      );
+    },
   );
 }
 
@@ -219,7 +265,14 @@ Container absentReviewContainer(
                     child: AppButton(
                       onTap: () {
                         // doctorController.isAbsent.value = true;
-                        doctorController.postReview(review.reviewId, 'Pending');
+                        doctorController.postReview(
+                            review.reviewId,
+                            'Pending',
+                            NotificationModel(
+                                title: 'title',
+                                message: 'message',
+                                imageURL: 'imageURL',
+                                externalIds: "externalIds"));
                       },
                       title: 'Yes'.tr,
                     ),
@@ -272,9 +325,15 @@ Container absentReviewContainer(
                         child: AppButton(
                           onTap: () {
                             doctorController.postReview(
-                                review.reviewId, "No-show");
+                                review.reviewId,
+                                "Pending",
+                                NotificationModel(
+                                    title: "title",
+                                    message: "message",
+                                    imageURL: "imageURL",
+                                    externalIds: "externalIds"));
                           },
-                          title: 'Submit'.tr,
+                          title: 'Attended'.tr,
                         ),
                       ),
                       SizedBox(
@@ -282,9 +341,15 @@ Container absentReviewContainer(
                         child: AppButton(
                           onTap: () {
                             doctorController.postReview(
-                                review.reviewId, "Pending");
+                                review.reviewId,
+                                "No-show",
+                                NotificationModel(
+                                    title: "title",
+                                    message: "message",
+                                    imageURL: "imageURL",
+                                    externalIds: ''));
                           },
-                          title: 'Attended'.tr,
+                          title: 'Submit'.tr,
                         ),
                       ),
                     ],

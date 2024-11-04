@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/feature/calendar/controller/calender_controller.dart';
 import 'package:get/get.dart';
@@ -15,7 +16,8 @@ class CalendarWidget extends StatelessWidget {
       backgroundColor: AppTheme.lightAppColors.background,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: EdgeInsets.only(
+              left: 10.0, right: 10.0, bottom: context.screenHeight * .1),
           child: Obx(() {
             return SfCalendar(
               view: CalendarView.month,
@@ -29,11 +31,13 @@ class CalendarWidget extends StatelessWidget {
               },
               dataSource: MeetingDataSource(controller.event.map((event) {
                 return Meeting(
-                  event.description, // Use event description directly
-                  event.date, // Start time
+                  event.description, "", "",
+                  event.date,
+
                   event.date.add(
                       const Duration(hours: 1)), // End time, assuming 1 hour
-                  const Color(0xFF0F8644), // Background color
+                  AppTheme.lightAppColors.primary
+                      .withOpacity(0.3), // Background color
                   false, // Not an all-day event
                 );
               }).toList()),
@@ -75,9 +79,12 @@ class CalendarWidget extends StatelessWidget {
 }
 
 class Meeting {
-  Meeting(this.eventName, this.from, this.to, this.background, this.isAllDay);
+  Meeting(this.eventName, this.userName, this.location, this.from, this.to,
+      this.background, this.isAllDay);
 
   final String eventName;
+  final String userName;
+  final String location;
   final DateTime from;
   final DateTime to;
   final Color background;
@@ -91,6 +98,10 @@ class MeetingDataSource extends CalendarDataSource {
 
   @override
   DateTime getStartTime(int index) => appointments![index].from;
+  @override
+  String getNotes(int index) => appointments![index].userName;
+  @override
+  String getLocation(int index) => appointments![index].location;
 
   @override
   DateTime getEndTime(int index) => appointments![index].to;

@@ -49,7 +49,7 @@ class _FirstQuestionPageViewState extends State<FirstQuestionPageView> {
         'Incomplete',
         'Please answer the question before proceeding.',
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
+        backgroundColor: AppTheme.lightAppColors.secondaryColor,
         colorText: Colors.white,
       );
     }
@@ -207,7 +207,7 @@ class _FirstQuestionPageViewState extends State<FirstQuestionPageView> {
               Text(answer),
               Checkbox(
                 checkColor: Colors.white, // color of tick mark
-                activeColor: AppTheme.lightAppColors.primary,
+                activeColor: AppTheme.lightAppColors.secondaryColor,
                 value:
                     (controller.selectedAnswers[question.name] as List<String>?)
                             ?.contains(answer) ??
@@ -251,7 +251,7 @@ class _FirstQuestionPageViewState extends State<FirstQuestionPageView> {
                     Text(answer),
                     Radio<String>(
                       focusColor: AppTheme.lightAppColors.primary,
-                      activeColor: AppTheme.lightAppColors.primary,
+                      activeColor: AppTheme.lightAppColors.secondaryColor,
                       value: answer,
                       groupValue:
                           controller.selectedAnswers[question.name] as String?,

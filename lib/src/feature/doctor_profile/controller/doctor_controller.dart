@@ -8,6 +8,7 @@ import 'package:gens/src/core/api/api_services.dart';
 import 'package:gens/src/core/api/end_points.dart';
 import 'package:gens/src/core/api/injection_container.dart';
 import 'package:gens/src/core/api/netwok_info.dart';
+import 'package:gens/src/core/api/notification_controller.dart';
 import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/dashboard/model/review_pending_model.dart';
@@ -23,7 +24,7 @@ class DoctorController extends GetxController {
   final NetworkInfo networkInfo =
       NetworkInfoImpl(connectionChecker: InternetConnectionChecker());
   final DioConsumer dioConsumer = sl<DioConsumer>();
-
+  RxBool getDoctorLoading = false.obs;
   void toggleExpanded() {
     isExpanded.value = !isExpanded.value;
   }
@@ -34,7 +35,7 @@ class DoctorController extends GetxController {
   RxString serviceImage = "".obs;
   RxBool isUpdating = false.obs;
   RxBool addingImage = false.obs;
-
+  final notificationController = Get.put(NotificationController());
   RxBool isAbsent = false.obs;
   RxList<String> imagesUrl = <String>[].obs;
   RxDouble userRating = 5.0.obs; // Initial rating
@@ -103,8 +104,9 @@ class DoctorController extends GetxController {
         "vendorId": vendorId,
         "isFav": true,
       });
-    await dioConsumer.post(EndPoints.postFav, body: body);
-       getFav(vendorId);
+      final response = await dioConsumer.post(EndPoints.postFav, body: body);
+      print(response.data);
+      getFav(vendorId);
     }
   }
 
@@ -174,34 +176,41 @@ class DoctorController extends GetxController {
   }
 
   Future<void> getVendors() async {
-    isLoading.value = true;
+    getDoctorLoading.value = true;
 
     if (await networkInfo.isConnected) {
-      final response = await dioConsumer.get(EndPoints.getVendor);
+      try {
+        final response = await dioConsumer.get(EndPoints.getVendor);
 
-       if (response.statusCode == StatusCode.ok) {
-        try {
-          final List<dynamic> jsonData = json.decode(response.data);
+        if (response.statusCode == StatusCode.ok) {
+          try {
+            final List<dynamic> jsonData = json.decode(response.data);
 
             List<Vendor> vendors =
                 jsonData.map((json) => Vendor.fromJson(json)).toList();
-          searchDoctors('');
-          doctors.value = vendors;
-          for (var xx in doctors) {
-            xx.fav == 0;
+            searchDoctors('');
+            doctors.value = vendors;
+            for (var xx in doctors) {
+              xx.fav == 0;
+            }
+            getDoctorLoading.value = false;
+          } catch (e) {
+            Get.snackbar(
+              "Error",
+              "Failed to parse vendor data",
+              snackPosition: SnackPosition.BOTTOM,
+            );
+            getDoctorLoading.value = false;
+            doctors.value = [];
           }
-          isLoading.value = false;
-        } catch (e) {
-          Get.snackbar(
-            "Error",
-            "Failed to parse vendor data",
-            snackPosition: SnackPosition.BOTTOM,
-          );
+          getDoctorLoading.value = false;
+        } else {
+          doctors.value = [];
+          getDoctorLoading.value = false;
         }
-        isLoading.value = false;
-      } else {
-        doctors.value = [];
-        isLoading.value = false;
+      } catch (e) {
+        print(e);
+        getDoctorLoading.value = false;
       }
     } else {
       Get.snackbar(
@@ -209,7 +218,7 @@ class DoctorController extends GetxController {
         "Please check your network settings",
         snackPosition: SnackPosition.BOTTOM,
       );
-      isLoading.value = false;
+      getDoctorLoading.value = false;
     }
   }
 
@@ -309,6 +318,9 @@ class DoctorController extends GetxController {
           List<ReviewPending> pendingReview =
               jsonData.map((json) => ReviewPending.fromJson(json)).toList();
           reviewPinding.value = pendingReview;
+          for (var review in reviewPinding) {
+            print(review.reviewStatus);
+          }
           if (reviewPinding.isNotEmpty) {
             showReview.value = true;
           }
@@ -321,16 +333,40 @@ class DoctorController extends GetxController {
     }
   }
 
-  Future<void> pickImages(context) async {
-    final XFile? selectedImages =
+  Future<void> pickImages(BuildContext context) async {
+    final XFile? selectedImage =
         await _picker.pickImage(source: ImageSource.gallery);
+
+    if (selectedImage == null) {
+      addingImage.value = false; // User cancelled the picker
+      return;
+    }
+
     addingImage.value = true;
 
-    await uploadImageToFirebase(File(selectedImages!.path), context);
+    if (selectedImage.path.isNotEmpty) {
+      await uploadImageToFirebase(File(selectedImage.path), context);
+    }
 
     addingImage.value = false;
+  }
 
-    // imageFiles.value = (File(selectedImages.take(3)).toList());
+  Future<void> takeImages(BuildContext context) async {
+    final XFile? selectedImage =
+        await _picker.pickImage(source: ImageSource.camera);
+
+    if (selectedImage == null) {
+      addingImage.value = false; // User cancelled the picker
+      return;
+    }
+
+    addingImage.value = true;
+
+    if (selectedImage.path.isNotEmpty) {
+      await uploadImageToFirebase(File(selectedImage.path), context);
+    }
+
+    addingImage.value = false;
   }
 
   Future<String?> uploadImageToFirebase(File pickedFile, context) async {
@@ -357,7 +393,7 @@ class DoctorController extends GetxController {
     }
   }
 
-  Future<void> postReview(reviewId, status) async {
+  Future<void> postReview(reviewId, status, NotificationModel model) async {
     if (await networkInfo.isConnected) {
       try {
         var body = jsonEncode({
@@ -378,6 +414,9 @@ class DoctorController extends GetxController {
 
         if (response.statusCode == StatusCode.ok) {
           reviewPinding.clear();
+          if (status == "Done") {
+            notificationController.sendNotification(model);
+          }
           serviceImage.value = "";
           messageController.text = "";
           await getPendingReview();

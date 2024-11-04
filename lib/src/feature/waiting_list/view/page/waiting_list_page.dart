@@ -4,17 +4,28 @@ import 'package:gens/src/feature/waiting_list/view/widget/main_widget/waiting_li
 
 class WaitingListPage extends StatelessWidget {
   const WaitingListPage(
-      {super.key, required this.dayOfTheWeek, required this.data,required this.vendorId,required this.serviceId});
+      {super.key,
+       
+      required this.vendorId,
+      required this.serviceId,
+      required this.vendorPhone});
   final int vendorId;
   final int serviceId;
 
-  final String dayOfTheWeek;
-  final String data;
+ 
+  final String vendorPhone;
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.lightAppColors.background,
-      body:  WaitingListWidget(dayOfTheWeek: dayOfTheWeek, data: data, vendorId: vendorId, serviceId: serviceId,),
+      body: WaitingListWidget(
+   
+      
+        vendorId: vendorId,
+        serviceId: serviceId,
+        vendorPhone: vendorPhone.toString(),
+      ),
     );
   }
 }

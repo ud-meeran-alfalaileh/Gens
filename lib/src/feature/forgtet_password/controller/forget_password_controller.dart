@@ -31,7 +31,7 @@ class ForgetPasswordController extends GetxController {
     } else {
       showTopSnackBar(
         Overlay.of(context),
-          CustomSnackBar.error(
+        CustomSnackBar.error(
           message: 'Verification Code is not Correct'.tr,
         ),
       );
@@ -75,7 +75,9 @@ class ForgetPasswordController extends GetxController {
         "subject": "Access code",
         "message": "otp"
       });
+
       final response = await dioConsumer.post(EndPoints.senMessage, body: body);
+      print(response.data);
       if (response.statusCode == StatusCode.ok) {
         final jsonData = json.decode(response.data);
         final otpId = jsonData['randomNumber'];

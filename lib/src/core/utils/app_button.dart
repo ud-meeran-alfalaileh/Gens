@@ -3,8 +3,9 @@ import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
 
 class AppButton extends StatelessWidget {
-  const AppButton({super.key, required this.onTap, required this.title});
+  AppButton({super.key, required this.onTap, required this.title, this.color});
   final VoidCallback onTap;
+  Color? color;
   final String title;
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,7 @@ class AppButton extends StatelessWidget {
           padding: const EdgeInsets.all(10),
           width: context.screenWidth,
           decoration: BoxDecoration(
-              color: AppTheme.lightAppColors.primary,
+              color: color ?? AppTheme.lightAppColors.primary,
               borderRadius: BorderRadius.circular(20)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,

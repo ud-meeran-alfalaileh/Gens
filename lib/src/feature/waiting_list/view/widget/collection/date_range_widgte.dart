@@ -49,9 +49,8 @@ class DateRangeWidget extends GetView<WaitingListController> {
                 child: AppButton(
                     onTap: () {
                       controller.setDateValue();
-                      if (controller.formattedStart.value == '' ||
-                          controller.formattedEnd.value == '') {
-                        showSnackBar("Select End Date", "Error",
+                      if (controller.formattedStart.value == '') {
+                        showSnackBar("Select Start Date", "Error",
                             AppTheme.lightAppColors.bordercolor);
                       } else {
                         Get.back();
@@ -119,9 +118,6 @@ class DateRangeWidget extends GetView<WaitingListController> {
             controller.focusedDay.value = focusedDayValue;
 
             // Notify if the range includes Friday or Sunday
-            if (_rangeIncludesRestrictedDays(start, end)) {
-              _showDayWarningDialog(context); // Show warning dialog
-            }
 
             // Assuming there's a method to get booking hours for the selected range
           },
@@ -162,42 +158,42 @@ class DateRangeWidget extends GetView<WaitingListController> {
         ));
   }
 
-  void _showDayWarningDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: AppTheme.lightAppColors.background,
-          title: const Text("Notice"),
-          content: Text(
-            "The doctor does not work on some selected day".tr,
-            style: TextStyle(
-                color: AppTheme.lightAppColors.black, fontFamily: "Inter"),
-          ),
-          actions: [
-            TextButton(
-              child: const Text("Done"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+  // void _showDayWarningDialog(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         backgroundColor: AppTheme.lightAppColors.background,
+  //         title: const Text("Notice"),
+  //         content: Text(
+  //           "The doctor does not work on some selected day".tr,
+  //           style: TextStyle(
+  //               color: AppTheme.lightAppColors.black, fontFamily: "Inter"),
+  //         ),
+  //         actions: [
+  //           TextButton(
+  //             child: const Text("Done"),
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
-  bool _rangeIncludesRestrictedDays(DateTime? start, DateTime? end) {
-    if (start == null || end == null) return false;
+  // bool _rangeIncludesRestrictedDays(DateTime? start, DateTime? end) {
+  //   if (start == null || end == null) return false;
 
-    for (var day = start;
-        day.isBefore(end.add(const Duration(days: 1)));
-        day = day.add(const Duration(days: 1))) {
-      if (day.weekday == DateTime.friday || day.weekday == DateTime.sunday) {
-        return true;
-      }
-    }
+  //   for (var day = start;
+  //       day.isBefore(end.add(const Duration(days: 1)));
+  //       day = day.add(const Duration(days: 1))) {
+  //     if (day.weekday == DateTime.friday || day.weekday == DateTime.sunday) {
+  //       return true;
+  //     }
+  //   }
 
-    return false;
-  }
+  //   return false;
+  // }
 }

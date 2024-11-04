@@ -13,6 +13,7 @@ import 'package:gens/src/feature/nav_bar/view/main/main_app_page.dart';
 import 'package:gens/src/feature/register/model/country_model.dart';
 import 'package:get/get.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -23,6 +24,8 @@ class RegisterController extends GetxController {
   RxBool isLoading = false.obs;
   User user = User();
   RxInt remainingTime = 30.obs;
+  RxBool isExist = false.obs;
+
   RxBool isButtonEnabled = false.obs;
   // Initialize as null
   Rx<String?> selectedGender = Rx<String?>(null);
@@ -48,6 +51,13 @@ class RegisterController extends GetxController {
   vaildEmail(String? email) {
     if (!GetUtils.isEmail(email!)) {
       return "EmailValidate".tr;
+    }
+    return null;
+  }
+
+  vaildAge(String? date) {
+    if (dateOfBirth.text.isEmpty) {
+      return 'Please Select a Date of Birth'.tr;
     }
     return null;
   }
@@ -120,6 +130,16 @@ class RegisterController extends GetxController {
     }
   }
 
+  Future<void> loginUser(String externalId) async {
+    try {
+      await OneSignal.login(externalId);
+
+      print("User logged in with external ID: $externalId");
+    } catch (e) {
+      print(e);
+    }
+  }
+
   String? pageOneValidateAllFields() {
     RxList<String?> errors = <String>[].obs;
 
@@ -145,10 +165,12 @@ class RegisterController extends GetxController {
     RxList<String?> errors = <String>[].obs;
 
     // Validate each form field and collect errors
+    final dateError = vaildAge(dateOfBirth.text);
     final emailError = vaildEmail(email.text);
     final passwordError = vaildPassword(password.text);
     final confirmPasswordError = validConfirmPassword(confirmPassword.text);
 
+    if (dateError != null) errors.add("- $dateError");
     if (emailError != null) errors.add("- $emailError");
     if (passwordError != null) errors.add("- $passwordError");
     if (confirmPasswordError != null) errors.add("- $confirmPasswordError");
@@ -175,6 +197,52 @@ class RegisterController extends GetxController {
     return input;
   }
 
+  Future<void> checkExist(context) async {
+    isLoading.value = true;
+
+    var body =
+        '"${email.text.trim()}"'; // Ensure the email is a string with quotes
+    final response = await dioConsumer.post(EndPoints.checkExist, body: body);
+
+    if (response.statusCode == StatusCode.ok) {
+      final data = jsonDecode(response.data)['userExits'];
+      isExist.value = data;
+      print(email.value);
+      print('Email already exists');
+      print(data);
+      if (isExist.value == false) {
+        var phoneBody = '"962${removeLeadingZero(phoneNumber.text.trim())}"';
+        final checkPhone =
+            await dioConsumer.post(EndPoints.checkExist, body: phoneBody);
+        if (checkPhone.statusCode == StatusCode.ok) {
+          final data = jsonDecode(checkPhone.data)['userExits'];
+          isExist.value = data;
+          if (isExist.value == false) {
+            sendEmail(context);
+          } else {
+            showTopSnackBar(
+              Overlay.of(context),
+              CustomSnackBar.error(
+                message: 'Phone number already exists'.tr,
+              ),
+            );
+            isLoading.value = false;
+          }
+        }
+
+        //Email already exists
+      } else {
+        showTopSnackBar(
+          Overlay.of(context),
+          CustomSnackBar.error(
+            message: 'Email already exists'.tr,
+          ),
+        );
+        isLoading.value = false;
+      }
+    }
+  }
+
   Future<void> register(context) async {
     // Check if the context is still mounted before showing any SnackBars
     isLoading.value = true;
@@ -193,12 +261,16 @@ class RegisterController extends GetxController {
         "locked": true,
         "userImage": ""
       });
+
       final response = await dioConsumer.post(EndPoints.signup, body: body);
+      print(response.data);
       try {
         if (response.statusCode == StatusCode.ok ||
             response.statusCode == StatusCode.created) {
           final jsonData = json.decode(response.data);
           final token = jsonData['userId'];
+                    final number = jsonData['phone'];
+
           await user.saveId(token);
           user.userId.value = token;
           showTopSnackBar(
@@ -210,6 +282,8 @@ class RegisterController extends GetxController {
           isLoading.value = false;
 
           Get.offAll(const MainAppPage());
+          await loginUser(number.toString());
+
           phoneNumber.clear();
           password.clear();
         } else {
@@ -227,6 +301,7 @@ class RegisterController extends GetxController {
         } //0879288828
       } catch (error) {
         isLoading.value = true;
+        print(error);
 
         print(error);
         showTopSnackBar(
@@ -265,7 +340,7 @@ class RegisterController extends GetxController {
 
       showTopSnackBar(
         Overlay.of(context),
-          CustomSnackBar.error(
+        CustomSnackBar.error(
           message: 'Something went wrong.'.tr,
         ),
       );
@@ -282,7 +357,7 @@ class RegisterController extends GetxController {
       isLoading.value = false;
       showTopSnackBar(
         Overlay.of(context),
-           CustomSnackBar.error(
+        CustomSnackBar.error(
           message: 'Verification Code is not Correct'.tr,
         ),
       );

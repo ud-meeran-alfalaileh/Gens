@@ -10,14 +10,15 @@ class AppTheme {
   );
 
   static final lightAppColors = AppColorsExtension(
-    primary: const Color(0xff0B3954), //
+    primary: const Color(0xff0E3B52), //
     background: const Color(0xffffffff), //
     black: const Color(0xff000000), //
-    maincolor: const Color.fromARGB(255, 253, 241, 239), //
+    maincolor: const Color(0xffF6F5E9), //
     bordercolor: const Color(0xffdddddd),
     subTextcolor: const Color(0xff6B7280),
     mainTextcolor: const Color(0xff424242),
     thirdTextcolor: const Color(0xff1363C6),
-    containercolor: const Color(0xfff9f9f9),
+    containercolor: const Color(0xffECDEC7),
+    secondaryColor: const Color(0xffFF6260),
   );
 }

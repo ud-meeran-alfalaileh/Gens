@@ -225,17 +225,20 @@ class _VendorPationtState extends State<VendorPationt> {
 
     // Add full stars
     for (int i = 0; i < fullStars; i++) {
-      stars.add(const Icon(Icons.star, color: Colors.amber, size: 16));
+      stars.add(Icon(Icons.star,
+          color: AppTheme.lightAppColors.secondaryColor, size: 16));
     }
 
     // Add half star if applicable
     if (hasHalfStar) {
-      stars.add(const Icon(Icons.star_half, color: Colors.amber, size: 16));
+      stars.add(Icon(Icons.star_half,
+          color: AppTheme.lightAppColors.secondaryColor, size: 16));
     }
 
     // Add empty stars to complete 5 stars display
     for (int i = fullStars + (hasHalfStar ? 1 : 0); i < 5; i++) {
-      stars.add(const Icon(Icons.star_border, color: Colors.amber, size: 16));
+      stars.add(Icon(Icons.star_border,
+          color: AppTheme.lightAppColors.secondaryColor, size: 16));
     }
 
     return stars;

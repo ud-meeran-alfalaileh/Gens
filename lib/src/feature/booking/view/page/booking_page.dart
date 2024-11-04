@@ -7,9 +7,11 @@ class BookingPage extends StatelessWidget {
       {super.key,
       required this.vendorId,
       required this.type,
+      required this.vendorPhone,
       required this.bookId});
   final int? bookId;
   final String type;
+  final String vendorPhone;
   final int vendorId;
   @override
   Widget build(BuildContext context) {
@@ -19,6 +21,7 @@ class BookingPage extends StatelessWidget {
         vendorId: vendorId,
         type: type,
         bookId: bookId,
+        vendorPhone: vendorPhone,
       ),
     );
   }

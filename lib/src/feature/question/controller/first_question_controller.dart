@@ -130,7 +130,7 @@ class FirstQuestionController extends GetxController {
 
       final body = jsonEncode(formattedAnswers);
       final response = await dioConsumer.post(EndPoints.firstPage, body: body);
-
+      print(response.data);
       if (response.statusCode == StatusCode.ok) {
         await profileController.getQuestionDetails();
         Get.back();

@@ -34,4 +34,14 @@ class WaitingListText {
           fontWeight: FontWeight.w400),
     );
   }
+  static selectDateText(title,) {
+    return Text(
+      title,
+      style: TextStyle(
+          color: AppTheme.lightAppColors.secondaryColor,
+          fontFamily: "Inter",
+          fontSize: 15,
+          fontWeight: FontWeight.w400),
+    );
+  }
 }

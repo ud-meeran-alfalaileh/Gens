@@ -8,17 +8,18 @@ import 'package:gens/src/feature/profile/view/widget/text/profile_text.dart';
 import 'package:gens/src/feature/profile/view/widget/text/skin_text.dart';
 import 'package:gens/src/feature/question/controller/add_image_user_controller.dart';
 import 'package:gens/src/feature/question/controller/add_product_controller.dart';
-import 'package:gens/src/feature/question/view/page/question_page.dart';
+import 'package:gens/src/feature/question/view/widget/main_widget/first_qustion_widget.dart';
 import 'package:get/get.dart';
 
 class SkinDetailsPage extends StatelessWidget {
   final String gender;
+  final ProfileController controller;
 
-  const SkinDetailsPage({super.key, required this.gender});
+  const SkinDetailsPage(
+      {super.key, required this.gender, required this.controller});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ProfileController());
     final isQuestionAvailable = controller.question.value != null;
 
     final imageController = Get.put(AddImageUserController());
@@ -74,14 +75,14 @@ class SkinDetailsPage extends StatelessWidget {
                         context,
                         'Skin concern',
                         controller.question.value!.skinConcerns,
-                        "assets/image/dry-skin.png"),
+                        "assets/image/concern.png"),
                   if (controller.question.value!.skinIssue != "")
                     skinDetailsContainer(
                         controller.question.value!,
                         context,
                         'Skin Issue',
                         controller.question.value!.skinIssue,
-                        "assets/image/burn.png"),
+                        "assets/image/concern.png"),
                   if (controller.question.value!.acneMedication != "")
                     skinDetailsContainer(
                         controller.question.value!,
@@ -105,8 +106,8 @@ class SkinDetailsPage extends StatelessWidget {
                         controller.question.value!,
                         context,
                         'Vitamin B12',
-                        controller.question.value!.b12Pills,
-                        "assets/image/vitamin-b12.png"),
+                      controller.question.value!.b12Pills,
+                        "assets/image/capsules.png"),
                   if (controller.question.value!.manageStress != "")
                     skinDetailsContainer(
                         controller.question.value!,
@@ -168,128 +169,147 @@ class SkinDetailsPage extends StatelessWidget {
                     ),
                   10.0.kH,
 
-                  if (imageController.imageUrls.isNotEmpty)
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SkinText.mainText("Face Images"),
-                        5.0.kH,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  imageController.isImageDataIncomplere.value == false
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            GestureDetector(
-                              onTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return Dialog(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(20),
-                                        child: Image.network(
-                                          imageController.imageUrls[0],
-                                          fit: BoxFit.cover,
+                            Text(imageController.isImageDataIncomplere.value
+                                .toString()),
+                            5.0.kH,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                imageController.isImageDataIncomplere.value ==
+                                        true
+                                    ? GestureDetector(
+                                        onTap: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return Dialog(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                ),
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  child: Image.network(
+                                                    imageController
+                                                        .imageUrls[0],
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        },
+                                        child: Container(
+                                          width: context.screenHeight * .12,
+                                          height: context.screenHeight * .1,
+                                          padding: const EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                  fit: BoxFit.cover,
+                                                  image: NetworkImage(
+                                                      imageController
+                                                          .imageUrls[0])),
+                                              border: Border.all(
+                                                  color: AppTheme.lightAppColors
+                                                      .bordercolor),
+                                              color: AppTheme
+                                                  .lightAppColors.background,
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
                                         ),
-                                      ),
+                                      )
+                                    : SizedBox.shrink(),
+                                GestureDetector(
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return Dialog(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            child: Image.network(
+                                              imageController.imageUrls[1],
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        );
+                                      },
                                     );
                                   },
-                                );
-                              },
-                              child: Container(
-                                width: context.screenHeight * .12,
-                                height: context.screenHeight * .1,
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: NetworkImage(
-                                            imageController.imageUrls[0])),
-                                    border: Border.all(
-                                        color: AppTheme
-                                            .lightAppColors.bordercolor),
-                                    color: AppTheme.lightAppColors.background,
-                                    borderRadius: BorderRadius.circular(10)),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return Dialog(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(20),
-                                        child: Image.network(
-                                          imageController.imageUrls[1],
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
+                                  child: Container(
+                                    width: context.screenHeight * .12,
+                                    height: context.screenHeight * .1,
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: NetworkImage(
+                                                imageController.imageUrls[1])),
+                                        border: Border.all(
+                                            color: AppTheme
+                                                .lightAppColors.bordercolor),
+                                        color:
+                                            AppTheme.lightAppColors.background,
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return Dialog(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            child: Image.network(
+                                              imageController.imageUrls[2],
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        );
+                                      },
                                     );
                                   },
-                                );
-                              },
-                              child: Container(
-                                width: context.screenHeight * .12,
-                                height: context.screenHeight * .1,
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: NetworkImage(
-                                            imageController.imageUrls[1])),
-                                    border: Border.all(
-                                        color: AppTheme
-                                            .lightAppColors.bordercolor),
-                                    color: AppTheme.lightAppColors.background,
-                                    borderRadius: BorderRadius.circular(10)),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return Dialog(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(20),
-                                        child: Image.network(
-                                          imageController.imageUrls[2],
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                              child: Container(
-                                width: context.screenHeight * .12,
-                                height: context.screenHeight * .1,
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: NetworkImage(
-                                            imageController.imageUrls[2])),
-                                    border: Border.all(
-                                        color: AppTheme
-                                            .lightAppColors.bordercolor),
-                                    color: AppTheme.lightAppColors.background,
-                                    borderRadius: BorderRadius.circular(10)),
-                              ),
+                                  child: Container(
+                                    width: context.screenHeight * .12,
+                                    height: context.screenHeight * .1,
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: NetworkImage(
+                                                imageController.imageUrls[2])),
+                                        border: Border.all(
+                                            color: AppTheme
+                                                .lightAppColors.bordercolor),
+                                        color:
+                                            AppTheme.lightAppColors.background,
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
-                        ),
-                      ],
-                    ),
+                        )
+                      : SizedBox.shrink()
                 ],
                 150.0.kH,
               ],
@@ -310,8 +330,8 @@ class SkinDetailsPage extends StatelessWidget {
       children: [
         Container(
           padding: EdgeInsets.symmetric(
-            horizontal: context.screenWidth * .03,
-            vertical: context.screenHeight * .03,
+            horizontal: context.screenWidth * .02,
+            vertical: context.screenHeight * .01,
           ),
           width: context.screenWidth,
           decoration: BoxDecoration(
@@ -325,7 +345,7 @@ class SkinDetailsPage extends StatelessWidget {
             children: [
               Image.asset(
                 image,
-                width: 30,
+                width: 60,
               ),
               20.0.kW,
               Column(
@@ -334,7 +354,7 @@ class SkinDetailsPage extends StatelessWidget {
                 children: [
                   SkinText.mainText(title),
                   SizedBox(
-                    width: context.screenWidth * .7,
+                    width: context.screenWidth * .6,
                     child: SkinText.subMainText(answer),
                   ),
                 ],
@@ -384,7 +404,7 @@ class SkinDetailsPage extends StatelessWidget {
   questionButton(BuildContext context, String gender) {
     return GestureDetector(
       onTap: () {
-        Get.to(() => QuestionPage(
+        Get.to(() => FirstQuestionPageView(
               gender: gender,
             ));
       },
