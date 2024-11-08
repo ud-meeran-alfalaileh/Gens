@@ -8,7 +8,6 @@ import 'package:gens/src/core/api/injection_container.dart' as di;
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/nav_bar/view/main/main_app_page.dart';
 import 'package:gens/src/feature/nav_bar/view/main/navbar_page.dart';
-import 'package:gens/src/feature/vendor_calendar/controller/vendor_calendar_controller.dart';
 import 'package:get/get.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';

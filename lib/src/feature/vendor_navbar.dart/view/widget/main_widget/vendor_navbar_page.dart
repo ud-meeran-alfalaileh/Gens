@@ -8,6 +8,7 @@ import 'package:gens/src/feature/nav_bar/controller/nav_bar_controller.dart';
 import 'package:gens/src/feature/nav_bar/view/partial_widget/custome_navbar.dart';
 import 'package:gens/src/feature/test.dart';
 import 'package:gens/src/feature/vendor_calendar/view/page/vendor_calendar.dart';
+import 'package:gens/src/feature/vendor_dashboard/view/page/vendor_dashboard.dart';
 import 'package:gens/src/feature/vendor_profile/view/page/vendor_profile_page.dart';
 import 'package:gens/src/feature/vendor_services/view/page/vendor_service.dart';
 import 'package:get/get.dart';
@@ -104,7 +105,7 @@ class _VendorNavBarState extends State<VendorNavBar> {
                           Obx(() {
                             switch (controller.selectedIndex.value) {
                               case 0:
-                                return const VendorCalendar();
+                                return const VendorDashboard();
                               case 1:
                                 return const VendorServicePage();
 

@@ -9,7 +9,6 @@ import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/vendor_calendar/model/vendor_calendar_model.dart';
 import 'package:get/get.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class VendorCalendarController extends GetxController {
   final DioConsumer dioConsumer = sl<DioConsumer>();
@@ -37,7 +36,7 @@ class VendorCalendarController extends GetxController {
   Future<void> getCalenderForVendor() async {
     try {
       final response = await dioConsumer
-          .get("${EndPoints.getVendorId}/${user.vendorId}/calendar");
+          .get("${EndPoints.getVendorId}/${user.vendorId.value}/calendar");
       print(response.statusCode);
       print(response.data);
       if (response.statusCode == 200) {
@@ -45,8 +44,10 @@ class VendorCalendarController extends GetxController {
 
         List<VendorCalendarModel> eventList =
             evenData.map((json) => VendorCalendarModel.fromJson(json)).toList();
-
-        event.value = eventList;
+        for (var x in eventList) {
+          event.add(x);
+        }
+        // event.value = eventList;
       }
     } catch (e) {
       print(e);

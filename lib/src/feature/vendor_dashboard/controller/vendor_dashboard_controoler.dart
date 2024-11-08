@@ -156,37 +156,7 @@ class VendorDashboardController extends GetxController {
           body: body,
         );
         if (response.statusCode == StatusCode.ok) {
-          if (status == "Done") {
-            notificationController.sendNotification(NotificationModel(
-                title: "Appointment Completed",
-                message:
-                    "Your appointment has been successfully completed. We hope the service met your expectations. Thank you!",
-                imageURL: "",
-                externalIds: externalId));
-          }
-          if (status == "Upcoming") {
-            notificationController.sendNotification(NotificationModel(
-                title: "Appointment Approved",
-                message: "Your appointment has been successfully approved.",
-                imageURL: '',
-                externalIds: externalId));
-          }
-          if (status == "Absent") {
-            notificationController.sendNotification(NotificationModel(
-                title: "Appointment Marked as Absent",
-                message:
-                    "You were marked as absent for your scheduled appointment.",
-                imageURL: '',
-                externalIds: externalId));
-          }
-          if (status == "Rejected") {
-            notificationController.sendNotification(NotificationModel(
-                title: 'Rejected Appointment',
-                message:
-                    "Unfortunately, your appointment request has been rejected. ",
-                imageURL: '',
-                externalIds: externalId));
-          }
+          await senNotification(status, externalId);
           // Create a new instance with updated status
           final updatedBooking = VendorBooking(
               status: status.replaceAll('"', status),
@@ -208,6 +178,39 @@ class VendorDashboardController extends GetxController {
       } catch (e) {
         statusUpadating.value = false;
       }
+    }
+  }
+
+  Future<void> senNotification(status, externalId) async {
+    if (status == "Done") {
+      notificationController.sendNotification(NotificationModel(
+          title: "Appointment Completed",
+          message:
+              "Your appointment has been successfully completed. We hope the service met your expectations. Thank you!",
+          imageURL: "",
+          externalIds: externalId));
+    }
+    if (status == "Upcoming") {
+      notificationController.sendNotification(NotificationModel(
+          title: "Appointment Approved",
+          message: "Your appointment has been successfully approved.",
+          imageURL: '',
+          externalIds: externalId));
+    }
+    if (status == "Absent") {
+      notificationController.sendNotification(NotificationModel(
+          title: "Appointment Marked as Absent",
+          message: "You were marked as absent for your scheduled appointment.",
+          imageURL: '',
+          externalIds: externalId));
+    }
+    if (status == "Rejected") {
+      notificationController.sendNotification(NotificationModel(
+          title: 'Rejected Appointment',
+          message:
+              "Unfortunately, your appointment request has been rejected. ",
+          imageURL: '',
+          externalIds: externalId));
     }
   }
 
@@ -236,6 +239,7 @@ class VendorDashboardController extends GetxController {
         .indexWhere((booking) => booking.id == updatedBooking.id);
     if (fillterBook != -1) {
       filteredBooking[allIndex] = updatedBooking;
+      print(updatedBooking.status);
       filteredBooking.refresh(); // Refresh the list to update the UI
     }
   }
@@ -366,8 +370,7 @@ class VendorDashboardController extends GetxController {
           id: booking.id,
           userId: booking.userId,
           showNote: false,
-          note: note
-          );
+          note: note);
 
       // Update the booking list in the controller
       updateBookingInList(updatedBooking);

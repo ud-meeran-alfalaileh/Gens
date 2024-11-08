@@ -61,7 +61,7 @@ class _VendorDashboardWidgetState extends State<VendorDashboardWidget> {
               Container(
                 constraints:
                     BoxConstraints(minHeight: context.screenHeight * 0.65),
-                height: context.screenHeight * .08,
+                height: context.screenHeight * .7,
                 child: PageView(
                   controller: controller.pageController,
                   onPageChanged: (index) {
@@ -79,7 +79,7 @@ class _VendorDashboardWidgetState extends State<VendorDashboardWidget> {
                   ],
                 ),
               ),
-              80.0.kH
+              // 80.0.kH
             ],
           ),
         ),
@@ -267,7 +267,6 @@ class _VendorDashboardWidgetState extends State<VendorDashboardWidget> {
                     ),
                   ),
                 )
-              
               ],
             ),
           ),

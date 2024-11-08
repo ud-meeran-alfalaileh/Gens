@@ -38,7 +38,7 @@ class _DoctorWidgetState extends State<DoctorWidget> {
   }
 
   Future<void> init() async {
-    // await controller.getVendorsById(widget.model);
+    await controller.getVendorsById(widget.model);
     controller.srevice.value = 0;
     await controller.getVendorServices(widget.model);
   }

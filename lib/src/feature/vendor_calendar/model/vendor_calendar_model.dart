@@ -1,5 +1,3 @@
-import 'package:gens/src/config/sizes/short_text.dart';
-
 class VendorCalendarModel {
   final int bookingId;
   final String userName;
@@ -65,6 +63,11 @@ class VendorCalendarModel {
 
   // Method to get a DateTime object
   DateTime getDateTime() {
-    return DateTime(year, month, day, int.parse(storyShortenText(startTime)));
+    final timeParts = startTime.split(':');
+    final hours = int.parse(timeParts[0]);
+    final minutes = int.parse(timeParts[1]);
+    final seconds = int.parse(timeParts[2]);
+
+    return DateTime(year, month, day, hours, minutes, seconds);
   }
 }

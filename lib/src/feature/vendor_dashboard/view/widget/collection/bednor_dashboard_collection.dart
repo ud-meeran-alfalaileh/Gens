@@ -391,7 +391,7 @@ vendorBookingContainer(BuildContext context, index, VendorBooking model) {
                         )
                       : model.status == "Upcoming"
                           ? statusWidget(model, statusUpadating, context,
-                              "Waiting", 'Waiting'.tr)
+                              "Pending", 'Waiting'.tr)
                           : Text(model.status),
             ]),
             16.0.kH,
@@ -409,7 +409,8 @@ GestureDetector statusWidget(VendorBooking model, RxBool statusUpadating,
       model.status == "Pending"
           ? pendingDialog(context, model, statusUpadating)
           : status == 'Waiting'
-              ? null
+              ? vendorGController.updateBookingStatus('$status', model.id,
+                  model, statusUpadating, true, model.userPhoneNumber)
               : vendorGController.updateBookingStatus('$status', model.id,
                   model, statusUpadating, true, model.userPhoneNumber);
       // model.status = "Upcoming";
