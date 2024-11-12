@@ -1,6 +1,4 @@
-import 'package:gens/src/feature/vendor_calendar/controller/vendor_calendar_controller.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+ 
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
 import 'package:gens/src/core/api/api_services.dart';

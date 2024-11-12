@@ -23,7 +23,7 @@ class LocalStrings extends Translations {
           "Details": 'Details',
           "patients": 'patients',
           "rating": 'rating',
-          "About Me": "About Me",
+          "About Me": "About ",
           " see less": " see less",
           " see more": " see more",
           "Working Time": "Working Time",
@@ -222,8 +222,11 @@ class LocalStrings extends Translations {
               "Opening hours must be earlier than closing hours.",
           "It will take a few second": "It will take a few second",
           "post-care instructions": "post-care instructions",
+          "Advice":"Advice",
         },
         'ar_JO': {
+          "Advice":"نصيحة",
+
           "post-care instructions": "تعليمات ما بعد الرعاية",
           "It will take a few second": "سوف يستغرق الأمر بضع ثوان",
           "Opening hours must be earlier than closing hours.":
@@ -369,7 +372,7 @@ class LocalStrings extends Translations {
           "Details": 'تفاصيل',
           "patients": 'المرضى',
           "rating": 'تصنيف',
-          "About Me": "نبذة عني",
+          "About Me": "نبذة عن ",
           " see less": " أقل",
           " see more": " المزيد",
           "Working Time": "وقت العمل",

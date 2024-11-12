@@ -120,6 +120,19 @@ class _AddServiceWidgetState extends State<AddServiceWidget> {
                               inputFormat: [],
                               onTap: () {})),
                       20.0.kH,
+                      ServicesText.secText("Advice".tr),
+                      AuthForm(
+                          maxLine: 4,
+                          formModel: FormModel(
+                              controller: controller.advice,
+                              enableText: false,
+                              hintText: "Advice".tr,
+                              invisible: false,
+                              validator: null,
+                              type: TextInputType.text,
+                              inputFormat: [],
+                              onTap: () {})),
+                      20.0.kH,
                       ServicesText.secText("Price".tr),
                       AuthForm(
                           formModel: FormModel(

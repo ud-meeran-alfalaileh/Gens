@@ -5,12 +5,14 @@ class Services {
   String description;
   double price;
   String imageUrl;
+  String advise;
   bool isVisible;
 
   Services({
     required this.serviceId,
     required this.vendorId,
     required this.title,
+    required this.advise,
     required this.description,
     required this.price,
     required this.imageUrl,
@@ -24,6 +26,7 @@ class Services {
       vendorId: json['vendorId'] ?? 0,
       title: json['title'] ?? '',
       description: json['description'] ?? '',
+      advise: json['advise'] ?? '',
       price: (json['price'] != null)
           ? json['price'].toDouble()
           : 0.0, // Handle price properly

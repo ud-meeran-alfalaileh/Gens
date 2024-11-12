@@ -75,7 +75,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     String? screen;
     OneSignal.Notifications.addClickListener((value) {
-      final data = value.notification.additionalData;
+     value.notification.additionalData;
       screen = '/navBar';
       if (screen != null) {
         navigatorKey.currentState?.pushNamed(screen!);
@@ -94,7 +94,7 @@ class _MyAppState extends State<MyApp> {
         routes: {
           '/': (context) => const MainAppPage(),
           "/navBar": (context) => const NavBarPage(
-                currentScreen: 3,
+                currentScreen: 0,
               ),
         },
         debugShowCheckedModeBanner: false,

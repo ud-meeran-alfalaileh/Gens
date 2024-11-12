@@ -27,7 +27,7 @@ class _NavBarPageState extends State<NavBarPage> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.selectedIndex(widget.currentScreen??0);
+      controller.selectedIndex(widget.currentScreen);
       initialState();
     });
 

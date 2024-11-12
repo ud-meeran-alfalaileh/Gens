@@ -33,6 +33,7 @@ class VendorServicesController extends GetxController {
   RxInt serviceId = 0.obs;
   final title = TextEditingController();
   final description = TextEditingController();
+  final advice = TextEditingController();
   final preDescription = TextEditingController();
 
   final price = TextEditingController();
@@ -41,6 +42,7 @@ class VendorServicesController extends GetxController {
   var daysOfInstruction = 0.obs;
   RxString serviceImage = "".obs;
   RxBool isUpdating = false.obs;
+
   Future<void> pickImages(BuildContext context) async {
     final XFile? selectedImage =
         await _picker.pickImage(source: ImageSource.gallery);
@@ -151,6 +153,7 @@ class VendorServicesController extends GetxController {
   Future<void> setServiceData(Services service) async {
     title.text = service.title;
     description.text = service.description;
+    advice.text = service.advise;
     price.text = service.price.toString();
     imageUrl.text = service.imageUrl;
     serviceImage.value = service.imageUrl;
@@ -172,33 +175,34 @@ class VendorServicesController extends GetxController {
           "vendorId": user.vendorId.value,
           "title": title.text.trim(),
           "description": description.text.trim(),
+          "advise": advice.text.trim(),
           "price": double.parse(price.text.trim()),
           "imageUrl": serviceImage.value,
           "isVisible": true
         });
+        print(body);
+        // final response = await http.put(
+        // Uri.parse('${EndPoints.ediSvendorServices}/$serviceId'),
+        // headers: {
+        //   'Accept': 'application/json',
+        //   'Content-Type': 'application/json',
+        // },
+        // body: body);
 
-        final response = await http.put(
-            Uri.parse('${EndPoints.ediSvendorServices}/$serviceId'),
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: body);
-
-        if (response.statusCode == StatusCode.ok) {
-          Get.back();
-          showSnackBar(
-              "Success", "Service Updated Successfully ", Colors.green);
-          await Future.delayed(const Duration(seconds: 1));
-          await getVendorServices();
-          clearServiceData();
-        } else {
-          Get.snackbar(
-            "Error",
-            "Failed to fetch vendors",
-            snackPosition: SnackPosition.BOTTOM,
-          );
-        }
+        //   if (response.statusCode == StatusCode.ok) {
+        //     Get.back();
+        //     showSnackBar(
+        //         "Success", "Service Updated Successfully ", Colors.green);
+        //     await Future.delayed(const Duration(seconds: 1));
+        //     await getVendorServices();
+        //     clearServiceData();
+        //   } else {
+        //     Get.snackbar(
+        //       "Error",
+        //       "Failed to fetch vendors",
+        //       snackPosition: SnackPosition.BOTTOM,
+        //     );
+        //   }
       } catch (e) {
         if (kDebugMode) {
           print(e);
@@ -245,7 +249,8 @@ class VendorServicesController extends GetxController {
           "title": title.text.trim(),
           "description": description.text.trim(),
           "price": double.parse(price.text.trim()),
-          "imageUrl": serviceImage.value
+          "imageUrl": serviceImage.value,
+          "advise": advice.text.trim()
         });
         final response =
             await dioConsumer.post(EndPoints.ediSvendorServices, body: body);

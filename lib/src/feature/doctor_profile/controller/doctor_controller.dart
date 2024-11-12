@@ -48,7 +48,8 @@ class DoctorController extends GetxController {
   RxList<Vendor> doctors = <Vendor>[].obs;
   RxList<Services> services = <Services>[].obs;
   RxInt srevice = 5.obs;
-  RxString sreviceDescription = "".obs;
+    RxString sreviceDescription = "".obs;
+    RxString sreviceAdvice = "".obs;
   RxDouble servicePrice = 0.0.obs;
   RxBool showReview = false.obs;
   Rx<Favourite?> favourite = Rx<Favourite?>(null);

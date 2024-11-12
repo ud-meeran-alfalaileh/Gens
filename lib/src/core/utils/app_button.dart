@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
 
+// ignore: must_be_immutable
 class AppButton extends StatelessWidget {
   AppButton({super.key, required this.onTap, required this.title, this.color});
   final VoidCallback onTap;

@@ -125,9 +125,6 @@ class VendorRegisterController extends GetxController {
   }
 
   validVendorType(String type) {
-    if (type == null) {
-      return "please file speciality".tr;
-    }
     return null;
   }
 

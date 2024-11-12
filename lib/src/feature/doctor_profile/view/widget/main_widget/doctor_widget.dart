@@ -44,6 +44,13 @@ class _DoctorWidgetState extends State<DoctorWidget> {
   }
 
   @override
+  void dispose() {
+    controller.sreviceDescription.value = '';
+    controller.srevice.value = 0;
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     int maxLength = 90;
 
@@ -162,7 +169,12 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                                 ],
                               ),
                               (context.screenHeight * .03).kH,
-                              DoctorText.mainText("About Me".tr),
+                              Row(
+                                children: [
+                                  DoctorText.mainText( "About Me".tr),
+                                  DoctorText.mainText(controller.doctor.value!.name),
+                                ],
+                              ),
                               (context.screenHeight * .01).kH,
                               Obx(
                                 () => GestureDetector(
@@ -255,7 +267,37 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                                           ],
                                         ),
                                   Text(
+                                    'Description'.tr,
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontFamily: 'Inter',
+                                      color:
+                                          AppTheme.lightAppColors.mainTextcolor,
+                                    ),
+                                  ),
+                                  Text(
                                     controller.sreviceDescription.value,
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontFamily: 'Inter',
+                                      color:
+                                          AppTheme.lightAppColors.subTextcolor,
+                                    ),
+                                  ),
+                                  10.0.kH,
+                                  controller.sreviceAdvice.value == ''
+                                      ? const SizedBox.shrink()
+                                      : Text(
+                                          'Advice'.tr,
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            fontFamily: 'Inter',
+                                            color: AppTheme
+                                                .lightAppColors.mainTextcolor,
+                                          ),
+                                        ),
+                                  Text(
+                                    controller.sreviceAdvice.value,
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontFamily: 'Inter',
@@ -351,6 +393,8 @@ class _DoctorWidgetState extends State<DoctorWidget> {
               controller.srevice.value = controller.services[index].serviceId;
               controller.sreviceDescription.value =
                   controller.services[index].description;
+              controller.sreviceAdvice.value =
+                  controller.services[index].advise;
               controller.servicePrice.value = controller.services[index].price;
             },
             child: Obx(

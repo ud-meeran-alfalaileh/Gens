@@ -25,7 +25,7 @@ class _AuthFormState extends State<AuthForm> {
     return Center(
       child: SizedBox(
           child: TextFormField(
-            onTap: widget.ontap,
+              onTap: widget.ontap,
               onChanged: widget.formModel.onChange,
               maxLines: widget.maxLine ?? 1,
               minLines: widget.maxLine ?? 1,
@@ -33,7 +33,10 @@ class _AuthFormState extends State<AuthForm> {
               cursorHeight: 15,
               textInputAction: TextInputAction.done,
               cursorColor: AppTheme.lightAppColors.black,
-              // style: TextStyle(color: AppTheme.lightAppColors.black,fontSize: 20),
+              style: TextStyle(
+                  color: AppTheme.lightAppColors.black,
+                  fontSize: 20,
+                  letterSpacing: 0),
               readOnly: widget.formModel.enableText,
               inputFormatters: widget.formModel.inputFormat,
               keyboardType: widget.formModel.type,

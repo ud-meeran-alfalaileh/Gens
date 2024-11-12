@@ -5,13 +5,24 @@ import 'package:gens/src/feature/calendar/controller/calender_controller.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-class CalendarWidget extends StatelessWidget {
+class CalendarWidget extends StatefulWidget {
   const CalendarWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final CalenderControllerr controller = Get.put(CalenderControllerr());
+  State<CalendarWidget> createState() => _CalendarWidgetState();
+}
 
+class _CalendarWidgetState extends State<CalendarWidget> {
+  final CalenderControllerr controller = Get.put(CalenderControllerr());
+  @override
+  void initState() {
+    super.initState();
+
+    controller.getCalenderForUser();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.lightAppColors.background,
       body: SafeArea(
