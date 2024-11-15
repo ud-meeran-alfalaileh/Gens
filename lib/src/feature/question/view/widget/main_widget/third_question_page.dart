@@ -215,7 +215,7 @@ class _ThirdQuestionPageViewState extends State<ThirdQuestionPageView> {
               Text(answer),
               Checkbox(
                 checkColor: Colors.white, // color of tick mark
-                activeColor: AppTheme.lightAppColors.primary,
+                activeColor: AppTheme.lightAppColors.secondaryColor,
                 value:
                     (controller.selectedAnswers[question.name] as List<String>?)
                             ?.contains(answer) ??
@@ -259,7 +259,7 @@ class _ThirdQuestionPageViewState extends State<ThirdQuestionPageView> {
                     Text(answer),
                     Radio<String>(
                       focusColor: AppTheme.lightAppColors.primary,
-                      activeColor: AppTheme.lightAppColors.primary,
+                      activeColor: AppTheme.lightAppColors.secondaryColor,
                       value: answer,
                       groupValue:
                           controller.selectedAnswers[question.name] as String?,

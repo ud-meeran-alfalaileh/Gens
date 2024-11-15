@@ -8,6 +8,7 @@ import 'package:gens/src/core/api/notification_controller.dart';
 import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/booking/view/widget/collection/booking_success.dart';
+import 'package:gens/src/feature/profile/controller/profile_controller.dart';
 import 'package:get/get.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:intl/intl.dart';
@@ -18,6 +19,7 @@ class BookingController extends GetxController {
   final Rx<DateTime> focusedDay = DateTime.now().obs;
   final Rx<DateTime?> selectedDay = Rx<DateTime?>(null);
   final DioConsumer dioConsumer = sl<DioConsumer>();
+  final profileController = Get.put(ProfileController());
 
   // Use these date and time formats
   DateFormat dateFormat =
@@ -97,19 +99,20 @@ class BookingController extends GetxController {
             notificationController.sendNotification(NotificationModel(
                 title: "Appointment Rescheduled",
                 message:
-                    "User has rescheduled their appointment. Please review the updated booking details.",
+                    "${profileController.userData.value!.fName} has rescheduled their appointment. Please review the updated booking details.",
                 imageURL: "",
                 externalIds: vendorPhone));
           } else {
             notificationController.sendNotification(NotificationModel(
                 title: "New Appointment Booking Request",
                 message:
-                    "someone is requesting to book an appointment. Please review the details and confirm availability.",
+                    "${profileController.userData.value!.fName} is requesting to book an appointment. Please review the details and confirm availability.",
                 imageURL: "",
                 externalIds: vendorPhone));
           }
 
           isBooking.value = false;
+
           successBookingDialog(context, focusedDay.value, hourSelected.value);
         } else {
           isBooking.value = false;

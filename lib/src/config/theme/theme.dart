@@ -13,7 +13,7 @@ class AppTheme {
     primary: const Color(0xff0E3B52), //
     background: const Color(0xffffffff), //
     black: const Color(0xff000000), //
-    maincolor: const Color(0xffF6F5E9), //
+    maincolor: const Color(0xffFAF7F0), //
     bordercolor: const Color(0xffdddddd),
     subTextcolor: const Color(0xff6B7280),
     mainTextcolor: const Color(0xff424242),

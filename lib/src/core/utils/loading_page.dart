@@ -1,7 +1,7 @@
-import 'package:flutter/widgets.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter/material.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
+import 'package:gens/src/feature/test.dart';
 
 Align loadingPage(BuildContext context) {
   return Align(
@@ -10,18 +10,18 @@ Align loadingPage(BuildContext context) {
         width: context.screenWidth,
         height: context.screenHeight,
         color: AppTheme.lightAppColors.background,
-        child: Center(
-          child: SpinKitCubeGrid(
-            itemBuilder: (BuildContext context, int index) {
-              return DecoratedBox(
-                decoration: BoxDecoration(
-                  color: index.isEven
-                      ? AppTheme.lightAppColors.primary
-                      : AppTheme.lightAppColors.maincolor,
-                ),
-              );
-            },
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Center(
+                child: RotatingImage(
+              image: "assets/image/logo.png",
+            )),
+            CircularProgressIndicator(
+              color: AppTheme.lightAppColors.primary,
+            )
+          ],
         ),
       ));
 }

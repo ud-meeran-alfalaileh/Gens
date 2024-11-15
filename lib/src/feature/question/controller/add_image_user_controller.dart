@@ -112,8 +112,11 @@ class AddImageUserController extends GetxController {
       print(response.statusCode);
       print(jsonPayload);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         print("Images sent to API successfully.");
+        // getUserthreeImage();
+        isImageDataIncomplere.value = false;
+        print(isImageDataIncomplere.value);
       } else {
         print("Failed to send images to API: ${response.data}");
       }
@@ -175,8 +178,12 @@ class AddImageUserController extends GetxController {
         imageUrls[0] = responseData['userImage1'] ?? '';
         imageUrls[1] = responseData['userImage2'] ?? '';
         imageUrls[2] = responseData['userImage3'] ?? '';
-
-        isImageDataIncomplere.value = imageUrls[0].isEmpty ? true : false;
+        print("{jjjjjj ${imageUrls[2]}}");
+        print("{kk ${imageUrls[1]}}");
+        print("{ll ${imageUrls[0]}}");
+        isImageDataIncomplere.value =
+            imageUrls[0].isEmpty || imageUrls[0] == '' ? true : false;
+        print(isImageDataIncomplere.value);
         isLoading.value = false;
       } else {
         print('The image is empty');

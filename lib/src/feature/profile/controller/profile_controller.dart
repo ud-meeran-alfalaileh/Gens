@@ -394,11 +394,13 @@ class ProfileController extends GetxController {
               question.value!.exerciseRoutine == "" ||
               question.value!.stressLevel == "" ||
               question.value!.manageStress == "");
-          isFourthDataIncomplete = ((question.value == null) ||
-                  question.value!.mainSkincareGoals == "")
-              .obs;
-          isFifthDataIncomplete =
-              ((question.value == null) || question.value!.b12Pills == "").obs;
+          print(question.value!.mainSkincareGoals);
+          isFourthDataIncomplete.value = ((question.value == null) ||
+              question.value!.mainSkincareGoals == "");
+          print(isFourthDataIncomplete.value);
+          isFifthDataIncomplete.value =
+              ((question.value == null) || question.value!.b12Pills == "");
+          print("kfkfkfkfkfkfkf : $isFifthDataIncomplete");
         } else {
           isFirstDataIncomplete.value = true;
           isSecDataIncomplete.value = true;

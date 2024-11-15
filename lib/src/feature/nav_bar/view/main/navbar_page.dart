@@ -120,8 +120,8 @@ class _NavBarPageState extends State<NavBarPage> {
                                             colorFilter: ColorFilter.mode(
                                               controller.selectedIndex.value ==
                                                       0
-                                                  ? AppTheme
-                                                      .lightAppColors.primary
+                                                  ? AppTheme.lightAppColors
+                                                      .secondaryColor
                                                   : AppTheme.lightAppColors
                                                       .mainTextcolor
                                                       .withOpacity(.9),
@@ -160,8 +160,8 @@ class _NavBarPageState extends State<NavBarPage> {
                                             colorFilter: ColorFilter.mode(
                                               controller.selectedIndex.value ==
                                                       1
-                                                  ? AppTheme
-                                                      .lightAppColors.primary
+                                                  ? AppTheme.lightAppColors
+                                                      .secondaryColor
                                                   : AppTheme.lightAppColors
                                                       .mainTextcolor
                                                       .withOpacity(.9),
@@ -200,8 +200,8 @@ class _NavBarPageState extends State<NavBarPage> {
                                             colorFilter: ColorFilter.mode(
                                               controller.selectedIndex.value ==
                                                       2
-                                                  ? AppTheme
-                                                      .lightAppColors.primary
+                                                  ? AppTheme.lightAppColors
+                                                      .secondaryColor
                                                   : AppTheme.lightAppColors
                                                       .mainTextcolor
                                                       .withOpacity(.9),
@@ -240,8 +240,8 @@ class _NavBarPageState extends State<NavBarPage> {
                                             colorFilter: ColorFilter.mode(
                                               controller.selectedIndex.value ==
                                                       3
-                                                  ? AppTheme
-                                                      .lightAppColors.primary
+                                                  ? AppTheme.lightAppColors
+                                                      .secondaryColor
                                                   : AppTheme.lightAppColors
                                                       .mainTextcolor
                                                       .withOpacity(.9),

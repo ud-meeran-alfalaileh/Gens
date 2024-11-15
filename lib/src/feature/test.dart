@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
           title: Text('Rotate and Pause Image'),
         ),
         body: Center(
-          child: RotatingImage(),
+          child: const RotatingImage(image:   'assets/image/hourglass.png',),
         ),
       ),
     );
@@ -25,8 +25,10 @@ class MyApp extends StatelessWidget {
 }
 
 class RotatingImage extends StatefulWidget {
+  const RotatingImage({super.key,required this.image});
+  final String image;
   @override
-  _RotatingImageState createState() => _RotatingImageState();
+  State<RotatingImage> createState() => _RotatingImageState();
 }
 
 class _RotatingImageState extends State<RotatingImage>
@@ -70,7 +72,7 @@ class _RotatingImageState extends State<RotatingImage>
       animation: _controller,
       child: Image.asset(
           width: context.screenWidth * .5,
-          'assets/image/hourglass.png'), // Replace with your image path
+        widget.image), // Replace with your image path
       builder: (BuildContext context, Widget? child) {
         return Transform.rotate(
           angle: _controller.value * pi, // Rotates 180 degrees

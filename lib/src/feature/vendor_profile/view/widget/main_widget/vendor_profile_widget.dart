@@ -32,6 +32,7 @@ class _VendorProfileWidgetState extends State<VendorProfileWidget> {
     languageController = Get.put(LocalizationController());
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.getVendorsById();
       initail();
     });
     super.initState();

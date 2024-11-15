@@ -24,6 +24,7 @@ class _DashboradWidgetState extends State<DashboradWidget> {
   final doctorController = Get.put(DoctorController());
   @override
   void initState() {
+    doctorController.getVendors();
     super.initState();
   }
 

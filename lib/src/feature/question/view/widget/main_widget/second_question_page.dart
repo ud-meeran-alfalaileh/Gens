@@ -252,7 +252,7 @@ class _SecondQuestionPageViewState extends State<SecondQuestionPageView> {
               Text(answer),
               Checkbox(
                 checkColor: Colors.white,
-                activeColor: AppTheme.lightAppColors.primary,
+                activeColor: AppTheme.lightAppColors.secondaryColor,
                 value:
                     (controller.selectedAnswers[question.name] as List<String>?)
                             ?.contains(answer) ??
@@ -296,7 +296,7 @@ class _SecondQuestionPageViewState extends State<SecondQuestionPageView> {
                     Text(answer),
                     Radio<String>(
                       focusColor: AppTheme.lightAppColors.primary,
-                      activeColor: AppTheme.lightAppColors.primary,
+                      activeColor: AppTheme.lightAppColors.secondaryColor,
                       value: answer,
                       groupValue:
                           controller.selectedAnswers[question.name] as String?,

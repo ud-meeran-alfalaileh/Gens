@@ -246,7 +246,9 @@ class _VendorDashboardWidgetState extends State<VendorDashboardWidget> {
                     icon: SizedBox(
                         height: context.screenHeight * .4,
                         width: context.screenWidth * .09,
-                        child: RotatingImage())),
+                        child: const RotatingImage(
+                          image: 'assets/image/hourglass.png',
+                        ))),
                 Align(
                   alignment: Get.locale!.languageCode == "en"
                       ? Alignment.topLeft

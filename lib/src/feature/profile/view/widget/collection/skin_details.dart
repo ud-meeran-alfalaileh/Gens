@@ -106,7 +106,7 @@ class SkinDetailsPage extends StatelessWidget {
                         controller.question.value!,
                         context,
                         'Vitamin B12',
-                      controller.question.value!.b12Pills,
+                        controller.question.value!.b12Pills,
                         "assets/image/capsules.png"),
                   if (controller.question.value!.manageStress != "")
                     skinDetailsContainer(
@@ -174,15 +174,13 @@ class SkinDetailsPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(imageController.isImageDataIncomplere.value
-                                .toString()),
                             5.0.kH,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                imageController.isImageDataIncomplere.value ==
-                                        true
-                                    ? GestureDetector(
+                            imageController.isImageDataIncomplere.value == false
+                                ? Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      GestureDetector(
                                         onTap: () {
                                           showDialog(
                                             context: context,
@@ -214,7 +212,7 @@ class SkinDetailsPage extends StatelessWidget {
                                                   fit: BoxFit.cover,
                                                   image: NetworkImage(
                                                       imageController
-                                                          .imageUrls[0])),
+                                                          .imageUrls[1])),
                                               border: Border.all(
                                                   color: AppTheme.lightAppColors
                                                       .bordercolor),
@@ -223,90 +221,94 @@ class SkinDetailsPage extends StatelessWidget {
                                               borderRadius:
                                                   BorderRadius.circular(10)),
                                         ),
-                                      )
-                                    : SizedBox.shrink(),
-                                GestureDetector(
-                                  onTap: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return Dialog(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                          ),
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            child: Image.network(
-                                              imageController.imageUrls[1],
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                  child: Container(
-                                    width: context.screenHeight * .12,
-                                    height: context.screenHeight * .1,
-                                    padding: const EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            fit: BoxFit.cover,
-                                            image: NetworkImage(
-                                                imageController.imageUrls[1])),
-                                        border: Border.all(
-                                            color: AppTheme
-                                                .lightAppColors.bordercolor),
-                                        color:
-                                            AppTheme.lightAppColors.background,
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return Dialog(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                          ),
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            child: Image.network(
-                                              imageController.imageUrls[2],
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                  child: Container(
-                                    width: context.screenHeight * .12,
-                                    height: context.screenHeight * .1,
-                                    padding: const EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            fit: BoxFit.cover,
-                                            image: NetworkImage(
-                                                imageController.imageUrls[2])),
-                                        border: Border.all(
-                                            color: AppTheme
-                                                .lightAppColors.bordercolor),
-                                        color:
-                                            AppTheme.lightAppColors.background,
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                  ),
-                                ),
-                              ],
-                            ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return Dialog(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                ),
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  child: Image.network(
+                                                    imageController
+                                                        .imageUrls[1],
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        },
+                                        child: Container(
+                                          width: context.screenHeight * .12,
+                                          height: context.screenHeight * .1,
+                                          padding: const EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                  fit: BoxFit.cover,
+                                                  image: NetworkImage(
+                                                      imageController
+                                                          .imageUrls[1])),
+                                              border: Border.all(
+                                                  color: AppTheme.lightAppColors
+                                                      .bordercolor),
+                                              color: AppTheme
+                                                  .lightAppColors.background,
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return Dialog(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                ),
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  child: Image.network(
+                                                    imageController
+                                                        .imageUrls[2],
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        },
+                                        child: Container(
+                                          width: context.screenHeight * .12,
+                                          height: context.screenHeight * .1,
+                                          padding: const EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                  fit: BoxFit.cover,
+                                                  image: NetworkImage(
+                                                      imageController
+                                                          .imageUrls[2])),
+                                              border: Border.all(
+                                                  color: AppTheme.lightAppColors
+                                                      .bordercolor),
+                                              color: AppTheme
+                                                  .lightAppColors.background,
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : SizedBox.shrink(),
                           ],
                         )
                       : SizedBox.shrink()

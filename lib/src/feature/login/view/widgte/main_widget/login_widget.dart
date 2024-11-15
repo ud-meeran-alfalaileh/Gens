@@ -12,7 +12,6 @@ import 'package:gens/src/feature/login/view/widgte/collection/auth_form_widget.d
 import 'package:gens/src/feature/login/view/widgte/text/login_text.dart';
 import 'package:gens/src/feature/register/view/pages/register_main_page.dart';
 import 'package:get/get.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 class LoginWidget extends StatefulWidget {
   const LoginWidget({super.key});
@@ -70,7 +69,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                             Image.asset(
                               "assets/image/logo.png",
                               width: context.screenWidth * .6,
-                              fit: BoxFit.cover,
+                              height: context.screenHeight * .3,
+                              fit: BoxFit.fitWidth,
                             ),
                             LoginText.mainText("Hi, Welcome Back!".tr),
                             10.0.kH,
@@ -101,7 +101,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                             }),
                             AuthForm(
                               formModel: FormModel(
-                                  icon: Icons.phone,
+                                  icon: Icons.phone_outlined,
                                   controller: controller.phoneNumber,
                                   enableText: false,
                                   hintText: 'phone'.tr,
@@ -138,8 +138,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                                               !showPassword.value;
                                         },
                                         icon: Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 5),
+                                          padding: const EdgeInsets.only(
+                                              top: 10, bottom: 10),
                                           child: Icon(
                                             !showPassword.value
                                                 ? Icons.remove_red_eye_outlined
@@ -157,17 +157,16 @@ class _LoginWidgetState extends State<LoginWidget> {
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    OneSignal.User.getOnesignalId()
-                                        .then((externalId) {
-                                      if (externalId != null) {
-                                        print('External ID: $externalId');
-                                      } else {
-                                        print('External ID is null');
-                                      }
-                                    });
                                     Get.to(() => const ForgetPasswordPage());
                                   },
-                                  child: Text("Forgot password?".tr),
+                                  child: Text(
+                                    "Forgot password?".tr,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: AppTheme.lightAppColors.primary,
+                                      fontFamily: 'Inter',
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
@@ -184,7 +183,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                 title: 'Login'.tr,
                               ),
                             ),
-                            10.0.kH,
+                            // 10.0.kH,
                           ],
                         ),
                       ),

@@ -96,7 +96,7 @@ doctorDashboardContainer(
                       height: 15,
                     ),
                     10.0.kW,
-                    DashboardText.ratingText(model.reviewCount.toString()),
+                    DashboardText.ratingText(model.avgRating.toString()),
                     15.0.kW,
                     Container(
                       width: 2,

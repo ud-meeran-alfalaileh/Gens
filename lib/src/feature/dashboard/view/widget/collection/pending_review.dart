@@ -49,10 +49,10 @@ Container pendingReviewContainer(
         // Displaying the service name and details
         Get.locale!.languageCode == "en"
             ? DashboardText.reviewText(
-                "Please rate your experience with '${review.serviceTitle}' by '${review.vendorName}' to help us improve.",
+                "Please rate your experience with '${review.serviceTitle}' by '${review.vendorName}' to help us improve",
               )
             : DashboardText.reviewText(
-                "يرجى تقييم تجربتك مع '${review.serviceTitle}' بواسطة '${review.vendorName}' لمساعدتنا على التحسين.",
+                "يرجى تقييم تجربتك مع '${review.serviceTitle}' بواسطة '${review.vendorName}' لمساعدتنا على التحسين",
               ),
         10.0.kH,
         Row(
@@ -70,7 +70,7 @@ Container pendingReviewContainer(
             DashboardText.reviewThText(review.bookedTime)
           ],
         ),
-        10.0.kH,
+        20.0.kH,
 
         Center(
           child: RatingBar.builder(
@@ -92,18 +92,22 @@ Container pendingReviewContainer(
         ),
         const SizedBox(height: 20),
 
-        Text(
-          "Write a review message:".tr,
-          style: const TextStyle(fontFamily: "Inter", fontSize: 16),
+        Row(
+          children: [
+            Text(
+              "Write a review message:".tr,
+              style: const TextStyle(fontFamily: "Inter", fontSize: 16),
+            ),
+          ],
         ),
         Stack(
           children: [
             AuthForm(
-                maxLine: 3,
+                maxLine: 2,
                 formModel: FormModel(
                     controller: doctorController.messageController,
                     enableText: false,
-                    hintText: "Enter you message here",
+                    hintText: "Enter you message here".tr,
                     invisible: false,
                     validator: null,
                     type: TextInputType.text,
@@ -118,31 +122,34 @@ Container pendingReviewContainer(
                       ? Container(
                           width: 50,
                           height: 50,
-                          padding: const EdgeInsets.all(18.0),
+                          padding: const EdgeInsets.all(28.0),
                           child: CircularProgressIndicator(
                             color: AppTheme.lightAppColors.primary,
                           ),
                         )
-                      : IconButton(
-                          onPressed: () {
-                            showPopupButtons(context, doctorController);
-                          },
-                          icon: Icon(
-                            doctorController.serviceImage.value == ""
-                                ? Icons.attach_file_sharp
-                                : Icons.done,
-                            color: doctorController.serviceImage.value == ""
-                                ? AppTheme.lightAppColors.primary
-                                : Colors.green,
-                          ))),
+                      : Padding(
+                          padding: const EdgeInsets.only(top: 9.0),
+                          child: IconButton(
+                              onPressed: () {
+                                showPopupButtons(context, doctorController);
+                              },
+                              icon: Icon(
+                                doctorController.serviceImage.value == ""
+                                    ? Icons.attach_file_sharp
+                                    : Icons.done,
+                                color: doctorController.serviceImage.value == ""
+                                    ? AppTheme.lightAppColors.primary
+                                    : Colors.green,
+                              )),
+                        )),
             )
           ],
         ),
-        20.0.kH,
+        15.0.kH,
 
         // Submit Button
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             SizedBox(
               width: context.screenWidth * .25,

@@ -48,8 +48,8 @@ class DoctorController extends GetxController {
   RxList<Vendor> doctors = <Vendor>[].obs;
   RxList<Services> services = <Services>[].obs;
   RxInt srevice = 5.obs;
-    RxString sreviceDescription = "".obs;
-    RxString sreviceAdvice = "".obs;
+  RxString sreviceDescription = "".obs;
+  RxString sreviceAdvice = "".obs;
   RxDouble servicePrice = 0.0.obs;
   RxBool showReview = false.obs;
   Rx<Favourite?> favourite = Rx<Favourite?>(null);
@@ -63,7 +63,7 @@ class DoctorController extends GetxController {
   void onInit() {
     user.loadToken();
     getPendingReview();
-    getVendors();
+    // getVendors();
 
     doctor = DoctorModelById(
             vendorId: 0,
@@ -182,13 +182,14 @@ class DoctorController extends GetxController {
     if (await networkInfo.isConnected) {
       try {
         final response = await dioConsumer.get(EndPoints.getVendor);
-
+        print(response.data);
         if (response.statusCode == StatusCode.ok) {
           try {
             final List<dynamic> jsonData = json.decode(response.data);
 
             List<Vendor> vendors =
                 jsonData.map((json) => Vendor.fromJson(json)).toList();
+
             searchDoctors('');
             doctors.value = vendors;
             for (var xx in doctors) {
@@ -196,6 +197,7 @@ class DoctorController extends GetxController {
             }
             getDoctorLoading.value = false;
           } catch (e) {
+            print(e);
             Get.snackbar(
               "Error",
               "Failed to parse vendor data",

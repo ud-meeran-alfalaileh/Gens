@@ -3,7 +3,7 @@ import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/core/utils/app_button.dart';
-import 'package:gens/src/feature/question/controller/fourth_question_page.dart';
+import 'package:gens/src/feature/question/controller/fourth_question_question_controller.dart';
 import 'package:get/get.dart';
 
 class FourthDisplayPage extends StatelessWidget {

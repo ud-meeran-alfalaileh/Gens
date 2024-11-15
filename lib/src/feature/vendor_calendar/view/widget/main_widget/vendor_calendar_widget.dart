@@ -172,11 +172,12 @@ class VendorCalendarWidget extends StatelessWidget {
 Color getStatusColor(String status) {
   switch (status.toLowerCase()) {
     case 'rejected':
-      return AppTheme.lightAppColors.secondaryColor; // Red for rejected status
+      return Colors.red; // Red for rejected status
     case 'done':
-      return AppTheme.lightAppColors.primary; // Green for completed status
+      return AppTheme.lightAppColors.primary
+          .withOpacity(0.5); // Green for completed status
     case 'upcoming':
-      return AppTheme.lightAppColors.maincolor; // Blue for upcoming status
+      return AppTheme.lightAppColors.primary; // Blue for upcoming status
     case 'pending':
       return Colors.orangeAccent; // Orange for pending status
     default:

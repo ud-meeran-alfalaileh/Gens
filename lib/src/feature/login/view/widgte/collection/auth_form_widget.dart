@@ -22,78 +22,71 @@ class AuthForm extends StatefulWidget {
 class _AuthFormState extends State<AuthForm> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: SizedBox(
-          child: TextFormField(
-              onTap: widget.ontap,
-              onChanged: widget.formModel.onChange,
-              maxLines: widget.maxLine ?? 1,
-              minLines: widget.maxLine ?? 1,
-              // autofocus: true,
-              cursorHeight: 15,
-              textInputAction: TextInputAction.done,
-              cursorColor: AppTheme.lightAppColors.black,
-              style: TextStyle(
-                  color: AppTheme.lightAppColors.black,
-                  fontSize: 20,
-                  letterSpacing: 0),
-              readOnly: widget.formModel.enableText,
-              inputFormatters: widget.formModel.inputFormat,
-              keyboardType: widget.formModel.type,
-              validator: widget.formModel.validator,
-              obscureText: widget.formModel.invisible,
-              controller: widget.formModel.controller,
-              decoration: widget.formModel.icon != null
-                  ? InputDecoration(
-                      prefixIcon: Icon(
-                        widget.formModel.icon,
-                        color: AppTheme.lightAppColors.primary,
-                      ),
-                      filled: true,
-                      fillColor: AppTheme.lightAppColors.background,
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: AppTheme.lightAppColors.black,
-                          ),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(5))),
-                      border: const OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: AppTheme.lightAppColors.primary,
-                          ),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(5))),
-                      hintText: widget.formModel.hintText.tr,
-                      hintStyle: TextStyle(
-                          fontFamily: "Inter",
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: 1.5,
-                          color: AppTheme.lightAppColors.black.withOpacity(.5),
-                          fontSize: 14))
-                  : InputDecoration(
-                      filled: true,
-                      fillColor: AppTheme.lightAppColors.background,
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: AppTheme.lightAppColors.black,
-                          ),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(5))),
-                      border: const OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: AppTheme.lightAppColors.primary,
-                          ),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(5))),
-                      hintText: widget.formModel.hintText.tr,
-                      hintStyle: TextStyle(
-                          fontFamily: "Inter",
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: 1.5,
-                          color: AppTheme.lightAppColors.black.withOpacity(.5),
-                          fontSize: 14)))),
-    );
+    return TextFormField(
+        onTap: widget.ontap,
+        onChanged: widget.formModel.onChange,
+        maxLines: widget.maxLine ?? 1,
+        minLines: widget.maxLine ?? 1,
+        // autofocus: true,
+        cursorHeight: 15,
+        textInputAction: TextInputAction.done,
+        cursorColor: AppTheme.lightAppColors.black,
+        style: TextStyle(
+            color: AppTheme.lightAppColors.black,
+            fontSize: 20,
+            letterSpacing: 1),
+        readOnly: widget.formModel.enableText,
+        inputFormatters: widget.formModel.inputFormat,
+        keyboardType: widget.formModel.type,
+        validator: widget.formModel.validator,
+        obscureText: widget.formModel.invisible,
+        controller: widget.formModel.controller,
+        decoration: widget.formModel.icon != null
+            ? InputDecoration(
+                prefixIcon: Icon(
+                  widget.formModel.icon,
+                  color: AppTheme.lightAppColors.secondaryColor,
+                ),
+                filled: true,
+                fillColor: AppTheme.lightAppColors.maincolor,
+                focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.transparent,
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(5))),
+                border: const OutlineInputBorder(),
+                enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.transparent,
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(5))),
+                hintText: widget.formModel.hintText.tr,
+                hintStyle: TextStyle(
+                    fontFamily: "Inter",
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: 1.5,
+                    color: AppTheme.lightAppColors.black.withOpacity(.5),
+                    fontSize: 14))
+            : InputDecoration(
+                filled: true,
+                fillColor: AppTheme.lightAppColors.maincolor,
+                focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.transparent,
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(5))),
+                border: const OutlineInputBorder(),
+                enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.transparent,
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(5))),
+                hintText: widget.formModel.hintText.tr,
+                hintStyle: TextStyle(
+                    fontFamily: "Inter",
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: 0.2,
+                    color: AppTheme.lightAppColors.black.withOpacity(.5),
+                    fontSize: 14)));
   }
 }

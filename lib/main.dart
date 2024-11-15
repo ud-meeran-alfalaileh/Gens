@@ -20,7 +20,7 @@ Future<void> main() async {
 
   await di.init();
 
-
+  
   OneSignal.initialize("6f187321-1c40-45f0-8ae2-b42038185dae");
   OneSignal.Notifications.requestPermission(true);
   runApp(const MyApp());

@@ -66,7 +66,6 @@ class VendorProfileController extends GetxController {
 
     super.onInit();
     await getVendorsById();
-
   }
 
   void setSelectedIndex(int index) {

@@ -3,7 +3,7 @@ import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/core/utils/app_button.dart';
-import 'package:gens/src/feature/question/controller/fourth_question_page.dart';
+import 'package:gens/src/feature/question/controller/fourth_question_question_controller.dart';
 import 'package:gens/src/feature/question/model/question_model.dart';
 import 'package:gens/src/feature/question/view/widget/collection/fourth_diaplay_page.dart';
 import 'package:gens/src/feature/question/view/widget/text/question_text.dart';
@@ -189,7 +189,7 @@ class _FourthQuestionPageViewState extends State<FourthQuestionPageView> {
                     Text(answer),
                     Radio<String>(
                       focusColor: AppTheme.lightAppColors.primary,
-                      activeColor: AppTheme.lightAppColors.primary,
+                      activeColor: AppTheme.lightAppColors.secondaryColor,
                       value: answer,
                       groupValue:
                           controller.selectedAnswers[question.name] as String?,

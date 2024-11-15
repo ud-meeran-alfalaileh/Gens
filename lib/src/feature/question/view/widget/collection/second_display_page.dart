@@ -91,19 +91,22 @@ class SecResultsPage extends StatelessWidget {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          displayName, // Use displayName here
-                                          style: TextStyle(
-                                            color:
-                                                AppTheme.lightAppColors.black,
-                                            fontFamily: "Inter",
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.w700,
+                                        SizedBox(
+                                          width: context.screenWidth * .36,
+                                          child: Text(
+                                            displayName, // Use displayName here
+                                            style: TextStyle(
+                                              color:
+                                                  AppTheme.lightAppColors.black,
+                                              fontFamily: "Inter",
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.w700,
+                                            ),
                                           ),
                                         ),
                                         20.0.kW,
                                         SizedBox(
-                                          width: context.screenWidth * .23,
+                                          width: context.screenWidth * .4,
                                           child: Text(
                                             answerText,
                                             style: TextStyle(

@@ -119,8 +119,12 @@ class FourthQuestionController extends GetxController {
 
       if (response.statusCode == StatusCode.ok) {
         await profileController.getQuestionDetails();
+        profileController.isFifthDataIncomplete.value = false;
+
         Get.back();
         Get.back();
+        await profileController.getQuestionDetails();
+        profileController.isFifthDataIncomplete.value = false;
       }
       isloading.value = false;
     } catch (e) {

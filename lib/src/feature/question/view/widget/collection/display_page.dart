@@ -92,13 +92,17 @@ class ResultsPage extends StatelessWidget {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        questionDisplayName, // Use displayName here
-                                        style: TextStyle(
-                                          color: AppTheme.lightAppColors.black,
-                                          fontFamily: "Inter",
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w700,
+                                      SizedBox(
+                                        width: context.screenWidth * .36,
+                                        child: Text(
+                                          questionDisplayName, // Use displayName here
+                                          style: TextStyle(
+                                            color:
+                                                AppTheme.lightAppColors.black,
+                                            fontFamily: "Inter",
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.w700,
+                                          ),
                                         ),
                                       ),
                                       20.0.kW,

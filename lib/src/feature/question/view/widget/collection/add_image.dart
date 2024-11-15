@@ -150,7 +150,7 @@ class _UserThreeImageState extends State<UserThreeImage> {
                     ),
                     const SizedBox(height: 20),
                     SizedBox(
-                      width: context.screenWidth * .3,
+                      width: context.screenWidth * .5,
                       child: AppButton(
                         onTap: () async {
                           await controller.saveImagesToApi();
@@ -204,7 +204,7 @@ class _UserThreeImageState extends State<UserThreeImage> {
               alignment: Alignment.topRight,
               child: SizedBox(
                 width: context.screenWidth * .2,
-                height: context.screenHeight * .04,
+                // height: context.screenHeight * .04,
                 child: AppButton(
                   onTap: () => showImageSourceModal(context, index),
                   title: "Change",

@@ -380,14 +380,19 @@ vendorBookingContainer(BuildContext context, index, VendorBooking model) {
                       ),
                     )
                   : model.status == "Pending"
-                      ? Column(
-                          children: [
-                            statusWidget(model, statusUpadating, context,
-                                "Upcoming", 'Accept'.tr),
-                            10.0.kH,
-                            statusWidgetReject(model, statusUpadating, context,
-                                "Rejected", 'Reject'.tr),
-                          ],
+                      ? SizedBox(
+                          width: context.screenWidth * .2,
+                          child: Expanded(
+                            child: Column(
+                              children: [
+                                statusWidget(model, statusUpadating, context,
+                                    "Upcoming", 'Accept'.tr),
+                                10.0.kH,
+                                statusWidgetReject(model, statusUpadating,
+                                    context, "Rejected", 'Reject'.tr),
+                              ],
+                            ),
+                          ),
                         )
                       : model.status == "Upcoming"
                           ? statusWidget(model, statusUpadating, context,
@@ -420,8 +425,8 @@ GestureDetector statusWidget(VendorBooking model, RxBool statusUpadating,
       decoration: BoxDecoration(
           color: model.status == "Done"
               ? Colors.green
-              : status == "Waiting"
-                  ? AppTheme.lightAppColors.bordercolor
+              : status == "Upcoming"
+                  ? Colors.green
                   : AppTheme.lightAppColors.primary,
           borderRadius: BorderRadius.circular(20)),
       child: Center(
@@ -449,8 +454,7 @@ GestureDetector statusWidgetReject(VendorBooking model, RxBool statusUpadating,
       padding: const EdgeInsets.symmetric(horizontal: 10),
       height: context.screenHeight * .04,
       decoration: BoxDecoration(
-          color: AppTheme.lightAppColors.secondaryColor,
-          borderRadius: BorderRadius.circular(20)),
+          color: Colors.red, borderRadius: BorderRadius.circular(20)),
       child: Center(
         child: Text(
           title,

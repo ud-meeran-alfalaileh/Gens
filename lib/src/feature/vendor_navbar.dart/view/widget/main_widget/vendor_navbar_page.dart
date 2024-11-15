@@ -55,7 +55,7 @@ class _VendorNavBarState extends State<VendorNavBar> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  RotatingImage(),
+                  const RotatingImage(image:   'assets/image/hourglass.png',),
                   20.0.kH,
                   Text(
                     "waitingVendor".tr,

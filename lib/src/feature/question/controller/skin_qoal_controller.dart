@@ -7,7 +7,7 @@ import 'package:gens/src/feature/profile/controller/profile_controller.dart';
 import 'package:gens/src/feature/question/model/question_model.dart';
 import 'package:gens/src/feature/show_user/controller/show_user_controller.dart';
 import 'package:get/get.dart';
- 
+
 class SkinQoalController extends GetxController {
   RxBool isloading = false.obs;
 
@@ -78,15 +78,14 @@ class SkinQoalController extends GetxController {
       print('Formatted Answer: $formattedAnswer');
 
       final response = await dioConsumer.post(
-     "${EndPoints.skinGoals}${user.userId}",
+        "${EndPoints.skinGoals}${user.userId}",
         body: formattedAnswer,
       );
 
-    
       if (response.statusCode == StatusCode.ok) {
+        Get.back();
         await profileController.getQuestionDetails();
-        Get.back();
-        Get.back();
+
       }
       isloading.value = false;
     } catch (e) {

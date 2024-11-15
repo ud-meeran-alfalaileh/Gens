@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/feature/calendar/controller/calender_controller.dart';
 import 'package:get/get.dart';
@@ -27,8 +26,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       backgroundColor: AppTheme.lightAppColors.background,
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.only(
-              left: 10.0, right: 10.0, bottom: context.screenHeight * .1),
+          padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 90),
           child: Obx(() {
             return SfCalendar(
               view: CalendarView.month,

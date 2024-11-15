@@ -26,9 +26,14 @@ class QuestionPage extends StatefulWidget {
 }
 
 class _QuestionPageState extends State<QuestionPage> {
+  final controller = Get.put(FirstQuestionController());
+  final profileController = Get.put(ProfileController());
+  final imageController = Get.put(AddImageUserController());
   @override
   void initState() {
     super.initState();
+    profileController.getQuestionDetails();
+
     if (widget.type == "Empty") {
       // Schedule navigation after the current frame is built
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -39,10 +44,6 @@ class _QuestionPageState extends State<QuestionPage> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(FirstQuestionController());
-    final profileController = Get.put(ProfileController());
-    final imageController = Get.put(AddImageUserController());
-
     return Scaffold(
       backgroundColor: AppTheme.lightAppColors.background,
       body: Obx(
@@ -165,25 +166,23 @@ class _QuestionPageState extends State<QuestionPage> {
                                     ],
                                   ),
                                 ),
-                                Obx(
-                                  () => Stack(
-                                    children: [
-                                      sectionButton(context, "History cheack",
-                                          () {
-                                        Get.to(() =>
-                                            const FourthQuestionPageView());
-                                      }, 250),
-                                      profileController
-                                              .isFifthDataIncomplete.value
-                                          ? Icon(
-                                              Icons.error,
-                                              color: AppTheme.lightAppColors
-                                                  .secondaryColor,
-                                            )
-                                          : const SizedBox.shrink()
-                                    ],
-                                  ),
-                                )
+                                Stack(
+                                  children: [
+                                    sectionButton(context, "History cheack",
+                                        () {
+                                      Get.to(
+                                          () => const FourthQuestionPageView());
+                                    }, 250),
+                                    Obx(() => profileController
+                                            .isFifthDataIncomplete.value
+                                        ? Icon(
+                                            Icons.error,
+                                            color: AppTheme
+                                                .lightAppColors.secondaryColor,
+                                          )
+                                        : const SizedBox.shrink())
+                                  ],
+                                ),
                               ],
                             ),
                             20.0.kH,

@@ -80,7 +80,7 @@ class _SearchFormState extends State<SearchForm> {
                   Icons.search,
                   color: AppTheme.lightAppColors.primary,
                 ),
-                hintText: "Search for Doctor".tr,
+                hintText: "searchDoctor".tr,
               ),
             ),
           ],

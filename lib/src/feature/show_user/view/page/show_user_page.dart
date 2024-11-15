@@ -10,9 +10,10 @@ class ShowUserPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppTheme.lightAppColors.background,
       body: SafeArea(
+          bottom: false,
           child: ShowUserWidget(
-        id: id,
-      )),
+            id: id,
+          )),
     );
   }
 }

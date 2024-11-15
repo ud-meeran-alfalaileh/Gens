@@ -6,6 +6,7 @@ class Vendor {
   final String address;
   final String type;
   final int reviewCount;
+  int? avgRating;
   final int numberOfBooking;
   int? fav;
   final List<BusinessImages> images;
@@ -16,6 +17,7 @@ class Vendor {
     required this.address,
     required this.numberOfBooking,
     required this.reviewCount,
+    required this.avgRating,
     required this.type,
     required this.images,
   });
@@ -28,6 +30,7 @@ class Vendor {
       numberOfBooking: json['numberOfBooking'] ?? 0,
       reviewCount: json['reviewCount'] ?? 0,
       type: json['type'] ?? "",
+      avgRating: json['avgRating'] ?? 0.0,
       images: parseImages(json['businessImages'] ?? []),
     );
   }

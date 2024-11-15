@@ -13,6 +13,7 @@ class History {
   final String serviceName;
   final double servicePrice;
   final String vendorPhone;
+   String? note;
 
   History({
     required this.id,
@@ -29,6 +30,7 @@ class History {
     required this.vendorImg,
     required this.servicePrice,
     required this.vendorPhone,
+    required this.note
   });
 
   // Factory method to create a History object from JSON
@@ -39,6 +41,7 @@ class History {
       date: json['date'] ?? '',
       time: json['time'] ?? '',
       day: json['day'] ?? '',
+      note: json['note'] ?? '',
       vendorName: json['vendorName'] ?? '',
       vendorType: json['vendorType'] ?? '',
       serviceName: json['serviceName'] ?? '',
@@ -64,7 +67,7 @@ class VendorBooking {
   final String endTime;
   String status;
   bool showNote;
-   String note;
+  String note;
 
   VendorBooking(
       {required this.id,

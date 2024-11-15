@@ -12,6 +12,7 @@ import 'package:gens/src/feature/history/controller/history_controller.dart';
 import 'package:gens/src/feature/history/model/history_model.dart';
 import 'package:gens/src/feature/history/view/page/user_waiting_list.dart';
 import 'package:gens/src/feature/history/view/widget/text/history_text.dart';
+import 'package:gens/src/feature/profile/controller/profile_controller.dart';
 import 'package:gens/src/feature/test.dart';
 import 'package:gens/src/feature/vendor_services/view/widget/text/services_text.dart';
 import 'package:get/get.dart';
@@ -25,6 +26,7 @@ class HistoryWidget extends StatefulWidget {
 
 class _HistoryWidgetState extends State<HistoryWidget> {
   final doctorController = Get.put(DoctorController());
+  final profileController = Get.put(ProfileController());
   // Define the currently selected index
 
   // List of colors for unselected and selected text
@@ -75,7 +77,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                           icon: SizedBox(
                               height: context.screenHeight * .04,
                               width: context.screenWidth * .1,
-                              child: RotatingImage()),
+                              child: const RotatingImage(image:   'assets/image/hourglass.png',)),
                         ),
                       ],
                     ),
@@ -345,7 +347,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                                         NotificationModel(
                                             title: "Appointment Canceled",
                                             message:
-                                                "The user has canceled their appointment. Please update your schedule accordingly.",
+                                                "${profileController.userData.value!.fName} their appointment. Please update your schedule accordingly.",
                                             imageURL: "imageURL",
                                             externalIds: history.vendorPhone),
                                       );
@@ -377,7 +379,17 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                       ),
                     ],
                   ),
+                ),
+          history.note != ""
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    HistoryText.secText("Note"),
+                    HistoryText.thirdText(history.note!)
+                  ],
                 )
+              : const SizedBox.shrink()
         ],
       ),
     );
