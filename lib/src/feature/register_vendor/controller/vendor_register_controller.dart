@@ -9,12 +9,12 @@ import 'package:gens/src/core/api/end_points.dart';
 import 'package:gens/src/core/api/netwok_info.dart';
 import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
+import 'package:gens/src/feature/nav_bar/view/main/main_app_page.dart';
 import 'package:gens/src/feature/register_vendor/model/schaduale_model.dart';
 import 'package:gens/src/feature/register_vendor/model/vendor_register_model.dart';
 import 'package:gens/src/feature/register_vendor/view/widget/collection/register_page_four.dart';
 import 'package:gens/src/feature/register_vendor/view/widget/main_widget/otp_vendor_widget.dart';
 import 'package:gens/src/feature/show_user/controller/show_user_controller.dart';
-import 'package:gens/src/feature/vendor_navbar.dart/view/widget/main_widget/vendor_navbar_page.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -283,19 +283,19 @@ class VendorRegisterController extends GetxController {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Permission Required'),
-          content: Text(
+          title: const Text('Permission Required'),
+          content: const Text(
               'Please allow access to your gallery in app settings to pick images.'),
           actions: <Widget>[
             TextButton(
-              child: Text('Open Settings'),
+              child: const Text('Open Settings'),
               onPressed: () {
                 openAppSettings(); // This opens the app settings
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -392,47 +392,47 @@ class VendorRegisterController extends GetxController {
     }
   }
 
-    Future workingTime(BuildContext context, TextEditingController text) async {
-      TimeOfDay? newTime = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.now(),
-        builder: (context, child) {
-          return Theme(
-            data: ThemeData.light().copyWith(
-              // Customizing the color of the TimePicker
-              timePickerTheme: TimePickerThemeData(
-                backgroundColor: Colors.white,
-                timeSelectorSeparatorColor:
-                    WidgetStateColor.resolveWith((states) {
-                  return Colors.black; // Selected hour/minute text color
-                }),
-                dialBackgroundColor: Colors.black.withOpacity(0.1),
-                dialHandColor: AppTheme.lightAppColors.primary, // Hand color
-                dialTextColor: WidgetStateColor.resolveWith((states) {
-                  if (states.contains(WidgetState.selected)) {
-                    return Colors.white; // Selected hour color
-                  }
-                  return Colors.black; // Default hour color
-                }),
-                dayPeriodColor: AppTheme.lightAppColors.primary,
-                dayPeriodTextColor: AppTheme.lightAppColors.mainTextcolor,
+  Future workingTime(BuildContext context, TextEditingController text) async {
+    TimeOfDay? newTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            // Customizing the color of the TimePicker
+            timePickerTheme: TimePickerThemeData(
+              backgroundColor: Colors.white,
+              timeSelectorSeparatorColor:
+                  WidgetStateColor.resolveWith((states) {
+                return Colors.black; // Selected hour/minute text color
+              }),
+              dialBackgroundColor: Colors.black.withOpacity(0.1),
+              dialHandColor: AppTheme.lightAppColors.primary, // Hand color
+              dialTextColor: WidgetStateColor.resolveWith((states) {
+                if (states.contains(WidgetState.selected)) {
+                  return Colors.white; // Selected hour color
+                }
+                return Colors.black; // Default hour color
+              }),
+              dayPeriodColor: AppTheme.lightAppColors.primary,
+              dayPeriodTextColor: AppTheme.lightAppColors.mainTextcolor,
 
-                hourMinuteColor: Colors.white,
-                hourMinuteTextColor: AppTheme
-                    .lightAppColors.primary, // Color of the selected time (hours)
-              ),
+              hourMinuteColor: Colors.white,
+              hourMinuteTextColor: AppTheme
+                  .lightAppColors.primary, // Color of the selected time (hours)
             ),
-            child: child!,
-          );
-        },
-      );
+          ),
+          child: child!,
+        );
+      },
+    );
 
-      if (newTime != null) {
-        final hour = newTime.hour;
+    if (newTime != null) {
+      final hour = newTime.hour;
 
-        text.text = "$hour:00"; // Display only the hours with 00 minutes
-      }
+      text.text = "$hour:00"; // Display only the hours with 00 minutes
     }
+  }
 
 //date and time
   final Map<String, String> daysTranslations = {
@@ -458,21 +458,17 @@ class VendorRegisterController extends GetxController {
     isUpdating.value = true;
     if (await networkInfo.isConnected) {
       for (var schedule in schedules) {
-        // Convert Schedule object to JSON string
         String jsonString = jsonEncode(schedule.toJson());
 
-        // Send POST request with the JSON string as the body
-        await dioConsumer.post(
+        final response = await dioConsumer.post(
           EndPoints.postSchadule,
-          body: jsonString, // Sending the JSON string
+          body: jsonString,
         );
-
-        // Print response
-
+        print(response.data);
         await Future.delayed(const Duration(milliseconds: 500));
       }
       isUpdating.value = false;
-      Get.to(() => const VendorNavBar());
+      Get.offAll(() => const MainAppPage());
     }
   }
 

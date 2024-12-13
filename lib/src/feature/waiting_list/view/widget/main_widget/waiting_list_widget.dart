@@ -253,7 +253,7 @@ class TimeInputFormatter extends TextInputFormatter {
 
     // Insert colon after two digits if not already present
     if (text.length >= 3) {
-      text = text.substring(0, 2) + ":" + text.substring(2);
+      text = "${text.substring(0, 2)}:${text.substring(2)}";
     }
 
     return TextEditingValue(

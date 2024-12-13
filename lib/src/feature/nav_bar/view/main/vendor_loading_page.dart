@@ -8,7 +8,7 @@ class VendorLoadingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.lightAppColors.background,
-      body: Center(
+      body: const Center(
         child: CircularProgressIndicator(),
       ),
     );

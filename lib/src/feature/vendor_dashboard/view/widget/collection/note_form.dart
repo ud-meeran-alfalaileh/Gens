@@ -41,54 +41,54 @@ class _NoteFormState extends State<NoteForm> {
               decoration: widget.formModel.icon != null
                   ? InputDecoration(
                       prefixIcon: Icon(
-                        widget.formModel.icon,
-                        color: AppTheme.lightAppColors.primary,
+                        Icons.search,
+                        color: AppTheme.lightAppColors.secondaryColor,
                       ),
                       filled: true,
-                      fillColor: AppTheme.lightAppColors.background,
-                      focusedBorder: OutlineInputBorder(
+                      fillColor: AppTheme.lightAppColors.maincolor,
+                      focusedBorder: const OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: AppTheme.lightAppColors.black,
+                            color: Colors.transparent,
                           ),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(5))),
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
                       border: const OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(
+                      enabledBorder: const OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: AppTheme.lightAppColors.primary,
+                            color: Colors.transparent,
                           ),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(5))),
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
                       hintText: widget.formModel.hintText.tr,
                       hintStyle: TextStyle(
-                          fontFamily: "Inter",
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: 1.5,
-                          color: AppTheme.lightAppColors.black.withOpacity(.5),
-                          fontSize: 14))
+                        // fontFamily: "Inter",
+                        fontWeight: FontWeight.w400,
+                        letterSpacing:
+                            0.5, // Try a negative value to force smaller spacing
+                        color: AppTheme.lightAppColors.black.withOpacity(.5),
+                        fontSize: 14,
+                      ))
                   : InputDecoration(
                       filled: true,
-                      fillColor: AppTheme.lightAppColors.background,
-                      focusedBorder: OutlineInputBorder(
+                      fillColor: AppTheme.lightAppColors.maincolor,
+                      focusedBorder: const OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: AppTheme.lightAppColors.black,
+                            color: Colors.transparent,
                           ),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(5))),
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
                       border: const OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(
+                      enabledBorder: const OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: AppTheme.lightAppColors.primary,
+                            color: Colors.transparent,
                           ),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(5))),
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
                       hintText: widget.formModel.hintText.tr,
                       hintStyle: TextStyle(
-                          fontFamily: "Inter",
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: 1.5,
-                          color: AppTheme.lightAppColors.black.withOpacity(.5),
-                          fontSize: 14)))),
+                        // fontFamily: "Inter",
+                        fontWeight: FontWeight.w400,
+                        letterSpacing:
+                            0.5, // Try a negative value to force smaller spacing
+                        color: AppTheme.lightAppColors.black.withOpacity(.5),
+                        fontSize: 14,
+                      )))),
     );
   }
 }

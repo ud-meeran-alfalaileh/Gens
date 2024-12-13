@@ -50,7 +50,7 @@ class ShowUserSkin extends StatelessWidget {
                           controller.question.value!.acneMedication,
                           "assets/image/capsules.png"),
                   controller.question.value?.waterConsume == ''
-                      ? SizedBox.shrink()
+                      ? const SizedBox.shrink()
                       : lifeStyle(context, controller.question.value!),
                   10.0.kH,
                   controller.question.value!.foodConsume == ""
@@ -121,7 +121,7 @@ class ShowUserSkin extends StatelessWidget {
                               ],
                             ),
                           ),
-                        if (controller.imageUrls.length == 1)
+                        if (controller.isImageDataIncomplere.value == false)
                           Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,

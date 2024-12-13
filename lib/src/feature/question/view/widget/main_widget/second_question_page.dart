@@ -10,8 +10,10 @@ import 'package:gens/src/feature/question/view/widget/text/question_text.dart';
 import 'package:get/get.dart';
 
 class SecondQuestionPageView extends StatefulWidget {
-  const SecondQuestionPageView({super.key, required this.gender});
+  const SecondQuestionPageView(
+      {super.key, required this.gender, required this.from});
   final String gender;
+  final String from;
   @override
   State<SecondQuestionPageView> createState() => _SecondQuestionPageViewState();
 }
@@ -224,8 +226,9 @@ class _SecondQuestionPageViewState extends State<SecondQuestionPageView> {
             width: context.screenWidth * .3,
             child: AppButton(
               onTap: () {
-                Get.to(() => SecResultsPage(
+              Get.off(() => SecResultsPage(
                       gender: widget.gender,
+                      from: widget.from
                     ));
               },
               title: 'Finish',

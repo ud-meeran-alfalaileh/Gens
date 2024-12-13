@@ -37,7 +37,7 @@ class LocalStrings extends Translations {
           "Booking Appointment": "Booking Appointment",
           "Select Date": "Select Date",
           "Select Hour": "Select Hour",
-          "noTime": "There is no available\n time this day",
+          "noTime": 'There is no available slots.',
           'Please Select a Day': 'Please Select a Day',
           'Please Select a Hour': 'Please Select a Hour',
           'All': 'All',
@@ -124,7 +124,7 @@ class LocalStrings extends Translations {
               "Currently, there are no\n bookings available for you",
           'Age': 'Age: ',
           "Today Booking": "Today Booking",
-          "there is no booking for today": "there is no booking for today",
+          "there is no booking for today": "No Appointment for today",
           "Upcoming Booking": "Upcoming Booking",
           "Today": "Today",
           "Waiting": "Waiting",
@@ -180,9 +180,9 @@ class LocalStrings extends Translations {
           "Resend OTP in": "Resend OTP in",
           "Resend": "Resend",
           'Something went wrong.': 'Something went wrong.',
-          "Register as:": "Register as:",
+          "Register as:": "Join genskin as",
           "User": 'User',
-          'Clinic': 'Clinic',
+          'Clinic': 'Service\n Provider',
           "Profile Image": "Profile Image",
           "Specialty": "Specialty",
           'Select a Specialty': 'Select a Specialty',
@@ -223,8 +223,16 @@ class LocalStrings extends Translations {
           "It will take a few second": "It will take a few second",
           "post-care instructions": "post-care instructions",
           "Advice": "Advice",
+          "Confirmation": "Confirmation",
+          "Are you sure you want to log out?":
+              "Are you sure you want to log out?",
         },
         'ar_JO': {
+          "Are you sure you want to log out?":
+              'هل أنت متأكد أنك تريد تسجيل الخروج؟',
+
+          "Confirmation": "تأكيد",
+
           "Advice": "نصيحة",
 
           "post-care instructions": "تعليمات ما بعد الرعاية",
@@ -264,9 +272,9 @@ class LocalStrings extends Translations {
           'Select a Specialty': "اختر التخصص",
           "Specialty": "التخصص",
           "Profile Image": 'صورة الملف الشخصي',
-          'Clinic': 'عيادة',
+          'Clinic': 'مقدم الخدمة',
           'User': "مستخدم",
-          "Register as:": 'التسجيل ك',
+          "Register as:": "انضم إلى genskin كـ",
           'Something went wrong.': "لقد حدث خطأ ما.",
           "OTP Verification": "التحقق من الرمز",
           "Enter the verification code we just sent on your Email":
@@ -329,7 +337,7 @@ class LocalStrings extends Translations {
           "Today": "اليوم",
           "Upcoming Booking": "الحجز القادم",
           "Today Booking": "الحجز اليوم",
-          "there is no booking for today": "لا يوجد حجز لهذا اليوم",
+          "there is no booking for today": 'لا يوجد موعد اليوم',
           "Currently, there are no bookings available for you":
               "حاليًا، لا توجد حجوزات متاحة لك",
           'Age': 'عمر: ',

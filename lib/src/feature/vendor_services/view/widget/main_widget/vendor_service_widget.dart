@@ -6,7 +6,6 @@ import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/core/utils/app_button.dart';
 import 'package:gens/src/feature/dashboard/view/widget/collection/dashboard_shimmer.dart';
 import 'package:gens/src/feature/doctor_profile/model/service_model.dart';
-import 'package:gens/src/feature/vendor_dashboard/view/widget/collection/bednor_dashboard_collection.dart';
 import 'package:gens/src/feature/vendor_dashboard/view/widget/text/vendor_dashboard_text.dart';
 import 'package:gens/src/feature/vendor_services/controller/vendor_services_controller.dart';
 import 'package:gens/src/feature/vendor_services/view/widget/main_widget/add_service_widget.dart';
@@ -42,7 +41,25 @@ class _VendorServiceWidgetState extends State<VendorServiceWidget> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            vendorHeader(context, 1),
+            Row(
+              children: [
+                IconButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    icon: Icon(
+                      Icons.arrow_back_ios_new,
+                      color: AppTheme.lightAppColors.primary,
+                    )),
+                Image.asset(
+                  "assets/image/logo.png",
+                  height: 50,
+                  width: 100,
+                  fit: BoxFit.fitWidth,
+                ),
+              ],
+            ),
+            const Divider(),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,

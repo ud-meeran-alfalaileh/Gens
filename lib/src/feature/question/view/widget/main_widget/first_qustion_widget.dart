@@ -10,7 +10,8 @@ import 'package:gens/src/feature/question/view/widget/text/question_text.dart';
 import 'package:get/get.dart';
 
 class FirstQuestionPageView extends StatefulWidget {
-  const FirstQuestionPageView({super.key, required this.gender});
+  const FirstQuestionPageView({super.key, required this.gender,required this.from,});
+  final String from;
   final String gender;
 
   @override
@@ -44,7 +45,7 @@ class _FirstQuestionPageViewState extends State<FirstQuestionPageView> {
         );
       }
     } else {
-      // Show an alert or a snackbar to inform the user to answer the question
+      // Show an alert or a snackbar to infrom the user to answer the question
       Get.snackbar(
         'Incomplete',
         'Please answer the question before proceeding.',
@@ -179,8 +180,8 @@ class _FirstQuestionPageViewState extends State<FirstQuestionPageView> {
             width: context.screenWidth * .3,
             child: AppButton(
               onTap: () {
-                Get.to(() => ResultsPage(
-                      gender: widget.gender,
+                Get.off(() => ResultsPage(
+                      gender: widget.gender, from: widget.from,
                     ));
               },
               title: 'Finish',

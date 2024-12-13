@@ -94,11 +94,14 @@ class AddProductController extends GetxController {
 
       if (data != null) {
         message.text = data['productDescription'] ?? '';
-
+        print(message.text);
         // Update the image field (this assumes the image URL is in the response)
         if (data['productImage'] != null && data['productImage'].isNotEmpty) {
           updatedImage.value = await downloadImage(data['productImage']);
+          print(updatedImage.value);
         } else {
+          isLoading.value = false;
+
           isProductIncomplete.value = true;
         }
         isLoading.value = false;

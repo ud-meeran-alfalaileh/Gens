@@ -102,7 +102,6 @@ class _FavWidgetState extends State<FavWidget> {
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
         margin: const EdgeInsets.symmetric(horizontal: 10),
         width: context.screenWidth,
-        height: context.screenHeight * .21,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             boxShadow: [

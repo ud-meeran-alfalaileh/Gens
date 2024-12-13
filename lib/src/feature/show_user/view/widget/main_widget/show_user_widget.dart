@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gens/src/config/sizes/short_text.dart';
 import 'package:gens/src/config/sizes/size_box_extension.dart';
+import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/core/utils/loading_page.dart';
 import 'package:gens/src/feature/profile/view/widget/text/profile_text.dart';
@@ -30,6 +31,7 @@ class _ShowUserWidgetState extends State<ShowUserWidget> {
     await controller.getProduct(widget.id);
     await controller.getQuestionDetails(widget.id);
     await controller.getUserthreeImage(widget.id);
+    await controller.getNotes(widget.id);
   }
 
   @override
@@ -93,6 +95,74 @@ class _ShowUserWidgetState extends State<ShowUserWidget> {
                           )
                         ],
                       ),
+                      30.0.kH,
+                      controller.notes.isEmpty
+                          ? const SizedBox.shrink()
+                          : Row(
+                              children: [
+                                SizedBox(
+                                  width: context.screenWidth * .8,
+                                  child: ShowUserText.mainText(
+                                      "Notes from the previous Sessions"),
+                                )
+                              ],
+                            ),
+                      10.0.kH,
+                      controller.notes.isEmpty
+                          ? const SizedBox.shrink()
+                          : ListView.separated(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: controller.notes.length,
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                if (controller.notes[index].note == 'empty') {
+                                  return const SizedBox.shrink();
+                                } else {
+                                  return 20.0.kH;
+                                }
+                              },
+                              itemBuilder: (BuildContext context, int index) {
+                                if (controller.notes[index].note == 'empty') {
+                                  return const SizedBox.shrink();
+                                } else {
+                                  return Container(
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: AppTheme
+                                            .lightAppColors.secondaryColor
+                                            .withOpacity(0.3),
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            ShowUserText.secText(controller
+                                                .notes[index].serviceTitle),
+                                            ShowUserText.dateText(
+                                                controller.notes[index].date),
+                                          ],
+                                        ),
+                                        10.0.kH,
+                                        ShowUserText.noteText(
+                                            controller.notes[index].note!),
+                                      ],
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
                       ShowUserSkin(
                         gender: controller.userData.value!.gender,
                       )

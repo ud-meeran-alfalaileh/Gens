@@ -269,16 +269,11 @@ class RegisterController extends GetxController {
             response.statusCode == StatusCode.created) {
           final jsonData = json.decode(response.data);
           final token = jsonData['userId'];
-                    final number = jsonData['phone'];
+          final number = jsonData['phone'];
 
           await user.saveId(token);
           user.userId.value = token;
-          showTopSnackBar(
-            Overlay.of(context),
-            CustomSnackBar.success(
-              message: "loginSuccess".tr,
-            ),
-          );
+
           isLoading.value = false;
 
           Get.offAll(const MainAppPage());

@@ -19,7 +19,10 @@ class BookingWidget extends StatelessWidget {
       required this.vendorId,
       required this.type,
       required this.vendorPhone,
-      required this.bookId});
+      required this.bookId,
+      required this.advice,
+      });
+  final String advice;
   final int? bookId;
   final String type;
   final int vendorId;
@@ -141,7 +144,7 @@ class BookingWidget extends StatelessWidget {
                                       context,
                                       type,
                                       bookId,
-                                      vendorPhone);
+                                      vendorPhone,advice);
                                 }
                               },
                               title: "Book Appointment".tr),
@@ -161,7 +164,6 @@ class BookingWidget extends StatelessWidget {
                         GestureDetector(
                             onTap: () {
                               Get.to(() => WaitingListPage(
-                                    
                                     vendorId: vendorId,
                                     serviceId: doctorController.srevice.value,
                                     vendorPhone: vendorPhone.toString(),

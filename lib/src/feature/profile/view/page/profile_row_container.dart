@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/feature/profile/controller/profile_controller.dart';
 import 'package:gens/src/feature/profile/view/widget/text/profile_text.dart';
-import 'package:gens/src/feature/question/view/page/question_page.dart';
 import 'package:get/get.dart';
 
 class ProfileContainers extends StatelessWidget {
@@ -47,18 +46,7 @@ profileContainerRow(ProfileController controller) {
           title: "Skin Details".tr,
         ),
         const Spacer(),
-        IconButton(
-            onPressed: () {
-              Get.to(() => QuestionPage(
-                    gender: controller.userData.value!.gender,
-                    type: 'notEmpty',
-                  ));
-            },
-            icon: Icon(
-              Icons.edit_note_outlined,
-              color: AppTheme.lightAppColors.primary,
-              size: 30,
-            )),
+
         // ProfileContainers(
         //   onTap: () {
         //     controller.setSelectedIndex(1);

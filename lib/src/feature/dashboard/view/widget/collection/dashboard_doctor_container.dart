@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gens/src/config/sizes/short_text.dart';
@@ -38,22 +39,25 @@ doctorDashboardContainer(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 130,
+            width: context.screenWidth * .32,
             height: 130,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               image: DecorationImage(
-                  image: model.images.isEmpty ||
-                          model.images[0].imgUrl1 == 'string'
-                      ? const AssetImage("assets/image/AppLogo (1).png")
-                      : NetworkImage(model.images[0].imgUrl1),
-                  fit: BoxFit.cover,
-                  alignment: Alignment.topCenter),
+                image: model.images.isNotEmpty
+                    ? CachedNetworkImageProvider(
+                        model.images[0].imgUrl1,
+                      )
+                    : const AssetImage("assets/image/logo_image.png")
+                        as ImageProvider,
+                fit: BoxFit.cover,
+                alignment: Alignment.topCenter,
+              ),
             ),
           ),
           10.0.kW,
           SizedBox(
-            width: 190,
+            width: context.screenWidth * .47,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,

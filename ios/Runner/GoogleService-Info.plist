@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.gens</string>
+	<string>com.generation.genSkin</string>
 	<key>PROJECT_ID</key>
 	<string>gens-3bb19</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:269801959308:ios:f2269078877612ea1db0a9</string>
+	<string>1:269801959308:ios:04050447391f6e2c1db0a9</string>
 </dict>
 </plist>

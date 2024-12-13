@@ -10,7 +10,8 @@ import 'package:gens/src/feature/question/view/widget/text/question_text.dart';
 import 'package:get/get.dart';
 
 class FourthQuestionPageView extends StatefulWidget {
-  const FourthQuestionPageView({super.key});
+  const FourthQuestionPageView({super.key, required this.from});
+  final String from;
 
   @override
   State<FourthQuestionPageView> createState() => _FourthQuestionPageViewState();
@@ -162,7 +163,9 @@ class _FourthQuestionPageViewState extends State<FourthQuestionPageView> {
             child: AppButton(
               onTap: () {
                 // controller.debugPrintAnswers();
-                Get.to(() => const FourthDisplayPage());
+                Get.off(() => FourthDisplayPage(
+                      from: widget.from,
+                    ));
               },
               title: 'Finish',
             ),

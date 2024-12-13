@@ -176,7 +176,7 @@ class RegisterWidget extends StatelessWidget {
 
               AuthForm(
                 formModel: FormModel(
-                  icon: Icons.person,
+                  icon: Icons.person_outline_outlined,
                   controller: controller.name,
                   enableText: false,
                   hintText: 'loginName'.tr,
@@ -190,7 +190,7 @@ class RegisterWidget extends StatelessWidget {
               (15.5).kH,
               AuthForm(
                 formModel: FormModel(
-                  icon: Icons.person,
+                  icon: Icons.person_outline_outlined,
                   controller: controller.secName,
                   enableText: false,
                   hintText: 'loginSecName'.tr,
@@ -205,7 +205,7 @@ class RegisterWidget extends StatelessWidget {
               (15.5).kH,
               AuthForm(
                 formModel: FormModel(
-                  icon: Icons.phone,
+                  icon: Icons.phone_outlined,
                   controller: controller.phoneNumber,
                   enableText: false,
                   hintText: "000 000 0000",
@@ -245,29 +245,20 @@ class RegisterWidget extends StatelessWidget {
                   icon: const Icon(
                     Icons.arrow_drop_down,
                   ),
-                  focusColor: Colors.black,
+                  focusColor: Colors.transparent,
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.person_2_outlined,
-                        color: AppTheme.lightAppColors.primary),
+                    prefixIcon: Icon(
+                      Icons.person_2_outlined,
+                      color: AppTheme.lightAppColors.secondaryColor,
+                    ),
                     border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: AppTheme.lightAppColors.primary,
-                      ),
-                      borderRadius: BorderRadius.circular(5.0),
+                      borderRadius:
+                          BorderRadius.circular(10.0), // Set border radius
+                      borderSide: BorderSide.none, // Remove border side
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: AppTheme.lightAppColors.primary,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: AppTheme.lightAppColors.primary,
-                      ),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
+                    filled: true, // Enable fill color
+                    fillColor: AppTheme
+                        .lightAppColors.maincolor, // Set your fill color
                   ),
                   style: const TextStyle(
                     fontSize: 16.0,

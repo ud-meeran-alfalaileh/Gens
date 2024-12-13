@@ -122,13 +122,21 @@ class HistoryController extends GetxController {
 
   Future<void> canceleBooking(int book, index, NotificationModel model) async {
     if (await networkInfo.isConnected) {
-      final response = await dioConsumer.delete(
-        "${EndPoints.postBooking}/$book",
+      var body =
+          jsonEncode({'removeFromSchulde': false, 'newStatus': "Canceled"});
+      await Future.delayed(const Duration(milliseconds: 600));
+      final response = await dioConsumer.post(
+        "${EndPoints.postBooking}/$book/status",
+        body: body,
       );
-      if (response.statusCode == StatusCode.noContent) {
+      notificationController.sendNotification(model);
+      print(response.data);
+      // final response = await dioConsumer.delete(
+      //   "${EndPoints.postBooking}/$book",
+      // );
+      if (response.statusCode == StatusCode.ok) {
         Get.back();
         filteredList.removeAt(index);
-        notificationController.sendNotification(model);
 
         showSnackBar("Success",
             "The reservation has been successfully deleted.", Colors.green);

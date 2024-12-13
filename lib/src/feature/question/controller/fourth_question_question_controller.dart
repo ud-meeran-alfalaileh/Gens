@@ -5,6 +5,7 @@ import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/profile/controller/profile_controller.dart';
 import 'package:gens/src/feature/question/model/question_model.dart';
+import 'package:gens/src/feature/question/view/widget/main_widget/skin_qoal_page.dart';
 import 'package:gens/src/feature/show_user/controller/show_user_controller.dart';
 import 'package:get/get.dart';
 
@@ -52,10 +53,9 @@ class FourthQuestionController extends GetxController {
   void printFormattedAnswers() {
     final formattedAnswers = formatAnswersForApi();
 
-    print('Formatted Answers:');
+ 
     formattedAnswers.forEach((questionName, answer) {
-      print('$questionName: $answer');
-    });
+     });
   }
 
   // Method to format answers for API
@@ -91,8 +91,7 @@ class FourthQuestionController extends GetxController {
           break;
 
         default:
-          print('Unhandled question name: $questionName');
-          break;
+           break;
       }
     });
 
@@ -107,7 +106,7 @@ class FourthQuestionController extends GetxController {
     selectedAnswers[questionName] = answers;
   }
 
-  Future<void> fourthQuestionApi() async {
+  Future<void> fourthQuestionApi(from) async {
     isloading.value = true;
 
     try {
@@ -120,16 +119,15 @@ class FourthQuestionController extends GetxController {
       if (response.statusCode == StatusCode.ok) {
         await profileController.getQuestionDetails();
         profileController.isFifthDataIncomplete.value = false;
-
-        Get.back();
-        Get.back();
+        from == "Update"
+            ? {Get.back()}
+            : Get.off(const SkinQoalQuestionPageView());
         await profileController.getQuestionDetails();
         profileController.isFifthDataIncomplete.value = false;
       }
       isloading.value = false;
     } catch (e) {
       isloading.value = false;
-      print(e);
-    }
+     }
   }
 }

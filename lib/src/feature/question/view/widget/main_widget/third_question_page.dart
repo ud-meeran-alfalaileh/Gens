@@ -10,7 +10,8 @@ import 'package:gens/src/feature/question/view/widget/text/question_text.dart';
 import 'package:get/get.dart';
 
 class ThirdQuestionPageView extends StatefulWidget {
-  const ThirdQuestionPageView({super.key});
+  const ThirdQuestionPageView({super.key, required this.from});
+  final String from;
 
   @override
   State<ThirdQuestionPageView> createState() => _ThirdQuestionPageViewState();
@@ -54,7 +55,7 @@ class _ThirdQuestionPageViewState extends State<ThirdQuestionPageView> {
 
   void lastPage() {
     if (_isCurrentPageAnswered()) {
-      Get.to(() => const ThirdDisplayPage());
+      Get.off(() => ThirdDisplayPage(from: widget.from));
     } else {
       Get.snackbar(
         'Incomplete',

@@ -29,42 +29,12 @@ Container vendorHeader(BuildContext context, waitingListLength) {
           child: Row(
             children: [
               Image.asset(
-                "assets/image/Logo2 2.png",
+                "assets/image/logo.png",
                 height: 50,
                 width: 100,
                 fit: BoxFit.fitWidth,
               ),
               const Spacer(),
-              // Stack(
-              //   children: [
-              //     IconButton(
-              //         onPressed: () {
-              //           Get.to(() => const VendorWaitingList());
-              //         },
-              //         icon: Icon(
-              //           Icons.calendar_month_outlined,
-              //           size: 30,
-              //           color: AppTheme.lightAppColors.primary,
-              //         )),
-              //     Align(
-              //       alignment: Alignment.topLeft,
-              //       child: Container(
-              //         width: context.screenWidth * .045,
-              //         height: context.screenHeight * .03,
-              //         decoration: const BoxDecoration(
-              //             color: Colors.red, shape: BoxShape.circle),
-              //         child: Center(
-              //           child: Text(
-              //             waitingListLength.toString(),
-              //             style: TextStyle(
-              //                 color: AppTheme.lightAppColors.background,
-              //                 fontWeight: FontWeight.w700),
-              //           ),
-              //         ),
-              //       ),
-              //     )
-              //   ],
-              // )
             ],
           ),
         ),
@@ -259,16 +229,17 @@ GestureDetector statusWidgetToday(
     onTap: () async {
       model.status == "Pending"
           ? pendingDialog(context, model, statusUpadating)
-          : await vendorGController.updateBookingStatus('$status', model.id,
-              model, statusUpadating, true, model.userPhoneNumber);
+          : await vendorGController.updateBookingStatus(status, model.id, model,
+              statusUpadating, true, model.userPhoneNumber);
 
       if (status == "Absent" || status == "Done") {
-        vendorGController.filteredBooking.remove(model);
+        vendorGController.allVendorBooking.remove(model);
       }
     },
     child: Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       height: context.screenHeight * .04,
+      constraints: BoxConstraints(minWidth: context.screenWidth * .2),
       decoration: BoxDecoration(
         color: model.status == "Done"
             ? Colors.green
@@ -366,7 +337,7 @@ vendorBookingContainer(BuildContext context, index, VendorBooking model) {
                   ),
                   3.0.kH,
                   VendorDashboardText.timeText(
-                      "From ${model.startTime} to ${model.endTime}")
+                      "From ${model.startTime.substring(0, 5)} to ${model.endTime.substring(0, 5)}")
                 ],
               ),
               statusUpadating.value
@@ -382,16 +353,14 @@ vendorBookingContainer(BuildContext context, index, VendorBooking model) {
                   : model.status == "Pending"
                       ? SizedBox(
                           width: context.screenWidth * .2,
-                          child: Expanded(
-                            child: Column(
-                              children: [
-                                statusWidget(model, statusUpadating, context,
-                                    "Upcoming", 'Accept'.tr),
-                                10.0.kH,
-                                statusWidgetReject(model, statusUpadating,
-                                    context, "Rejected", 'Reject'.tr),
-                              ],
-                            ),
+                          child: Column(
+                            children: [
+                              statusWidget(model, statusUpadating, context,
+                                  "Upcoming", 'Accept'.tr),
+                              10.0.kH,
+                              statusWidgetReject(model, statusUpadating,
+                                  context, "Rejected", 'Reject'.tr),
+                            ],
                           ),
                         )
                       : model.status == "Upcoming"
@@ -422,6 +391,7 @@ GestureDetector statusWidget(VendorBooking model, RxBool statusUpadating,
     child: Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       height: context.screenHeight * .04,
+      constraints: BoxConstraints(minWidth: context.screenWidth * .2),
       decoration: BoxDecoration(
           color: model.status == "Done"
               ? Colors.green
@@ -453,6 +423,7 @@ GestureDetector statusWidgetReject(VendorBooking model, RxBool statusUpadating,
     child: Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       height: context.screenHeight * .04,
+      constraints: BoxConstraints(minWidth: context.screenWidth * .2),
       decoration: BoxDecoration(
           color: Colors.red, borderRadius: BorderRadius.circular(20)),
       child: Center(
@@ -469,75 +440,83 @@ GestureDetector statusWidgetReject(VendorBooking model, RxBool statusUpadating,
 }
 
 vendorDashboardContainerRow(VendorDashboardController controller) {
-  return Container(
-    // color: AppTheme,
-    child: SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Obx(
-        () => Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            DashboardContainer(
-              model: DashboardFilterModel(
-                  onTap: () {
-                    controller.filterBooking("");
+  return SingleChildScrollView(
+    scrollDirection: Axis.horizontal,
+    child: Obx(
+      () => Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          DashboardContainer(
+            model: DashboardFilterModel(
+                onTap: () async {
+                  controller.allVendorBooking.clear();
+                  controller.todayVendorBooking.clear();
+                  controller.getVendorBoooking();
 
-                    controller.setSelectedIndex(0);
-                    controller.setPageIndex(0);
-                  },
-                  isSelected: controller.selectedIndex.value == 0,
-                  title: "All".tr),
-            ),
-            20.0.kW,
-            DashboardContainer(
-              model: DashboardFilterModel(
-                  onTap: () {
-                    controller.filterBooking("Today");
-                    controller.setSelectedIndex(1);
-                    controller.setPageIndex(0);
-                  },
-                  isSelected: controller.selectedIndex.value == 1,
-                  title: "Today".tr),
-            ),
-            20.0.kW,
-            DashboardContainer(
-              model: DashboardFilterModel(
-                  onTap: () {
-                    controller.filterBooking("Pending");
-                    controller.setSelectedIndex(2);
-                    controller.setPageIndex(0);
-                  },
-                  isSelected: controller.selectedIndex.value == 2,
-                  title: "Waiting".tr),
-            ),
-            20.0.kW,
-            DashboardContainer(
-              model: DashboardFilterModel(
-                  onTap: () {
-                    controller.filterBooking("Upcoming");
-                    controller.setPageIndex(0);
-                    controller.setSelectedIndex(3);
-                  },
-                  isSelected: controller.selectedIndex.value == 3,
-                  title: "Upcoming".tr),
-            ),
-            20.0.kW,
-            DashboardContainer(
-              model: DashboardFilterModel(
-                  onTap: () {
-                    controller.setSelectedIndex(4);
-
-                    controller.setPageIndex(1);
-                  },
-                  isSelected: controller.selectedIndex.value == 4,
-                  title: "Done".tr),
-            ),
-            20.0.kW,
-            20.0.kW,
-            20.0.kW,
-          ],
-        ),
+                  controller.setSelectedIndex(0);
+                  controller.setPageIndex(0);
+                },
+                isSelected: controller.selectedIndex.value == 0,
+                title: "All".tr),
+          ),
+          20.0.kW,
+          DashboardContainer(
+            model: DashboardFilterModel(
+                onTap: () {
+                  controller.getVendorBoookingToday();
+                  controller.setSelectedIndex(1);
+                  controller.setPageIndex(1);
+                },
+                isSelected: controller.selectedIndex.value == 1,
+                title: "Today".tr),
+          ),
+          20.0.kW,
+          DashboardContainer(
+            model: DashboardFilterModel(
+                onTap: () {
+                  controller.getVendorBoookingFilterd("Pending");
+                  controller.setSelectedIndex(2);
+                  controller.setPageIndex(2);
+                },
+                isSelected: controller.selectedIndex.value == 2,
+                title: "Waiting".tr),
+          ),
+          20.0.kW,
+          DashboardContainer(
+            model: DashboardFilterModel(
+                onTap: () {
+                  controller.getVendorBoookingFilterd("Upcoming");
+                  controller.setSelectedIndex(3);
+                  controller.setPageIndex(3);
+                },
+                isSelected: controller.selectedIndex.value == 3,
+                title: "Upcoming".tr),
+          ),
+          20.0.kW,
+          DashboardContainer(
+            model: DashboardFilterModel(
+                onTap: () {
+                  controller.setSelectedIndex(4);
+                  controller.getVendorBoookingFilterd("Done");
+                  controller.setPageIndex(4);
+                },
+                isSelected: controller.selectedIndex.value == 4,
+                title: "Done".tr),
+          ),
+          20.0.kW,
+          DashboardContainer(
+            model: DashboardFilterModel(
+                onTap: () {
+                  controller.getVendorBoookingFilterd("Canceled");
+                  controller.setSelectedIndex(5);
+                  controller.setPageIndex(5);
+                },
+                isSelected: controller.selectedIndex.value == 5,
+                title: "Canceled".tr),
+          ),
+          20.0.kW,
+        ],
       ),
     ),
   );

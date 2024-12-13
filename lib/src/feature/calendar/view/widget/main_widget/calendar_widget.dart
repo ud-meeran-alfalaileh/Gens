@@ -26,7 +26,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       backgroundColor: AppTheme.lightAppColors.background,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 90),
+          padding: const EdgeInsets.only(bottom: 90, top: 10),
           child: Obx(() {
             return SfCalendar(
               view: CalendarView.month,

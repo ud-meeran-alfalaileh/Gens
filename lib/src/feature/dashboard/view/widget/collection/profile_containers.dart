@@ -23,11 +23,15 @@ class DashboardContainer extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           color: model.isSelected
-              ? AppTheme.lightAppColors.primary
+              ? model.title == 'Canceled'
+                  ? Colors.red
+                  : AppTheme.lightAppColors.primary
               : AppTheme.lightAppColors.background,
           border: Border.all(
             color: model.isSelected
-                ? AppTheme.lightAppColors.primary
+                ? model.title == 'Canceled'
+                    ? Colors.red
+                    : AppTheme.lightAppColors.primary
                 : AppTheme.lightAppColors.primary,
             width: 1,
           ),

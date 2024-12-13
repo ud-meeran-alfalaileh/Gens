@@ -25,6 +25,7 @@ class EndPoints {
   static const String vendorHistory = '${baseUrl}Booking/vendor';
   static const String getBooking = '${baseUrl}Booking/user/';
   static const String getBookingVendor = '${baseUrl}Booking/vendor/';
+  static const String getBookingToday = '${baseUrl}Booking/today/';
   static const String getvendorServices = '${baseUrl}Service/vendor';
   static const String ediSvendorServices = '${baseUrl}Service';
   static const String getPendingReview = '${baseUrl}Review/pending/user';
@@ -34,6 +35,7 @@ class EndPoints {
   static const String getQuestion = '${baseUrl}Questionnaire';
   static const String postInstruction = '${baseUrl}MedicalPrescription';
   static const String medicalPlan = '${baseUrl}MedicalPlan';
+  static const String patient = '${baseUrl}MedicalPlan';
   static const String userCalender =
       '${baseUrl}UserCalendar/GetUserCalendarDetails/';
 

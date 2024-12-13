@@ -7,6 +7,7 @@ import 'package:gens/src/feature/dashboard/view/widget/text/dashboard_text.dart'
 import 'package:gens/src/feature/doctor_profile/view/widget/text/doctor_text.dart';
 import 'package:gens/src/feature/history/controller/history_controller.dart';
 import 'package:gens/src/feature/history/model/user_waiting_model.dart';
+import 'package:gens/src/feature/vendor_dashboard/view/widget/text/vendor_dashboard_text.dart';
 import 'package:gens/src/feature/waiting_list/view/widget/text/waiting_list_text.dart';
 import 'package:get/get.dart';
 
@@ -49,18 +50,34 @@ class _UserWaitingListWidgetState extends State<UserWaitingListWidget> {
                 (30.0).kW,
               ],
             ),
-            Expanded(
-              child: ListView.separated(
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return _buildHistoryContainer(
-                        controller.waitingList[index], context);
-                  },
-                  separatorBuilder: (context, index) {
-                    return 20.0.kH;
-                  },
-                  itemCount: controller.waitingList.length),
-            )
+            controller.waitingList.isEmpty
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      100.0.kH,
+                      Image.asset(
+                        'assets/image/empty-box.png',
+                        width: 200,
+                      ),
+                      10.0.kH,
+                      VendorDashboardText.emptyText(
+                          "Currently, there are no bookings available for you"
+                              .tr),
+                    ],
+                  )
+                : Expanded(
+                    child: ListView.separated(
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return _buildHistoryContainer(
+                              controller.waitingList[index], context);
+                        },
+                        separatorBuilder: (context, index) {
+                          return 20.0.kH;
+                        },
+                        itemCount: controller.waitingList.length),
+                  )
           ],
         ),
       ),
@@ -131,9 +148,8 @@ class _UserWaitingListWidgetState extends State<UserWaitingListWidget> {
             children: [
               WaitingListText.thirdText("Range Date".tr),
               const Spacer(),
-              WaitingListText.thirdText(history.startDate),
-              WaitingListText.thirdText("To1".tr),
-              WaitingListText.thirdText(history.endDate),
+              WaitingListText.thirdText(
+                  "${history.startDate}\n${history.endDate}"),
             ],
           ),
           20.0.kH,
@@ -141,9 +157,9 @@ class _UserWaitingListWidgetState extends State<UserWaitingListWidget> {
             children: [
               WaitingListText.thirdText("Time Date".tr),
               const Spacer(),
-              WaitingListText.thirdText(history.startTime),
+              WaitingListText.thirdText(history.startTime.substring(0, 5)),
               WaitingListText.thirdText("To1".tr),
-              WaitingListText.thirdText(history.endTime),
+              WaitingListText.thirdText(history.endTime.substring(0, 5)),
             ],
           ),
           const Divider(),

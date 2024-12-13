@@ -20,8 +20,8 @@ class VendorDashboardText {
       style: TextStyle(
         fontFamily: 'Inter',
         fontSize: 27,
-        color: AppTheme.lightAppColors.black,
-        fontWeight: FontWeight.w700, // Use FontWeight.bold for the bold variant
+        color: AppTheme.lightAppColors.background,
+        fontWeight: FontWeight.w500, // Use FontWeight.bold for the bold variant
       ),
     );
   }

@@ -54,8 +54,8 @@ class NavController extends GetxController {
             final dynamic jsonData = json.decode(response.data);
 
             final vendorDetails = jsonData['status'];
-
-            status.value = vendorDetails;
+            print(vendorDetails);
+            status.value = !vendorDetails;
 
             isLoading.value = false;
           } catch (e) {

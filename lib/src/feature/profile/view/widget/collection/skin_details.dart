@@ -8,6 +8,7 @@ import 'package:gens/src/feature/profile/view/widget/text/profile_text.dart';
 import 'package:gens/src/feature/profile/view/widget/text/skin_text.dart';
 import 'package:gens/src/feature/question/controller/add_image_user_controller.dart';
 import 'package:gens/src/feature/question/controller/add_product_controller.dart';
+import 'package:gens/src/feature/question/view/page/question_page.dart';
 import 'package:gens/src/feature/question/view/widget/main_widget/first_qustion_widget.dart';
 import 'package:get/get.dart';
 
@@ -58,9 +59,27 @@ class SkinDetailsPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (isDataIncomplete.isTrue ||
-                    controller.question.value == null)
-                  questionButton(context, gender),
+                // questionButton(context, gender)
+                controller.allSectionStatus.value == false
+                    ? questionButton(context, gender)
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                              onPressed: () {
+                                Get.to(() => QuestionPage(
+                                      gender: controller.userData.value!.gender,
+                                      type: 'notEmpty',
+                                      from: 'edit',
+                                    ));
+                              },
+                              icon: Icon(
+                                Icons.edit_note_outlined,
+                                color: AppTheme.lightAppColors.secondaryColor,
+                                size: 30,
+                              )),
+                        ],
+                      ),
                 if (controller.question.value != null) ...[
                   if (controller.question.value!.skinTypeMorning != "")
                     skinDetailsContainer(
@@ -141,32 +160,37 @@ class SkinDetailsPage extends StatelessWidget {
                           ),
                   10.0.kH,
                   if (productController.message.text != "")
-                    Container(
-                      width: context.screenHeight,
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                              color: AppTheme.lightAppColors.bordercolor),
-                          color: AppTheme.lightAppColors.background,
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Column(
-                        children: [
-                          Container(
-                            width: context.screenWidth * .9,
-                            height: context.screenHeight * .2,
+                    productController.isLoading.value
+                        ? Center(
+                            child: CircularProgressIndicator(
+                            color: AppTheme.lightAppColors.primary,
+                          ))
+                        : Container(
+                            width: context.screenHeight,
+                            padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: FileImage(productController
-                                        .updatedImage.value!))),
+                                border: Border.all(
+                                    color: AppTheme.lightAppColors.bordercolor),
+                                color: AppTheme.lightAppColors.background,
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Column(
+                              children: [
+                                Container(
+                                  width: context.screenWidth * .9,
+                                  height: context.screenHeight * .2,
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: FileImage(productController
+                                              .updatedImage.value!))),
+                                ),
+                                10.0.kH,
+                                SkinText.mainText(
+                                    "Product recently used: ${productController.message.text}"),
+                                10.0.kH,
+                              ],
+                            ),
                           ),
-                          10.0.kH,
-                          SkinText.mainText(
-                              "Product recently used: ${productController.message.text}"),
-                          10.0.kH,
-                        ],
-                      ),
-                    ),
                   10.0.kH,
 
                   imageController.isImageDataIncomplere.value == false
@@ -308,10 +332,10 @@ class SkinDetailsPage extends StatelessWidget {
                                       ),
                                     ],
                                   )
-                                : SizedBox.shrink(),
+                                : const SizedBox.shrink(),
                           ],
                         )
-                      : SizedBox.shrink()
+                      : const SizedBox.shrink()
                 ],
                 150.0.kH,
               ],
@@ -404,47 +428,52 @@ class SkinDetailsPage extends StatelessWidget {
   }
 
   questionButton(BuildContext context, String gender) {
-    return GestureDetector(
-      onTap: () {
-        Get.to(() => FirstQuestionPageView(
-              gender: gender,
-            ));
-      },
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        width: context.screenWidth,
-        height: context.screenHeight * .13,
-        decoration: BoxDecoration(
-            color: AppTheme.lightAppColors.background,
-            borderRadius: BorderRadius.circular(10)),
-        child: Row(
-          children: [
-            Container(
-              width: 5,
-              height: context.screenHeight * .1,
-              decoration: BoxDecoration(
-                  color: AppTheme.lightAppColors.maincolor,
-                  borderRadius: BorderRadius.circular(30)),
-            ),
-            10.0.kW,
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: () {
+            Get.to(() => FirstQuestionPageView(
+                  gender: gender,
+                  from: 'edit',
+                ));
+          },
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            width: context.screenWidth,
+            height: context.screenHeight * .13,
+            decoration: BoxDecoration(
+                color: AppTheme.lightAppColors.background,
+                borderRadius: BorderRadius.circular(10)),
+            child: Row(
               children: [
-                Row(
-                  children: [
-                    SkinText.questionText('Create Profile'.tr),
-                    ProfileText.secText('5 min'.tr),
-                  ],
+                Container(
+                  width: 5,
+                  height: context.screenHeight * .1,
+                  decoration: BoxDecoration(
+                      color: AppTheme.lightAppColors.maincolor,
+                      borderRadius: BorderRadius.circular(30)),
                 ),
-                SkinText.secText(
-                    'To continue building your profile, start Questionnaire.'
-                        .tr)
+                10.0.kW,
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        SkinText.questionText('Create Profile'.tr),
+                        ProfileText.secText('5 min'.tr),
+                      ],
+                    ),
+                    SkinText.secText(
+                        'To continue building your profile, start Questionnaire.'
+                            .tr)
+                  ],
+                )
               ],
-            )
-          ],
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 

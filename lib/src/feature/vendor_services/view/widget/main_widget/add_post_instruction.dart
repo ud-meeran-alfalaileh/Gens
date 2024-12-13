@@ -20,7 +20,7 @@ class AddPostInstructionWidget extends StatelessWidget {
       backgroundColor: AppTheme.lightAppColors.background,
       body: Obx(
         () => controller.isLoading.value
-            ? Container(
+            ? SizedBox(
                 width: context.screenWidth,
                 height: context.screenHeight,
                 child: Center(
@@ -178,18 +178,15 @@ class AddPostInstructionWidget extends StatelessWidget {
                             ),
                             AppButton(
                               onTap: () {
-                                print('object');
-                                if (controller
+                                 if (controller
                                         .postInstructionDays.text.isEmpty ||
                                     !controller.areAllInstructionsFilled()) {
                                   showSnackBar(
                                       "Make sure all fields are filed".tr,
                                       "Error".tr,
                                       Colors.red);
-                                  print('object');
-                                } else {
-                                  print('object');
-                                  controller.addInstruction();
+                                 } else {
+                                   controller.addInstruction();
                                 }
                               },
                               title: "Add Instruction".tr,

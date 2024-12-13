@@ -7,6 +7,7 @@ class DashboardText {
       padding: const EdgeInsets.only(right: 10.0),
       child: Text(
         title,
+        textAlign: TextAlign.center,
         style: TextStyle(
           fontFamily: 'Inter',
           fontSize: 17,

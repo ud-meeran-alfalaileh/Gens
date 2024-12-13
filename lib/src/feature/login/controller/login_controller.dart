@@ -78,18 +78,19 @@ class LoginController extends GetxController {
           final jsonData = json.decode(response.data);
           final type = jsonData['userType'];
           final number = jsonData['phone'];
+          print(response.data);
           print(number.toString());
           if (type == 'User') {
             final token = jsonData['userId'];
             await user.saveId(token);
             user.userId.value = token;
             await loginUser(number.toString());
-            showTopSnackBar(
-              Overlay.of(context),
-              CustomSnackBar.success(
-                message: "loginSuccess".tr,
-              ),
-            );
+            // showTopSnackBar(
+            //   Overlay.of(context),
+            //   CustomSnackBar.success(
+            //     message: "loginSuccess".tr,
+            //   ),
+            // );
             isLoading.value = false;
 
             Get.offAll(const MainAppPage());
@@ -103,12 +104,6 @@ class LoginController extends GetxController {
             await user.saveVendorId(token);
             user.vendorId.value = token;
 
-            showTopSnackBar(
-              Overlay.of(context),
-              CustomSnackBar.success(
-                message: "loginSuccess".tr,
-              ),
-            );
             await loginUser(number.toString());
             isLoading.value = false;
             Get.offAll(const MainAppPage());

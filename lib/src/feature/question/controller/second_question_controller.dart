@@ -5,6 +5,7 @@ import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/profile/controller/profile_controller.dart';
 import 'package:gens/src/feature/question/model/question_model.dart';
+import 'package:gens/src/feature/question/view/widget/main_widget/third_question_page.dart';
 import 'package:gens/src/feature/show_user/controller/show_user_controller.dart';
 import 'package:get/get.dart';
 
@@ -128,16 +129,13 @@ class SecondQuestionController extends GetxController {
   void printFormattedAnswers(gender) {
     final formattedAnswers = formatAnswersForApi(gender);
 
-    print('Formatted Answers:');
-    formattedAnswers.forEach((questionName, answer) {
-      print('$questionName: $answer');
-    });
+     formattedAnswers.forEach((questionName, answer) {
+     });
   }
 
   // Method to format answers for API
   Map<String, dynamic> formatAnswersForApi(String gender) {
-    print("Gender: $gender");
-
+ 
     // Initialize formatted answers with default values
     final formattedAnswers = <String, dynamic>{
       'userId': user.userId.value, // Ensure this is an integer
@@ -194,7 +192,7 @@ class SecondQuestionController extends GetxController {
     selectedAnswers[questionName] = answers;
   }
 
-  Future<void> secQuestionApi(gender) async {
+  Future<void> secQuestionApi(gender, String from) async {
     isloading.value = true;
 
     try {
@@ -206,8 +204,9 @@ class SecondQuestionController extends GetxController {
 
       if (response.statusCode == StatusCode.ok) {
         await profileController.getQuestionDetails();
-        Get.back();
-        Get.back();
+        from == 'Update'
+            ? {Get.back(),}
+            :    Get.off(() => ThirdQuestionPageView(from:from));
       }
       isloading.value = false;
     } catch (e) {

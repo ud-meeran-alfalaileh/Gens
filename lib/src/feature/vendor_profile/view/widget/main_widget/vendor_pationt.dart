@@ -7,6 +7,7 @@ import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/feature/doctor_profile/view/widget/text/doctor_text.dart';
 import 'package:gens/src/feature/profile/view/widget/text/profile_text.dart';
 import 'package:gens/src/feature/vendor_profile/controller/vendor_profile_controller.dart';
+import 'package:gens/src/feature/vendor_profile/view/widget/collection/all_patient_widget.dart';
 import 'package:get/get.dart';
 
 class VendorPationt extends StatefulWidget {
@@ -30,11 +31,17 @@ class _VendorPationtState extends State<VendorPationt> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                doctorRowCircle(
-                    context,
-                    "assets/image/profile-2.svg",
-                    controller.vendor.value.pastBookings.toString(),
-                    "patients".tr),
+                GestureDetector(
+                  onTap: () {
+                    Get.to(() => const AllPatientWidget(),
+                        transition: Transition.downToUp);
+                  },
+                  child: doctorRowCircle(
+                      context,
+                      "assets/image/profile-2.svg",
+                      controller.vendor.value.pastBookings.toString(),
+                      "patients".tr),
+                ),
                 doctorRowCircle(
                     context,
                     "assets/image/review.svg",

@@ -80,63 +80,63 @@ class UpdateProfile extends StatelessWidget {
                 ),
               ),
               (15.5).kH,
-              Center(
-                child: DropdownButtonFormField<String>(
-                  value: controller.selectedGender.value,
-                  hint: Text('Select a Gender'.tr),
-                  items: controller.genderOptions.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(
-                        value,
-                        style: const TextStyle(
-                          fontFamily: "Inter",
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black,
-                          fontSize: 14,
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {
-                    controller.selectedGender.value = newValue!;
-                  },
-                  iconEnabledColor: AppTheme.lightAppColors.primary,
-                  icon: const Icon(
-                    Icons.arrow_drop_down,
-                  ),
-                  focusColor: Colors.black,
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.person_2_outlined,
-                        color: AppTheme.lightAppColors.primary),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: AppTheme.lightAppColors.primary,
-                      ),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: AppTheme.lightAppColors.primary,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: AppTheme.lightAppColors.primary,
-                      ),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                  ),
-                  style: const TextStyle(
-                    fontSize: 16.0,
-                    color: Colors.black,
-                  ),
-                  dropdownColor: Colors.white,
-                ),
-              ),
-              10.0.kH,
+              // Center(
+              //   child: DropdownButtonFormField<String>(
+              //     value: controller.selectedGender.value,
+              //     hint: Text('Select a Gender'.tr),
+              //     items: controller.genderOptions.map((String value) {
+              //       return DropdownMenuItem<String>(
+              //         value: value,
+              //         child: Text(
+              //           value,
+              //           style: const TextStyle(
+              //             fontFamily: "Inter",
+              //             fontWeight: FontWeight.w400,
+              //             color: Colors.black,
+              //             fontSize: 14,
+              //           ),
+              //         ),
+              //       );
+              //     }).toList(),
+              //     onChanged: (newValue) {
+              //       controller.selectedGender.value = newValue!;
+              //     },
+              //     iconEnabledColor: AppTheme.lightAppColors.primary,
+              //     icon: const Icon(
+              //       Icons.arrow_drop_down,
+              //     ),
+              //     focusColor: Colors.black,
+              //     decoration: InputDecoration(
+              //       prefixIcon: Icon(Icons.person_2_outlined,
+              //           color: AppTheme.lightAppColors.primary),
+              //       border: OutlineInputBorder(
+              //         borderSide: BorderSide(
+              //           color: AppTheme.lightAppColors.primary,
+              //         ),
+              //         borderRadius: BorderRadius.circular(5.0),
+              //       ),
+              //       focusedBorder: OutlineInputBorder(
+              //         borderSide: BorderSide(
+              //           color: AppTheme.lightAppColors.primary,
+              //           width: 1.0,
+              //         ),
+              //         borderRadius: BorderRadius.circular(5.0),
+              //       ),
+              //       enabledBorder: OutlineInputBorder(
+              //         borderSide: BorderSide(
+              //           color: AppTheme.lightAppColors.primary,
+              //         ),
+              //         borderRadius: BorderRadius.circular(5.0),
+              //       ),
+              //     ),
+              //     style: const TextStyle(
+              //       fontSize: 16.0,
+              //       color: Colors.black,
+              //     ),
+              //     dropdownColor: Colors.white,
+              //   ),
+              // ),
+              // 10.0.kH,
               AppButton(
                   onTap: () {
                     controller.updateUser(context);

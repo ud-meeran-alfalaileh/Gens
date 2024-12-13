@@ -3,6 +3,7 @@ import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/feature/doctor_profile/view/widget/text/doctor_text.dart';
+import 'package:gens/src/feature/show_user/view/page/show_user_page.dart';
 import 'package:gens/src/feature/vendor_dashboard/controller/vendor_dashboard_controoler.dart';
 import 'package:gens/src/feature/vendor_dashboard/view/widget/text/vendor_dashboard_text.dart';
 import 'package:gens/src/feature/waiting_list/model/waiting_list_model.dart';
@@ -29,8 +30,10 @@ class _VendorWaitingListWidgetState extends State<VendorWaitingListWidget> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      bottom: false,
       child: Column(
         children: [
+          20.0.kH,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -73,113 +76,124 @@ class _VendorWaitingListWidgetState extends State<VendorWaitingListWidget> {
                             context, controller, index);
                       },
                       separatorBuilder: (context, index) {
-                        return 20.0.kH;
+                        return 10.0.kH;
                       },
                       itemCount: controller.waitingList.length),
-                )
+                ),
+          // 20.0.kH,
         ],
       ),
     );
   }
 
-  Container _buildWaitingListContainer(
+  _buildWaitingListContainer(
       BuildContext context, VendorDashboardController controller, int index) {
     RxBool statusUpadating = false.obs;
-    return Container(
-      padding: const EdgeInsets.all(15),
-      width: context.screenWidth,
-      decoration: BoxDecoration(
-          border: Border.all(color: AppTheme.lightAppColors.maincolor),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: AppTheme.lightAppColors.black.withOpacity(0.1),
-              spreadRadius: 1.5,
-              blurRadius: 10,
-              offset: const Offset(0, 1),
+    return GestureDetector(
+      onTap: () {
+        Get.to(() => ShowUserPage(
+              id: controller.waitingList[index].userId,
+            ));
+      },
+      child: Container(
+        padding: const EdgeInsets.all(15),
+        margin: const EdgeInsets.all(10),
+        width: context.screenWidth,
+        decoration: BoxDecoration(
+            border: Border.all(color: AppTheme.lightAppColors.maincolor),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: AppTheme.lightAppColors.black.withOpacity(0.1),
+                spreadRadius: 1.5,
+                blurRadius: 10,
+                offset: const Offset(0, 1),
+              ),
+            ],
+            color: AppTheme.lightAppColors.background),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                WaitingListText.mainText(
+                    controller.waitingList[index].userName),
+                const Spacer(),
+                IconButton(
+                    onPressed: () {
+                      controller.makePhoneCall(
+                          controller.waitingList[index].userPhoneNumber);
+                    },
+                    icon: Icon(
+                      Icons.phone,
+                      color: AppTheme.lightAppColors.primary,
+                    )),
+              ],
             ),
-          ],
-          color: AppTheme.lightAppColors.background),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              WaitingListText.mainText(controller.waitingList[index].userName),
-              const Spacer(),
-              IconButton(
-                  onPressed: () {
-                    controller.makePhoneCall(
-                        controller.waitingList[index].userPhoneNumber);
-                  },
-                  icon: Icon(
-                    Icons.phone,
-                    color: AppTheme.lightAppColors.primary,
-                  )),
-            ],
-          ),
-          const Divider(),
-          Row(
-            children: [
-              WaitingListText.thirdText("Range Date".tr),
-              const Spacer(),
-              WaitingListText.thirdText(
-                  controller.waitingList[index].startDate),
-              WaitingListText.thirdText("To1".tr),
-              WaitingListText.thirdText(controller.waitingList[index].endDate),
-            ],
-          ),
-          10.0.kH,
-          Row(
-            children: [
-              WaitingListText.thirdText("Time Date".tr),
-              const Spacer(),
-              WaitingListText.thirdText(
-                  controller.waitingList[index].startTime),
-              WaitingListText.thirdText("To1".tr),
-              Text(controller.waitingList[index].endTime),
-            ],
-          ),
-          10.0.kH,
-          Obx(
-            () => statusUpadating.value
-                ? SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        color: AppTheme.lightAppColors.primary,
+            const Divider(),
+            Row(
+              children: [
+                WaitingListText.thirdText("Range Date".tr),
+                const Spacer(),
+                WaitingListText.thirdText(
+                    controller.waitingList[index].startDate +
+                        "\n" +
+                        controller.waitingList[index].endDate),
+              ],
+            ),
+            10.0.kH,
+            Row(
+              children: [
+                WaitingListText.thirdText("Time Date".tr),
+                const Spacer(),
+                WaitingListText.thirdText(
+                    controller.waitingList[index].startTime.substring(0, 5)),
+                WaitingListText.thirdText("To1".tr),
+                Text(controller.waitingList[index].endTime.substring(0, 5)),
+              ],
+            ),
+            10.0.kH,
+            Obx(
+              () => statusUpadating.value
+                  ? SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: AppTheme.lightAppColors.primary,
+                        ),
                       ),
-                    ),
-                  )
-                : controller.waitingList[index].status == "Accept"
-                    ? Text('Done'.tr)
-                    : controller.waitingList[index].status == "Reject"
-                        ? Text('Reject'.tr)
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              statusWidget(
-                                controller.waitingList[index],
-                                statusUpadating,
-                                context,
-                                'Accept',
-                                'Accept'.tr,
-                                controller.waitingList[index].userPhoneNumber,
-                                controller,
-                              ),
-                              10.0.kW,
-                              statusWidget(
+                    )
+                  : controller.waitingList[index].status == "Accept"
+                      ? Text('Done'.tr)
+                      : controller.waitingList[index].status == "Reject"
+                          ? Text('Reject'.tr)
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                statusWidget(
                                   controller.waitingList[index],
                                   statusUpadating,
                                   context,
-                                  'Reject',
-                                  'Reject'.tr,
+                                  'Accept',
+                                  'Accept'.tr,
                                   controller.waitingList[index].userPhoneNumber,
-                                  controller)
-                            ],
-                          ),
-          )
-        ],
+                                  controller,
+                                ),
+                                10.0.kW,
+                                statusWidget(
+                                    controller.waitingList[index],
+                                    statusUpadating,
+                                    context,
+                                    'Reject',
+                                    'Reject'.tr,
+                                    controller
+                                        .waitingList[index].userPhoneNumber,
+                                    controller)
+                              ],
+                            ),
+            )
+          ],
+        ),
       ),
     );
   }

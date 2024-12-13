@@ -5,9 +5,10 @@ import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/profile/controller/profile_controller.dart';
 import 'package:gens/src/feature/question/model/question_model.dart';
+import 'package:gens/src/feature/question/view/widget/main_widget/fourth_question_page.dart';
 import 'package:gens/src/feature/show_user/controller/show_user_controller.dart';
 import 'package:get/get.dart';
- 
+
 class ThirdQuestionController extends GetxController {
   final profileController = Get.put(ProfileController());
   RxBool isloading = false.obs;
@@ -164,7 +165,7 @@ class ThirdQuestionController extends GetxController {
     selectedAnswers[questionName] = answers;
   }
 
-  Future<void> thirdQuestionApi() async {
+  Future<void> thirdQuestionApi(from) async {
     isloading.value = true;
 
     try {
@@ -172,14 +173,13 @@ class ThirdQuestionController extends GetxController {
       print('Formatted Answers: $formattedAnswers'); // Debug print
 
       final body = jsonEncode(formattedAnswers);
-      final response = await dioConsumer.post( EndPoints.thirdPage,
-          body: body);
+      final response = await dioConsumer.post(EndPoints.thirdPage, body: body);
 
-      
       if (response.statusCode == StatusCode.ok) {
         await profileController.getQuestionDetails();
-        Get.back();
-        Get.back();
+        from == 'Update'
+            ? {Get.back()}
+            : Get.off(() => FourthQuestionPageView(from: from));
       }
       isloading.value = false;
     } catch (e) {

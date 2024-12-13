@@ -122,7 +122,7 @@ Container pendingReviewContainer(
                       ? Container(
                           width: 50,
                           height: 50,
-                          padding: const EdgeInsets.all(28.0),
+                          padding: const EdgeInsets.all(15.0),
                           child: CircularProgressIndicator(
                             color: AppTheme.lightAppColors.primary,
                           ),
@@ -173,7 +173,10 @@ Container pendingReviewContainer(
                           title: "title",
                           message: "message",
                           imageURL: "imageURL",
-                          externalIds: "externalIds"));
+                          externalIds: "externalIds", route: '')
+                          
+                          
+                          );
                 },
                 title: 'Submit'.tr,
               ),
@@ -279,7 +282,7 @@ Container absentReviewContainer(
                                 title: 'title',
                                 message: 'message',
                                 imageURL: 'imageURL',
-                                externalIds: "externalIds"));
+                                externalIds: "externalIds", route: ''));
                       },
                       title: 'Yes'.tr,
                     ),
@@ -338,7 +341,7 @@ Container absentReviewContainer(
                                     title: "title",
                                     message: "message",
                                     imageURL: "imageURL",
-                                    externalIds: "externalIds"));
+                                    externalIds: "externalIds", route: ''));
                           },
                           title: 'Attended'.tr,
                         ),
@@ -354,7 +357,7 @@ Container absentReviewContainer(
                                     title: "title",
                                     message: "message",
                                     imageURL: "imageURL",
-                                    externalIds: ''));
+                                    externalIds: '', route: ''));
                           },
                           title: 'Submit'.tr,
                         ),

@@ -6,14 +6,17 @@ import 'package:gens/src/config/sizes/short_text.dart';
 import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
+import 'package:gens/src/core/utils/app_button.dart';
 import 'package:gens/src/core/utils/loading_page.dart';
 import 'package:gens/src/feature/doctor_profile/model/doctor_model.dart';
 import 'package:gens/src/feature/profile/view/widget/collection/vendor_profile_row.dart';
+import 'package:gens/src/feature/profile/view/widget/text/profile_text.dart';
 import 'package:gens/src/feature/vendor_history/view/page/vendor_history_page.dart';
 import 'package:gens/src/feature/vendor_profile/controller/vendor_profile_controller.dart';
 import 'package:gens/src/feature/vendor_profile/view/widget/main_widget/vendor_pationt.dart';
 import 'package:gens/src/feature/vendor_profile/view/widget/main_widget/vendor_update_profile.dart';
 import 'package:gens/src/feature/vendor_profile/view/widget/text/vendor_profile_text.dart';
+import 'package:gens/src/feature/vendor_services/view/page/vendor_service.dart';
 import 'package:get/get.dart';
 
 class VendorProfileWidget extends StatefulWidget {
@@ -32,7 +35,7 @@ class _VendorProfileWidgetState extends State<VendorProfileWidget> {
     languageController = Get.put(LocalizationController());
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.getVendorsById();
+      // controller.getVendorsById();
       initail();
     });
     super.initState();
@@ -68,6 +71,7 @@ class _VendorProfileWidgetState extends State<VendorProfileWidget> {
                           switch (controller.selectedIndex.value) {
                             case 0:
                               return const VendorUpdateProfile();
+
                             case 1:
                               return const SizedBox(
                                   height: 20, child: VendorPationt());
@@ -147,7 +151,7 @@ class _VendorProfileWidgetState extends State<VendorProfileWidget> {
                         const Spacer(),
                         SvgPicture.asset(
                           "assets/image/ratingStar.svg",
-                          color: AppTheme.lightAppColors.secondaryColor,
+                          // color: AppTheme.lightAppColors.secondaryColor,
                           height: 16,
                         ),
                         const SizedBox(width: 5),
@@ -166,59 +170,79 @@ class _VendorProfileWidgetState extends State<VendorProfileWidget> {
           ),
         ),
 
-        GestureDetector(
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  backgroundColor: AppTheme.lightAppColors.background,
-                  title: Text("Select Language".tr),
-                  content: Text("Choose a language for your Application.".tr),
-                  actions: <Widget>[
-                    TextButton(
-                      onPressed: () {
-                        languageController
-                            .updateLanguage(Languages.locale[1]['locale']);
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            GestureDetector(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      backgroundColor: AppTheme.lightAppColors.background,
+                      title: Text("Select Language".tr),
+                      content:
+                          Text("Choose a language for your Application.".tr),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            languageController
+                                .updateLanguage(Languages.locale[1]['locale']);
 
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(
-                        "Arabic".tr,
-                        style: TextStyle(color: AppTheme.lightAppColors.black),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        languageController
-                            .updateLanguage(Languages.locale[0]['locale']);
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(
-                        "English".tr,
-                        style: TextStyle(color: AppTheme.lightAppColors.black),
-                      ),
-                    )
-                  ],
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(
+                            "Arabic".tr,
+                            style:
+                                TextStyle(color: AppTheme.lightAppColors.black),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            languageController
+                                .updateLanguage(Languages.locale[0]['locale']);
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(
+                            "English".tr,
+                            style:
+                                TextStyle(color: AppTheme.lightAppColors.black),
+                          ),
+                        )
+                      ],
+                    );
+                  },
                 );
               },
-            );
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                CircleAvatar(
+              child: CircleAvatar(
+                backgroundColor: AppTheme.lightAppColors.background,
+                child: Image.asset(
+                  "assets/image/settings.png",
+                  height: 25,
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return _buildLogoutDialog(context);
+                  },
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: CircleAvatar(
                   backgroundColor: AppTheme.lightAppColors.background,
                   child: Image.asset(
-                    "assets/image/settings.png",
+                    "assets/image/out.png",
                     height: 25,
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
         )
       ],
     );
@@ -239,6 +263,14 @@ class _VendorProfileWidgetState extends State<VendorProfileWidget> {
             ),
             VendorProfileRow(
               onTap: () {
+                Get.to(const VendorServicePage(),
+                    transition: Transition.downToUp);
+              },
+              isSelected: controller.selectedIndex.value == 2,
+              title: 'My Services'.tr,
+            ),
+            VendorProfileRow(
+              onTap: () {
                 controller.setSelectedIndex(1);
               },
               isSelected: controller.selectedIndex.value == 1,
@@ -252,16 +284,48 @@ class _VendorProfileWidgetState extends State<VendorProfileWidget> {
               isSelected: controller.selectedIndex.value == 2,
               title: 'history'.tr,
             ),
-            VendorProfileRow(
-              onTap: () {
-                controller.logout();
-              },
-              isSelected: controller.selectedIndex.value == 3,
-              title: 'logout'.tr,
-            ),
+
+            // VendorProfileRow(
+            //   onTap: () {
+            //     showDialog(
+            //       context: context,
+            //       builder: (BuildContext context) {
+            //         return _buildLogoutDialog(context);
+            //       },
+            //     );
+            //   },
+            //   isSelected: controller.selectedIndex.value == 3,
+            //   title: 'logout'.tr,
+            // ),
           ],
         ),
       ),
+    );
+  }
+
+  AlertDialog _buildLogoutDialog(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: AppTheme.lightAppColors.background,
+      title: ProfileText.mainText("Confirmation".tr),
+      content: ProfileText.secText("Are you sure you want to log out?".tr),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(); // Close the dialog
+          },
+          child: ProfileText.mainText("Cancel".tr),
+        ),
+        SizedBox(
+          width: context.screenWidth * .3,
+          child: AppButton(
+            onTap: () {
+              Navigator.of(context).pop(); // Close the dialog
+              controller.logout(context); // Call the logout function
+            },
+            title: "logout".tr,
+          ),
+        ),
+      ],
     );
   }
 

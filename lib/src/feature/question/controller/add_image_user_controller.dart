@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:gens/src/core/api/api_services.dart';
 import 'package:gens/src/core/api/injection_container.dart';
 import 'package:gens/src/core/user.dart';
@@ -33,6 +34,7 @@ class AddImageUserController extends GetxController {
   // Pick an image and store it in the specific index (0, 1, 2)
   Future<void> pickImage(int index) async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    
     if (pickedFile != null) {
       updatedImages[index] = File(pickedFile.path);
     }
@@ -178,20 +180,20 @@ class AddImageUserController extends GetxController {
         imageUrls[0] = responseData['userImage1'] ?? '';
         imageUrls[1] = responseData['userImage2'] ?? '';
         imageUrls[2] = responseData['userImage3'] ?? '';
-        print("{jjjjjj ${imageUrls[2]}}");
-        print("{kk ${imageUrls[1]}}");
-        print("{ll ${imageUrls[0]}}");
+      
         isImageDataIncomplere.value =
             imageUrls[0].isEmpty || imageUrls[0] == '' ? true : false;
-        print(isImageDataIncomplere.value);
+ 
         isLoading.value = false;
       } else {
-        print('The image is empty');
+ 
         isLoading.value = false;
         isImageDataIncomplere.value = true;
       }
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
       isLoading.value = false;
     }
   }

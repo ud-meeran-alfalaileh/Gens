@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:gens/src/core/api/api_services.dart';
@@ -26,7 +27,6 @@ class VendorDashboardController extends GetxController {
   RxList<VendorBooking> vendorBooking = <VendorBooking>[].obs;
   RxList<VendorBooking> allVendorBooking = <VendorBooking>[].obs;
   RxList<VendorBooking> todayVendorBooking = <VendorBooking>[].obs;
-  RxList<VendorBooking> filteredBooking = <VendorBooking>[].obs;
   final DioConsumer dioConsumer = sl<DioConsumer>();
   RxList<WaitingListModel> waitingList = <WaitingListModel>[].obs;
   User user = User();
@@ -53,44 +53,15 @@ class VendorDashboardController extends GetxController {
 // Inside your controller
   void setPageIndex(int index) {
     currentPageIndex.value = index;
-    pageController.animateToPage(
-      index,
-      duration: Duration(milliseconds: 300), // adjust duration as needed
-      curve: Curves.easeInOut, // adjust curve as needed
-    );
+    currentPageIndex.value = index;
   }
 
   @override
   Future<void> onInit() async {
     await user.loadToken();
     await getWaitingList();
+    // getVendorBoooking();
     super.onInit();
-  }
-
-  void filterBooking(String query) {
-    if (query == '') {
-      isFilterd.value = false;
-      todaycontainer.value = false;
-    } else if (query == 'Today') {
-      isFilterd.value = true;
-
-      filteredBooking.value = todayVendorBooking;
-      todaycontainer.value = true;
-    } else {
-      isFilterd.value = true;
-      todaycontainer.value = false;
-
-      filteredBooking.value = allVendorBooking
-          .where((vendor) => vendor.status.contains(query))
-          .toList();
-      for (var xx in allVendorBooking) {
-        print(xx.endTime);
-        print("xx.endTime");
-      }
-      print(allVendorBooking.length);
-      print(filteredBooking.length);
-      print(query);
-    }
   }
 
   Future<void> makePhoneCall(String phoneNumber) async {
@@ -98,14 +69,17 @@ class VendorDashboardController extends GetxController {
     await FlutterPhoneDirectCaller.callNumber(number);
   }
 
-  Future<void> getVendorBoooking(context) async {
+  Future<void> getVendorBoooking() async {
+    isLaoding.value = true;
+
     vendorBooking.clear();
+    allVendorBooking.clear();
     todayVendorBooking.clear();
     if (await networkInfo.isConnected) {
-      isLaoding.value = true;
       try {
         final response = await dioConsumer
             .get("${EndPoints.getBookingVendor}${user.vendorId.value}/details");
+        print(response.data);
         if (response.statusCode == StatusCode.ok) {
           final List<dynamic> jsonData = json.decode(response.data);
 
@@ -113,8 +87,11 @@ class VendorDashboardController extends GetxController {
               jsonData.map((json) => VendorBooking.fromJson(json)).toList();
 
           allVendorBooking.value = servicesData;
+          print(allVendorBooking.length);
           for (var xx in allVendorBooking) {
             if (xx.date == getFormattedTodayDate()) {
+              print(xx.id);
+
               todayVendorBooking.add(xx);
             } else {
               vendorBooking.add(xx);
@@ -137,6 +114,77 @@ class VendorDashboardController extends GetxController {
     }
   }
 
+  Future<void> getVendorBoookingToday() async {
+    allVendorBooking.clear();
+    todayVendorBooking.clear();
+    if (await networkInfo.isConnected) {
+      isLaoding.value = true;
+      try {
+        final response = await dioConsumer
+            .get("${EndPoints.getBookingToday}${user.vendorId.value}");
+        print(response.data);
+        if (response.statusCode == StatusCode.ok) {
+          final List<dynamic> jsonData = json.decode(response.data);
+// todaycontainer.value = true
+          todayVendorBooking.value =
+              jsonData.map((json) => VendorBooking.fromJson(json)).toList();
+          print('todayVendorBooking.length');
+          print(todayVendorBooking.length);
+          isLaoding.value = false;
+        } else {
+          vendorBooking.value = [];
+          isLaoding.value = false;
+        }
+      } catch (e) {
+        print(e);
+        isLaoding.value = false;
+      }
+    } else {
+      Get.snackbar(
+        "No Internet Connection",
+        "Please check your network settings",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  Future<void> getVendorBoookingFilterd(status) async {
+    allVendorBooking.clear();
+    todayVendorBooking.clear();
+    if (await networkInfo.isConnected) {
+      isLaoding.value = true;
+      try {
+        final response = await dioConsumer.get(
+            "${EndPoints.getBookingVendor}${user.vendorId.value}/$status/details");
+        print(response.data);
+        if (response.statusCode == StatusCode.ok) {
+          final List<dynamic> jsonData = json.decode(response.data);
+
+          List<VendorBooking> servicesData =
+              jsonData.map((json) => VendorBooking.fromJson(json)).toList();
+
+          allVendorBooking.value = servicesData;
+          print(allVendorBooking.length);
+
+          isLaoding.value = false;
+        } else {
+          vendorBooking.value = [];
+          isLaoding.value = false;
+        }
+      } catch (e) {
+        print("Errror");
+        print(e);
+        isLaoding.value = false;
+      }
+    } else {
+      Get.snackbar(
+        "No Internet Connection",
+        "Please check your network settings",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
   Future<void> updateBookingStatus(
       String status,
       int serviceId,
@@ -144,7 +192,6 @@ class VendorDashboardController extends GetxController {
       RxBool statusUpadating,
       bool removeFromSchulde,
       externalId) async {
-    print(status);
     if (await networkInfo.isConnected) {
       try {
         statusUpadating.value = true;
@@ -176,6 +223,7 @@ class VendorDashboardController extends GetxController {
           statusUpadating.value = false;
         }
       } catch (e) {
+        print("Notofication $e");
         statusUpadating.value = false;
       }
     }
@@ -188,21 +236,24 @@ class VendorDashboardController extends GetxController {
           message:
               "Your appointment has been successfully completed. We hope the service met your expectations. Thank you!",
           imageURL: "",
-          externalIds: externalId));
+          externalIds: externalId,
+          route: 'NavBarPage'));
     }
     if (status == "Upcoming") {
       notificationController.sendNotification(NotificationModel(
           title: "Appointment Approved",
           message: "Your appointment has been successfully approved.",
           imageURL: '',
-          externalIds: externalId));
+          externalIds: externalId,
+          route: 'NavBarPage'));
     }
     if (status == "Absent") {
       notificationController.sendNotification(NotificationModel(
           title: "Appointment Marked as Absent",
           message: "You were marked as absent for your scheduled appointment.",
           imageURL: '',
-          externalIds: externalId));
+          externalIds: externalId,
+          route: 'NavBarPage'));
     }
     if (status == "Rejected") {
       notificationController.sendNotification(NotificationModel(
@@ -210,7 +261,8 @@ class VendorDashboardController extends GetxController {
           message:
               "Unfortunately, your appointment request has been rejected. ",
           imageURL: '',
-          externalIds: externalId));
+          externalIds: externalId,
+          route: 'NavBarPage'));
     }
   }
 
@@ -235,13 +287,6 @@ class VendorDashboardController extends GetxController {
       allVendorBooking[allIndex] = updatedBooking;
       allVendorBooking.refresh(); // Refresh the list to update the UI
     }
-    int fillterBook = filteredBooking
-        .indexWhere((booking) => booking.id == updatedBooking.id);
-    if (fillterBook != -1) {
-      filteredBooking[allIndex] = updatedBooking;
-      print(updatedBooking.status);
-      filteredBooking.refresh(); // Refresh the list to update the UI
-    }
   }
 
   void updateWaitingInList(WaitingListModel updatedWaiting) {
@@ -259,20 +304,20 @@ class VendorDashboardController extends GetxController {
     try {
       final response = await dioConsumer
           .get("${EndPoints.addWaitingList}/vendor/${user.vendorId}");
-      print(response.statusCode);
-      print(response.data);
+
       if (response.statusCode == StatusCode.ok) {
         final List<dynamic> jsonData = json.decode(response.data);
 
         List<WaitingListModel> waitingData =
             jsonData.map((json) => WaitingListModel.fromJson(json)).toList();
         waitingList.value = waitingData;
-        print("Waining time${waitingList.length}");
       } else {
         waitingList.value = [];
       }
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
   }
 
@@ -295,8 +340,7 @@ class VendorDashboardController extends GetxController {
           },
           body: body,
         );
-        print(response.statusCode);
-        print(response.body);
+
         if (response.statusCode == StatusCode.ok) {
           if (status == "Accept") {
             notificationController.sendNotification(NotificationModel(
@@ -304,7 +348,8 @@ class VendorDashboardController extends GetxController {
                 message:
                     "Good news! Your request from the waiting list has been accepted. You are now scheduled for an appointment. Please check the details and confirm your availability.",
                 imageURL: "",
-                externalIds: userPhone));
+                externalIds: userPhone,
+                route: 'waiting'));
           }
           if (status == "Reject") {
             notificationController.sendNotification(NotificationModel(
@@ -312,7 +357,8 @@ class VendorDashboardController extends GetxController {
                 message:
                     "Unfortunately, your request from the waiting list could not be accommodated at this time. Please try again or contact us for further assistance.",
                 imageURL: "",
-                externalIds: userPhone));
+                externalIds: userPhone,
+                route: 'waiting'));
           }
           final updatedBooking = WaitingListModel(
             status: status.replaceAll('"', status),
@@ -333,7 +379,6 @@ class VendorDashboardController extends GetxController {
           statusUpadating.value = false;
         }
       } catch (e) {
-        print(e);
         statusUpadating.value = false;
       }
     }
@@ -346,7 +391,7 @@ class VendorDashboardController extends GetxController {
         note,
       );
 
-      final response = await http.put(
+      await http.put(
         Uri.parse(
             'https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/Booking/update-note/${booking.id}'),
         body: body,
@@ -356,8 +401,7 @@ class VendorDashboardController extends GetxController {
         },
       );
       noteSended.value = true;
-      print(response.body);
-      print(response.statusCode);
+
       final updatedBooking = VendorBooking(
           status: "Done",
           userName: booking.userName,
@@ -376,8 +420,7 @@ class VendorDashboardController extends GetxController {
       updateBookingInList(updatedBooking);
       statusUpadating.value = false;
       noteMessage.clear();
-    } catch (e) {
-      print(e);
-    }
+      // ignore: empty_catches
+    } catch (e) {}
   }
 }

@@ -86,7 +86,7 @@ class RegisterPageFour extends StatelessWidget {
                                           color: isSelected
                                               ? AppTheme.lightAppColors.primary
                                               : AppTheme
-                                                  .lightAppColors.background,
+                                                  .lightAppColors.maincolor,
                                           border: Border.all(
                                             color: isSelected
                                                 ? AppTheme

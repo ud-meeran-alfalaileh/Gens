@@ -7,7 +7,8 @@ import 'package:gens/src/feature/question/controller/first_question_controller.d
 import 'package:get/get.dart';
 
 class ResultsPage extends StatelessWidget {
-  const ResultsPage({super.key, required this.gender});
+  const ResultsPage({super.key, required this.gender, required this.from});
+  final String from;
   final String gender;
 
   @override
@@ -129,7 +130,7 @@ class ResultsPage extends StatelessWidget {
                       20.0.kH,
                       AppButton(
                           onTap: () {
-                            controller.firstQuestionApi(gender);
+                            controller.firstQuestionApi(gender,from);
                           },
                           title: "Next")
                     ],

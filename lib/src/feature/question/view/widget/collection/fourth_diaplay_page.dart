@@ -7,7 +7,8 @@ import 'package:gens/src/feature/question/controller/fourth_question_question_co
 import 'package:get/get.dart';
 
 class FourthDisplayPage extends StatelessWidget {
-  const FourthDisplayPage({super.key});
+  const FourthDisplayPage({super.key,required this.from});
+  final String from;
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +126,7 @@ class FourthDisplayPage extends StatelessWidget {
                       20.0.kH,
                       AppButton(
                           onTap: () {
-                            controller.fourthQuestionApi();
+                            controller.fourthQuestionApi(from);
                           },
                           title: "Next")
                     ],

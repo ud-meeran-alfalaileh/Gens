@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:gens/src/core/api/api_services.dart';
 import 'package:gens/src/core/api/end_points.dart';
 import 'package:gens/src/core/api/injection_container.dart';
@@ -11,7 +13,7 @@ import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/core/utils/snack_bar.dart';
 import 'package:gens/src/feature/doctor_profile/model/doctor_model.dart';
-import 'package:gens/src/feature/login/view/pages/login_page.dart';
+import 'package:gens/src/feature/vendor_profile/model/patients_model.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -22,6 +24,7 @@ import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class VendorProfileController extends GetxController {
+  // final searchController = TextEditingController();
   final NetworkInfo networkInfo =
       NetworkInfoImpl(connectionChecker: InternetConnectionChecker());
   final name = TextEditingController();
@@ -32,6 +35,7 @@ class VendorProfileController extends GetxController {
   final location = TextEditingController();
   RxInt selectedIndex = 0.obs;
   final DioConsumer dioConsumer = sl<DioConsumer>();
+  RxList<PatientsModel> patient = <PatientsModel>[].obs;
 
   final image = TextEditingController();
   Rx<DoctorModelById> vendor = DoctorModelById(
@@ -119,7 +123,9 @@ class VendorProfileController extends GetxController {
         }
         isLoading.value = false;
       } catch (e) {
-        print(e);
+        if (kDebugMode) {
+          print(e);
+        }
       }
     } else {
       Get.snackbar(
@@ -130,11 +136,11 @@ class VendorProfileController extends GetxController {
     }
   }
 
-  void logout() async {
+  void logout(context) async {
     await user.clearVendorId();
     OneSignal.logout();
 
-    Get.offAll(() => const LoginPage());
+    Phoenix.rebirth(context);
   }
 
   Future<void> updateUser(context) async {
@@ -183,85 +189,36 @@ class VendorProfileController extends GetxController {
     }
   }
 
-  // final ImagePicker _picker = ImagePicker();
+  RxList<PatientsModel> filteredPatients = <PatientsModel>[].obs;
+  Future<void> getVendorPatient() async {
+    try {
+      final response = await dioConsumer
+          .get("${EndPoints.getBookingVendor}${user.vendorId}/patients");
+      print(response.data);
+      if (response.statusCode == StatusCode.ok) {
+        final responseData = jsonDecode(response.data);
+        patient.value = PatientsModel.fromJsonList(responseData);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
-  // Future<void> pickImage(int index) async {
-  //   final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-  //   if (pickedFile != null) {
-  //     updatedImages[index] = File(pickedFile.path);
+  Future<void> makePhoneCall(String phoneNumber) async {
+    var number = phoneNumber; //set the number here
+    await FlutterPhoneDirectCaller.callNumber(number);
+  }
+
+  // void filterPatients(searchController) {
+  //   final query = searchController.toLowerCase();
+  //   if (query.isEmpty) {
+  //     filteredPatients.value = patient; // Show all patients
+  //   } else {
+  //     filteredPatients.value = patient.where((p) {
+  //       final name = p.userFName.toLowerCase();
+  //       final phone = p.phoneNumber.toLowerCase();
+  //       return name.contains(query) || phone.contains(query);
+  //     }).toList();
   //   }
-  // }
-
-  // Future<void> saveImagesToApi() async {
-  //   isLoading.value = true;
-
-  //   List<String> newImageUrls = [];
-
-  //   for (int i = 0; i < imageUrls.length; i++) {
-  //     if (updatedImages[i] != null) {
-  //       // Upload the image to Firebase and get the download URL
-  //       String downloadUrl = await _uploadImageToFirebase(updatedImages[i]!);
-  //       newImageUrls.add(downloadUrl);
-  //       print(downloadUrl);
-  //     } else {
-  //       print(imageUrls[i]);
-  //       newImageUrls.add(imageUrls[i]);
-  //     }
-  //   }
-
-  //   imageUrls.value = newImageUrls;
-
-  //   // Call the API with the new image URLs
-  //   await sendImagesToApi(imageUrls);
-  // }
-
-  // Future<String> _uploadImageToFirebase(File image) async {
-  //   try {
-  //     String fileName = basename(image.path);
-  //     Reference storageRef =
-  //         FirebaseStorage.instance.ref().child('uploads/$fileName');
-
-  //     UploadTask uploadTask = storageRef.putFile(image);
-  //     TaskSnapshot taskSnapshot = await uploadTask;
-
-  //     String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-  //     return downloadUrl;
-  //   } catch (e) {
-  //     print("Error uploading image: $e");
-  //     throw Exception("Failed to upload image to Firebase");
-  //   }
-  // }
-
-  // Future<void> sendImagesToApi(List<String> imageUrls) async {
-  //   final String apiUrl =
-  //       '${EndPoints.vendorRignup}/${user.vendorId}/business-images';
-
-  //   // Create a list of UpdateBusinessImageDTO objects from the imageUrls list
-  //   List<UpdateBusinessImageDTO> imageDTOList = [];
-
-  //   for (int i = 0; i < imageUrls.length; i += 3) {
-  //     imageDTOList.add(UpdateBusinessImageDTO(
-  //       imgUrl1: imageUrls.length > i ? imageUrls[i] : '',
-  //       imgUrl2: imageUrls.length > i + 1 ? imageUrls[i + 1] : '',
-  //       imgUrl3: imageUrls.length > i + 2 ? imageUrls[i + 2] : '',
-  //     ));
-  //   }
-
-  //   // Convert the list of DTOs to JSON
-  //   List<Map<String, dynamic>> jsonDTOList =
-  //       imageDTOList.map((dto) => dto.toJson()).toList();
-
-  //   final response = await http.put(
-  //     Uri.parse(apiUrl),
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'Accept': 'application/json',
-  //     },
-  //     body: jsonEncode(jsonDTOList), // Send the list directly as the body
-  //   );
-  //   isLoading.value = false;
-
-  //   if (response.statusCode == 200) {
-  //   } else {}
   // }
 }

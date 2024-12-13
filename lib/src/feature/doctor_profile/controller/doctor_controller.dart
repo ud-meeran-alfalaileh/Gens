@@ -50,6 +50,7 @@ class DoctorController extends GetxController {
   RxInt srevice = 5.obs;
   RxString sreviceDescription = "".obs;
   RxString sreviceAdvice = "".obs;
+  RxString advice = ''.obs;
   RxDouble servicePrice = 0.0.obs;
   RxBool showReview = false.obs;
   Rx<Favourite?> favourite = Rx<Favourite?>(null);
@@ -105,8 +106,7 @@ class DoctorController extends GetxController {
         "vendorId": vendorId,
         "isFav": true,
       });
-      final response = await dioConsumer.post(EndPoints.postFav, body: body);
-      print(response.data);
+      await dioConsumer.post(EndPoints.postFav, body: body);
       getFav(vendorId);
     }
   }
@@ -182,7 +182,6 @@ class DoctorController extends GetxController {
     if (await networkInfo.isConnected) {
       try {
         final response = await dioConsumer.get(EndPoints.getVendor);
-        print(response.data);
         if (response.statusCode == StatusCode.ok) {
           try {
             final List<dynamic> jsonData = json.decode(response.data);
@@ -197,7 +196,6 @@ class DoctorController extends GetxController {
             }
             getDoctorLoading.value = false;
           } catch (e) {
-            print(e);
             Get.snackbar(
               "Error",
               "Failed to parse vendor data",
@@ -212,7 +210,6 @@ class DoctorController extends GetxController {
           getDoctorLoading.value = false;
         }
       } catch (e) {
-        print(e);
         getDoctorLoading.value = false;
       }
     } else {
@@ -348,6 +345,8 @@ class DoctorController extends GetxController {
     addingImage.value = true;
 
     if (selectedImage.path.isNotEmpty) {
+      Get.back();
+
       await uploadImageToFirebase(File(selectedImage.path), context);
     }
 
@@ -367,6 +366,7 @@ class DoctorController extends GetxController {
 
     if (selectedImage.path.isNotEmpty) {
       await uploadImageToFirebase(File(selectedImage.path), context);
+      Get.back();
     }
 
     addingImage.value = false;

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:gens/src/core/api/api_services.dart';
 import 'package:gens/src/core/api/end_points.dart';
 import 'package:gens/src/core/api/injection_container.dart';
@@ -11,11 +12,9 @@ import 'package:gens/src/core/api/netwok_info.dart';
 import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/core/utils/snack_bar.dart';
-import 'package:gens/src/feature/login/view/pages/login_page.dart';
 import 'package:gens/src/feature/profile/model/question_model.dart';
 import 'package:gens/src/feature/profile/model/user_model.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -34,6 +33,7 @@ class ProfileController extends GetxController {
   final passwordFromKey = GlobalKey<FormState>();
   RxString errorText = "".obs;
   Rx<SkinCareModel?> question = Rx<SkinCareModel?>(null);
+  RxBool allSectionStatus = false.obs;
   Rx<String?> imagefile = "".obs;
   RxBool isUpdating = false.obs;
   final email = TextEditingController();
@@ -359,10 +359,10 @@ class ProfileController extends GetxController {
     }
   }
 
-  void logout() async {
+  void logout(context) async {
     await user.clearId();
     OneSignal.logout();
-    Get.off(() => const LoginPage());
+    Phoenix.rebirth(context);
   }
 
   late RxBool isFirstDataIncomplete = false.obs;
@@ -370,52 +370,74 @@ class ProfileController extends GetxController {
   late RxBool isThirdDataIncomplete = false.obs;
   late RxBool isFourthDataIncomplete = false.obs;
   late RxBool isFifthDataIncomplete = false.obs;
+
+  Future<void> fetchSectionStatus() async {
+    try {
+      final response = await dioConsumer.get(
+        "https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/Questionnaire/sections-status/${user.userId}",
+      );
+      print(response.data);
+      if (response.statusCode == StatusCode.ok) {
+        final data = jsonDecode(response.data);
+        isFirstDataIncomplete.value = !data['PostSkinSectionAsync'];
+        isSecDataIncomplete.value = !data['PostHormonalGISectionAsync'];
+        isThirdDataIncomplete.value = !data['PostHormoneRelatedSectionAsync'];
+        isFourthDataIncomplete.value = !data['PostSkincareGoalsSectionAsync'];
+        isFifthDataIncomplete.value = !data['MainSkinCareGoals'];
+
+        // Check if all flags are false and update `allSectionStatus`
+        allSectionStatus.value = data['PostSkinSectionAsync'] == false &&
+                data['PostHormonalGISectionAsync'] == false &&
+                data['PostHormoneRelatedSectionAsync'] == false &&
+                data['PostSkincareGoalsSectionAsync'] == false &&
+                data['MainSkinCareGoals'] == false
+            ? false
+            : true;
+        print(allSectionStatus.value);
+      } else {
+        isFirstDataIncomplete.value = true;
+        isSecDataIncomplete.value = true;
+        isThirdDataIncomplete.value = true;
+        isFourthDataIncomplete.value = true;
+        isFifthDataIncomplete.value = true;
+
+        final message = jsonDecode(response.data)['message'];
+        if (message == "Questionnaire not found for the given user.") {
+          buildProfile.value = true;
+        }
+      }
+    } catch (e) {
+      print("Error in fetchSectionStatus: $e");
+    }
+  }
+
+  Future<void> fetchQuestionnaireDetails() async {
+    try {
+      final response = await dioConsumer.get(
+        "https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/Questionnaire/${user.userId}",
+      );
+
+      if (response.statusCode == StatusCode.ok) {
+        final data = jsonDecode(response.data);
+        question.value = SkinCareModel.fromJson(data);
+      }
+    } catch (e) {
+      print("Error in fetchQuestionnaireDetails: $e");
+    }
+  }
+
   Future<void> getQuestionDetails() async {
     if (await networkInfo.isConnected) {
       isSkinLoading.value = true;
       try {
-        final response = await dioConsumer.get(
-            "https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/Questionnaire/${user.userId}");
-
-        if (response.statusCode == StatusCode.ok) {
-          final data = jsonDecode(response.data);
-
-          question.value = SkinCareModel.fromJson(data);
-          isFirstDataIncomplete.value = ((question.value == null) ||
-              question.value!.skinTypeMorning.isEmpty ||
-              question.value!.skinConcerns == "" ||
-              question.value!.skinIssue == "");
-          isSecDataIncomplete.value = ((question.value == null) ||
-              question.value!.maritalStatus.isEmpty ||
-              question.value!.foodConsume.isEmpty ||
-              question.value!.issuesFrequentlyExperience.isEmpty);
-          isThirdDataIncomplete.value = ((question.value == null) ||
-              question.value!.waterConsume == "" ||
-              question.value!.exerciseRoutine == "" ||
-              question.value!.stressLevel == "" ||
-              question.value!.manageStress == "");
-          print(question.value!.mainSkincareGoals);
-          isFourthDataIncomplete.value = ((question.value == null) ||
-              question.value!.mainSkincareGoals == "");
-          print(isFourthDataIncomplete.value);
-          isFifthDataIncomplete.value =
-              ((question.value == null) || question.value!.b12Pills == "");
-          print("kfkfkfkfkfkfkf : $isFifthDataIncomplete");
-        } else {
-          isFirstDataIncomplete.value = true;
-          isSecDataIncomplete.value = true;
-          isThirdDataIncomplete.value = true;
-          isFourthDataIncomplete.value = true;
-          isFifthDataIncomplete.value = true;
-          final data = jsonDecode(response.data)['message'];
-          if (data == "Questionnaire not found for the given user.") {
-            buildProfile.value = true;
-          }
-        }
-
-        isSkinLoading.value = F;
+        await Future.wait([
+          fetchSectionStatus(),
+          fetchQuestionnaireDetails(),
+        ]);
       } catch (e) {
-        print(e);
+        print("Error in getQuestionDetails: $e");
+      } finally {
+        isSkinLoading.value = false;
       }
     }
   }

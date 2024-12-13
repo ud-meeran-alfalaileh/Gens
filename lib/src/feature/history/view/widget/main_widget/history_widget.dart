@@ -77,7 +77,8 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                           icon: SizedBox(
                               height: context.screenHeight * .04,
                               width: context.screenWidth * .1,
-                              child: const RotatingImage(image:   'assets/image/hourglass.png',)),
+                              child: const RotatingImage(
+                                  image: 'assets/image/hourGlasses.png')),
                         ),
                       ],
                     ),
@@ -287,6 +288,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                           type: 'reschadule',
                           bookId: history.id,
                           vendorPhone: history.vendorPhone,
+                          advice: '',
                         ));
                   },
                   child: Row(
@@ -340,16 +342,17 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                                       style: const TextStyle(color: Colors.red),
                                     ),
                                     onPressed: () async {
-                                      ////Delete
+                                      Get.back();
                                       await controller.canceleBooking(
                                         history.id,
                                         index,
                                         NotificationModel(
                                             title: "Appointment Canceled",
                                             message:
-                                                "${profileController.userData.value!.fName} their appointment. Please update your schedule accordingly.",
+                                                "${profileController.userData.value!.fName} Canceled their appointment. Please update your schedule accordingly.",
                                             imageURL: "imageURL",
-                                            externalIds: history.vendorPhone),
+                                            externalIds: history.vendorPhone,
+                                            route: 'vendorNavBarCalendar'),
                                       );
                                       Get.back();
                                     },
@@ -380,16 +383,16 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                     ],
                   ),
                 ),
-          history.note != ""
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    HistoryText.secText("Note"),
-                    HistoryText.thirdText(history.note!)
-                  ],
-                )
-              : const SizedBox.shrink()
+          // history.note != ""
+          // ? Column(
+          //     mainAxisAlignment: MainAxisAlignment.start,
+          //     crossAxisAlignment: CrossAxisAlignment.start,
+          //     children: [
+          //       HistoryText.secText("Note"),
+          //       HistoryText.thirdText(history.note!)
+          //     ],
+          //   )
+          // : const SizedBox.shrink()
         ],
       ),
     );
@@ -422,7 +425,7 @@ class _HistoryWidgetState extends State<HistoryWidget> {
                     ),
                     10.0.kW,
                     SizedBox(
-                      width: context.screenWidth * .5,
+                      width: context.screenWidth * .47,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,

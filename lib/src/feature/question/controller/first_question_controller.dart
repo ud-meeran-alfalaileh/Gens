@@ -5,6 +5,7 @@ import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/profile/controller/profile_controller.dart';
 import 'package:gens/src/feature/question/model/question_model.dart';
+import 'package:gens/src/feature/question/view/widget/main_widget/second_question_page.dart';
 import 'package:gens/src/feature/show_user/controller/show_user_controller.dart';
 import 'package:get/get.dart';
 
@@ -68,9 +69,9 @@ class FirstQuestionController extends GetxController {
   void printFormattedAnswers() {
     final formattedAnswers = formatAnswersForApi();
 
-    print('Formatted Answers:');
+ 
     formattedAnswers.forEach((questionName, answer) {
-      print('$questionName: $answer');
+ 
     });
   }
 
@@ -106,7 +107,7 @@ class FirstQuestionController extends GetxController {
           formattedAnswers['skinIssue'] = formattedAnswer;
           break;
         default:
-          print('Unhandled question name: $questionName');
+ 
           break;
       }
     });
@@ -122,19 +123,20 @@ class FirstQuestionController extends GetxController {
     selectedAnswers[questionName] = answers;
   }
 
-  Future<void> firstQuestionApi(gender) async {
+  Future<void> firstQuestionApi(gender, from) async {
     isloading.value = true;
     try {
       final formattedAnswers = formatAnswersForApi();
-      print('Formatted Answers: $formattedAnswers'); // Debug print
+     
 
       final body = jsonEncode(formattedAnswers);
       final response = await dioConsumer.post(EndPoints.firstPage, body: body);
-      print(response.data);
+   
       if (response.statusCode == StatusCode.ok) {
         await profileController.getQuestionDetails();
-        Get.back();
-        Get.back();
+        from == 'Update'
+            ? {Get.back(),}
+            :    Get.off(() => SecondQuestionPageView(gender: gender, from: from));
       }
       isloading.value = false;
     } catch (e) {

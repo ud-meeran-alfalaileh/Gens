@@ -4,26 +4,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Rotate and Pause Image'),
-        ),
-        body: Center(
-          child: const RotatingImage(image:   'assets/image/hourglass.png',),
-        ),
-      ),
-    );
-  }
-}
-
 class RotatingImage extends StatefulWidget {
   const RotatingImage({super.key,required this.image});
   final String image;

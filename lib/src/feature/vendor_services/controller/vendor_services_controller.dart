@@ -12,6 +12,7 @@ import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/core/utils/snack_bar.dart';
 import 'package:gens/src/feature/doctor_profile/model/service_model.dart';
+import 'package:gens/src/feature/nav_bar/view/main/navbar_page.dart';
 import 'package:gens/src/feature/vendor_navbar.dart/view/widget/main_widget/vendor_navbar_page.dart';
 import 'package:gens/src/feature/vendor_services/model/pre_service_model.dart';
 import 'package:gens/src/feature/vendor_services/view/widget/main_widget/add_service_widget.dart';
@@ -180,29 +181,28 @@ class VendorServicesController extends GetxController {
           "imageUrl": serviceImage.value,
           "isVisible": true
         });
-        print(body);
-        // final response = await http.put(
-        // Uri.parse('${EndPoints.ediSvendorServices}/$serviceId'),
-        // headers: {
-        //   'Accept': 'application/json',
-        //   'Content-Type': 'application/json',
-        // },
-        // body: body);
+        final response = await http.put(
+            Uri.parse('${EndPoints.ediSvendorServices}/$serviceId'),
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: body);
 
-        //   if (response.statusCode == StatusCode.ok) {
-        //     Get.back();
-        //     showSnackBar(
-        //         "Success", "Service Updated Successfully ", Colors.green);
-        //     await Future.delayed(const Duration(seconds: 1));
-        //     await getVendorServices();
-        //     clearServiceData();
-        //   } else {
-        //     Get.snackbar(
-        //       "Error",
-        //       "Failed to fetch vendors",
-        //       snackPosition: SnackPosition.BOTTOM,
-        //     );
-        //   }
+        if (response.statusCode == StatusCode.ok) {
+          Get.back();
+          showSnackBar(
+              "Success", "Service Updated Successfully ", Colors.green);
+          await Future.delayed(const Duration(seconds: 1));
+          await getVendorServices();
+          clearServiceData();
+        } else {
+          Get.snackbar(
+            "Error",
+            "Failed to fetch vendors",
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
       } catch (e) {
         if (kDebugMode) {
           print(e);
@@ -257,7 +257,6 @@ class VendorServicesController extends GetxController {
         if (response.statusCode == StatusCode.created) {
           try {
             serviceId.value = jsonDecode(response.data)['serviceId'];
-            print(serviceId.value);
             showSnackBar("Success", "Service Add Successfully ", Colors.green);
             await Future.delayed(const Duration(seconds: 1));
             addServiceServyPopUp(context);
@@ -299,18 +298,18 @@ class VendorServicesController extends GetxController {
           "title": "string",
           "period": int.parse(postInstructionDays.text),
         });
-        print(body);
         final response =
             await dioConsumer.post(EndPoints.postInstruction, body: body);
-        print(response.data);
-        print(response.statusCode);
+
         if (response.statusCode == StatusCode.ok) {
           final responseData = json.decode(response.data)['id'];
           instructionId.value = responseData;
           await addInstructionDay();
           isLoading.value = false;
 
-          Get.offAll(const VendorNavBar());
+          Get.offAll(const NavBarPage(
+            currentScreen: 1,
+          ));
           postInstructionDays.clear();
         } else {
           isLoading.value = false;
@@ -342,15 +341,15 @@ class VendorServicesController extends GetxController {
         };
         final response =
             await dioConsumer.post(EndPoints.medicalPlan, body: body);
-        print(response.data);
-        print(response.data);
 
         if (response.statusCode == StatusCode.created) {
           postInstructionDays.text = '0';
           daysOfInstruction.value = 0;
         }
       } catch (e) {
-        print(e);
+        if (kDebugMode) {
+          print(e);
+        }
       }
     }
   }
@@ -360,7 +359,6 @@ class VendorServicesController extends GetxController {
       try {
         final response =
             await dioConsumer.get("${EndPoints.medicalPlan}/service/$id");
-        print(response.data);
 
         if (response.statusCode == StatusCode.ok) {
           // Decode JSON to List<dynamic> to be properly typed
@@ -370,10 +368,11 @@ class VendorServicesController extends GetxController {
           final List<Prescription> prescriptions =
               responseData.map((json) => Prescription.fromJson(json)).toList();
           prescription.value = prescriptions;
-          print(prescriptions.length);
         }
       } catch (e) {
-        print(e);
+        if (kDebugMode) {
+          print(e);
+        }
       }
     }
   }
@@ -415,7 +414,9 @@ class VendorServicesController extends GetxController {
           Get.back();
         }
       } catch (e) {
-        print(e);
+        if (kDebugMode) {
+          print(e);
+        }
       }
     }
   }

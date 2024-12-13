@@ -7,20 +7,35 @@ import 'package:gens/src/feature/vendor_calendar/controller/vendor_calendar_cont
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-class VendorCalendarWidget extends StatelessWidget {
+class VendorCalendarWidget extends StatefulWidget {
   const VendorCalendarWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final controller = Get.put(VendorCalendarController());
+  State<VendorCalendarWidget> createState() => _VendorCalendarWidgetState();
+}
 
+class _VendorCalendarWidgetState extends State<VendorCalendarWidget> {
+  final controller = Get.put(VendorCalendarController());
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.event.clear();
+
+      controller
+          .getCalenderForVendor(); // Ensure this runs after the build phase.
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.lightAppColors.background,
       body: SafeArea(
         child: Stack(
           children: [
             Container(
-              padding: EdgeInsets.only(top: 10),
+              padding: const EdgeInsets.only(top: 10),
               height: context.screenHeight * .85,
               child: Obx(() => controller.isDay.value == false
                   ? _buildMonthCalendar(controller)
@@ -179,7 +194,9 @@ Color getStatusColor(String status) {
     case 'upcoming':
       return AppTheme.lightAppColors.primary; // Blue for upcoming status
     case 'pending':
-      return Colors.orangeAccent; // Orange for pending status
+      return Colors.orangeAccent;
+    case 'canceled':
+      return Colors.red;
     default:
       return Colors.grey; // Default color for unknown statuses
   }

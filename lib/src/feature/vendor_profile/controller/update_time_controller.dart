@@ -83,8 +83,7 @@ class UpdateTimeController extends GetxController {
       isUpdating(true);
       final response =
           await dioConsumer.get("${EndPoints.getSchadule}${user.vendorId}");
-      print(response.data);
-      if (response.statusCode == 200) {
+       if (response.statusCode == 200) {
         // Parsing the response as a Map
         final apiData = jsonDecode(response.data);
 
@@ -118,7 +117,7 @@ class UpdateTimeController extends GetxController {
         // Convert Schedule object to JSON string
         String jsonString = jsonEncode(schedule.toJson());
 
-        final response = await http.put(
+         await http.put(
           Uri.parse(
               'https://gts-b8dycqbsc6fqd6hg.uaenorth-01.azurewebsites.net/api/Schedule/UpdateWorkingDay/5'),
           headers: {
@@ -127,9 +126,7 @@ class UpdateTimeController extends GetxController {
           },
           body: jsonString, // Sending the JSON string
         );
-        print(jsonString);
-        print(response.body);
-        print(response.statusCode);
+     
         // Print response
 
         await Future.delayed(const Duration(milliseconds: 500));

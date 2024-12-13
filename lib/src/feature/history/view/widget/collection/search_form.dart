@@ -60,29 +60,44 @@ class _SearchFormState extends State<SearchForm> {
         child: Stack(
           children: [
             TextFormField(
-              // focusNode: _focusNode,
-              style: TextStyle(
-                fontFamily: 'Inter',
-                color: AppTheme.lightAppColors.primary,
-              ),
-              cursorColor: AppTheme.lightAppColors.primary,
-              readOnly: widget.search.enableText,
-              keyboardType: widget.search.type,
-              onTap: widget.search.ontap,
-              onChanged: widget.search.onChange,
-              controller: widget.search.searchController,
-              decoration: InputDecoration(
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-                floatingLabelStyle: TextStyle(
-                  color: AppTheme.lightAppColors.mainTextcolor,
-                ),
-                prefixIcon: Icon(
-                  Icons.search,
+                // focusNode: _focusNode,
+                style: TextStyle(
+                  fontFamily: 'Inter',
                   color: AppTheme.lightAppColors.primary,
                 ),
-                hintText: "searchDoctor".tr,
-              ),
-            ),
+                cursorColor: AppTheme.lightAppColors.primary,
+                readOnly: widget.search.enableText,
+                keyboardType: widget.search.type,
+                onTap: widget.search.ontap,
+                onChanged: widget.search.onChange,
+                controller: widget.search.searchController,
+                decoration: InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: AppTheme.lightAppColors.secondaryColor,
+                    ),
+                    filled: true,
+                    fillColor: AppTheme.lightAppColors.maincolor,
+                    focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.transparent,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                    border: const OutlineInputBorder(),
+                    enabledBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.transparent,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                    hintText: widget.search.hintText.tr,
+                    hintStyle: TextStyle(
+                      // fontFamily: "Inter",
+                      fontWeight: FontWeight.w400,
+                      letterSpacing:
+                          0.5, // Try a negative value to force smaller spacing
+                      color: AppTheme.lightAppColors.black.withOpacity(.5),
+                      fontSize: 14,
+                    ))),
           ],
         ),
       ),

@@ -67,7 +67,7 @@ class BookingController extends GetxController {
 
   User user = User();
   Future<void> postBooking(
-      serviceId, vendorId, context, type, bookId, vendorPhone) async {
+      serviceId, vendorId, context, type, bookId, vendorPhone,advice) async {
     isBooking.value = true;
     if (await networkInfo.isConnected) {
       try {
@@ -101,14 +101,16 @@ class BookingController extends GetxController {
                 message:
                     "${profileController.userData.value!.fName} has rescheduled their appointment. Please review the updated booking details.",
                 imageURL: "",
-                externalIds: vendorPhone));
+                externalIds: vendorPhone, route: 'vendorNav'));
           } else {
             notificationController.sendNotification(NotificationModel(
                 title: "New Appointment Booking Request",
                 message:
-                    "${profileController.userData.value!.fName} is requesting to book an appointment. Please review the details and confirm availability.",
+                    '''${profileController.userData.value!.fName} is requesting to book an appointment. Please review the details and confirm availability
+                    Advice : $advice
+                    ''',
                 imageURL: "",
-                externalIds: vendorPhone));
+                externalIds: vendorPhone, route: 'vendorNav'));
           }
 
           isBooking.value = false;

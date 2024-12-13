@@ -114,6 +114,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                   ],
                                   onTap: () {}),
                             ),
+
                             (20.5).kH,
                             Stack(
                               children: [

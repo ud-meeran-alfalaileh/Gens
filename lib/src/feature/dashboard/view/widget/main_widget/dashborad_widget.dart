@@ -24,7 +24,10 @@ class _DashboradWidgetState extends State<DashboradWidget> {
   final doctorController = Get.put(DoctorController());
   @override
   void initState() {
-    doctorController.getVendors();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      doctorController.getVendors();
+    });
+
     super.initState();
   }
 
@@ -41,9 +44,14 @@ class _DashboradWidgetState extends State<DashboradWidget> {
                   scrolledUnderElevation: 0,
                   pinned: false,
                   backgroundColor: Colors.transparent,
-                  expandedHeight: context.screenHeight * .1,
-                  flexibleSpace: Image.asset(
-                    "assets/image/Logo2 2.png",
+                  expandedHeight: context.screenHeight * 0.05,
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Image.asset(
+                      "assets/image/logo.png",
+                      height: context.screenHeight * 0.1,
+                      width: context.screenWidth * 0.15,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
                 SliverToBoxAdapter(

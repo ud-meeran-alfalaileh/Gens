@@ -26,7 +26,6 @@ class VendorCalendarController extends GetxController {
   @override
   void onInit() async {
     await user.loadToken();
-    getCalenderForVendor();
 
     // Add test events to the list
 
@@ -34,6 +33,7 @@ class VendorCalendarController extends GetxController {
   }
 
   Future<void> getCalenderForVendor() async {
+    event.clear();
     try {
       final response = await dioConsumer
           .get("${EndPoints.getVendorId}/${user.vendorId.value}/calendar");
@@ -44,9 +44,10 @@ class VendorCalendarController extends GetxController {
 
         List<VendorCalendarModel> eventList =
             evenData.map((json) => VendorCalendarModel.fromJson(json)).toList();
-        for (var x in eventList) {
-          event.add(x);
-        }
+        event.clear();
+
+        event.value = eventList;
+
         // event.value = eventList;
       }
     } catch (e) {

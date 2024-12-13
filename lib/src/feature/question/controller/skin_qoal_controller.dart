@@ -5,6 +5,7 @@ import 'package:gens/src/core/api/status_code.dart';
 import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/profile/controller/profile_controller.dart';
 import 'package:gens/src/feature/question/model/question_model.dart';
+import 'package:gens/src/feature/question/view/page/question_page.dart';
 import 'package:gens/src/feature/show_user/controller/show_user_controller.dart';
 import 'package:get/get.dart';
 
@@ -83,9 +84,8 @@ class SkinQoalController extends GetxController {
       );
 
       if (response.statusCode == StatusCode.ok) {
-        Get.back();
+        Get.off(const QuestionPage(gender: "", type: "", from: "Update"));
         await profileController.getQuestionDetails();
-
       }
       isloading.value = false;
     } catch (e) {

@@ -207,7 +207,7 @@ class _UserThreeImageState extends State<UserThreeImage> {
                 // height: context.screenHeight * .04,
                 child: AppButton(
                   onTap: () => showImageSourceModal(context, index),
-                  title: "Change",
+                  title: "Add",
                 ),
               ),
             ),

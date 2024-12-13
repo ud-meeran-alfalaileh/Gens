@@ -117,13 +117,15 @@ hourContainer(BuildContext context, BookingController controller) {
             ),
             child: Center(
               child: Text(
-                controller.workingHors[index], // Display time as HH:mm:00
+                controller.workingHors[index]
+                    .substring(0, 5), // Extract HH:mm from HH:mm:ss
                 style: TextStyle(
-                    color: controller.hourSelected.value ==
-                            controller.workingHors[index]
-                        ? AppTheme.lightAppColors.maincolor
-                        : AppTheme.lightAppColors.primary,
-                    fontSize: 15),
+                  color: controller.hourSelected.value ==
+                          controller.workingHors[index]
+                      ? AppTheme.lightAppColors.maincolor
+                      : AppTheme.lightAppColors.primary,
+                  fontSize: 15,
+                ),
               ),
             ),
           ),

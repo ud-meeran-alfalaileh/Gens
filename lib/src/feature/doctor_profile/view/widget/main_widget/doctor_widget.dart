@@ -171,8 +171,9 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                               (context.screenHeight * .03).kH,
                               Row(
                                 children: [
-                                  DoctorText.mainText( "About Me".tr),
-                                  DoctorText.mainText(controller.doctor.value!.name),
+                                  DoctorText.mainText("About Me".tr),
+                                  DoctorText.mainText(
+                                      controller.doctor.value!.name),
                                 ],
                               ),
                               (context.screenHeight * .01).kH,
@@ -359,9 +360,11 @@ class _DoctorWidgetState extends State<DoctorWidget> {
                                               vendorId: controller
                                                   .doctor.value!.vendorId,
                                               type: 'New',
-                                              bookId: 1,
+                                              bookId: controller.srevice.value,
                                               vendorPhone: controller
                                                   .doctor.value!.phone,
+                                              advice: controller
+                                                  .sreviceAdvice.value,
                                             ));
                                   },
                                   title: "Book Appointment".tr)

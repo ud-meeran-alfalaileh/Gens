@@ -216,7 +216,7 @@ class VendorRegisterWidget extends StatelessWidget {
               VendorRegisterText.mainText("name".tr),
               AuthForm(
                 formModel: FormModel(
-                  icon: Icons.person,
+                  icon: Icons.person_outline_outlined,
                   controller: controller.name,
                   enableText: false,
                   hintText: 'loginName'.tr,
@@ -339,7 +339,7 @@ class VendorRegisterWidget extends StatelessWidget {
               VendorRegisterText.mainText("phone".tr),
               AuthForm(
                 formModel: FormModel(
-                  icon: Icons.phone,
+                  icon: Icons.local_phone_outlined,
                   controller: controller.phone,
                   enableText: false,
                   hintText: 'phone'.tr,
@@ -373,7 +373,7 @@ class VendorRegisterWidget extends StatelessWidget {
                 children: [
                   AuthForm(
                     formModel: FormModel(
-                        icon: Icons.file_upload,
+                        icon: Icons.file_upload_outlined,
                         controller: controller.businessLicense,
                         enableText: true,
                         hintText: "Business License".tr,
@@ -426,23 +426,23 @@ class VendorRegisterWidget extends StatelessWidget {
                             ? context.screenHeight * .2
                             : context.screenHeight * .15,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            image: controller.imageFiles.value == ""
-                                ? null // No image if the value is empty
-                                : DecorationImage(
-                                    image: NetworkImage(controller.imageFiles
-                                        .value), // Assign NetworkImage
-                                    fit: BoxFit
-                                        .cover, // You can customize the fit
-                                  ),
-                            border: Border.all(
-                                color: AppTheme.lightAppColors.primary)),
+                          color: AppTheme.lightAppColors.maincolor,
+                          borderRadius: BorderRadius.circular(10),
+                          image: controller.imageFiles.value == ""
+                              ? null // No image if the value is empty
+                              : DecorationImage(
+                                  image: NetworkImage(controller
+                                      .imageFiles.value), // Assign NetworkImage
+                                  fit:
+                                      BoxFit.cover, // You can customize the fit
+                                ),
+                        ),
                         child: controller.imageFiles.value == ""
                             ? Center(
                                 child: Icon(
                                   Icons.upload_file_outlined,
                                   size: 50,
-                                  color: AppTheme.lightAppColors.primary,
+                                  color: AppTheme.lightAppColors.secondaryColor,
                                 ),
                               )
                             : null),
@@ -493,29 +493,20 @@ class VendorRegisterWidget extends StatelessWidget {
                   icon: const Icon(
                     Icons.arrow_drop_down,
                   ),
-                  focusColor: Colors.black,
+                  focusColor: Colors.transparent,
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.person_2_outlined,
-                        color: AppTheme.lightAppColors.primary),
+                    prefixIcon: Icon(
+                      Icons.person_2_outlined,
+                      color: AppTheme.lightAppColors.secondaryColor,
+                    ),
                     border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: AppTheme.lightAppColors.primary,
-                      ),
-                      borderRadius: BorderRadius.circular(5.0),
+                      borderRadius:
+                          BorderRadius.circular(10.0), // Set border radius
+                      borderSide: BorderSide.none, // Remove border side
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: AppTheme.lightAppColors.primary,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: AppTheme.lightAppColors.primary,
-                      ),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
+                    filled: true, // Enable fill color
+                    fillColor: AppTheme
+                        .lightAppColors.maincolor, // Set your fill color
                   ),
                   style: const TextStyle(
                     fontSize: 16.0,

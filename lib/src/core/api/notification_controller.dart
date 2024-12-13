@@ -16,13 +16,14 @@ class NotificationController extends GetxController {
         "title": model.title,
         "message": model.message,
         "imageUrl": model.imageURL,
+        "route": model.route,
         "externalIds": [model.externalIds.toString()]
       };
-      print(body);
+
       final response =
           await dioConsumer.post(EndPoints.sendNotification, body: body);
       print(response.data);
-      print(response.statusCode);
+      print(response.statuscode);
     } catch (e) {
       print(e);
     }
@@ -34,9 +35,11 @@ class NotificationModel {
   String message;
   String imageURL;
   String externalIds;
+  String route;
   NotificationModel({
     required this.title,
     required this.message,
+    required this.route,
     required this.imageURL,
     required this.externalIds,
   });

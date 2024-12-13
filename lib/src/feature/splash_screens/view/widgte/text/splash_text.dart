@@ -27,7 +27,7 @@ class SplashText {
         style: TextStyle(
           fontFamily: 'Inter',
           fontSize: 15,
-          color: AppTheme.lightAppColors.subTextcolor,
+          color: AppTheme.lightAppColors.black,
           fontWeight:
               FontWeight.w400, // Use FontWeight.bold for the bold variant
         ),

@@ -6,8 +6,10 @@ import 'package:gens/src/core/api/api_services.dart';
 import 'package:gens/src/core/api/end_points.dart';
 import 'package:gens/src/core/api/injection_container.dart';
 import 'package:gens/src/core/api/status_code.dart';
+import 'package:gens/src/core/user.dart';
 import 'package:gens/src/feature/profile/model/question_model.dart';
 import 'package:gens/src/feature/profile/model/user_model.dart';
+import 'package:gens/src/feature/show_user/model/note_model.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:http/http.dart' as http;
@@ -17,9 +19,11 @@ final DioConsumer dioConsumer = sl<DioConsumer>();
 class ShowUserController extends GetxController {
   RxBool isLoading = false.obs;
   Rx<SkinCareModel?> question = Rx<SkinCareModel?>(null);
+  RxList<NoteModel> notes = <NoteModel>[].obs;
   var updatedImage = Rx<File?>(null);
   RxList<String> imageUrls = List<String>.filled(3, '').obs;
   var message = TextEditingController();
+  User user = User();
   Rx<UserModel?> userData = UserModel(
           userId: 0,
           dateOfBirth: "password",
@@ -46,6 +50,12 @@ class ShowUserController extends GetxController {
     return age;
   }
 
+  @override
+  void onInit() {
+    user.loadToken();
+    super.onInit();
+  }
+
   Future<void> getUser(id) async {
     isLoading.value = true;
     try {
@@ -62,8 +72,7 @@ class ShowUserController extends GetxController {
       }
     } catch (e) {
       print(e);
-        isLoading.value = false;
-
+      isLoading.value = false;
     }
   }
 
@@ -104,10 +113,8 @@ class ShowUserController extends GetxController {
   Future<void> getQuestionDetails(id) async {
     isLoading.value = true;
     try {
-      final response = await dioConsumer.get(
-    "${EndPoints.getQuestion}/$id"
-      );
-    
+      final response = await dioConsumer.get("${EndPoints.getQuestion}/$id");
+
       if (response.statusCode == StatusCode.ok) {
         final data = jsonDecode(response.data);
         question.value = SkinCareModel.fromJson(data);
@@ -130,8 +137,7 @@ class ShowUserController extends GetxController {
     try {
       isLoading.value = true;
       final response = await dioConsumer.get(
-      apiUrl,
-        
+        apiUrl,
       );
       print(response.data);
       if (response.statusCode == 200) {
@@ -151,6 +157,21 @@ class ShowUserController extends GetxController {
     } catch (e) {
       print(e);
       isLoading.value = false;
+    }
+  }
+
+  Future<void> getNotes(userId) async {
+    try {
+      final response = await dioConsumer.get(
+          '${EndPoints.vendorHistory}/${user.vendorId.value}/user/$userId/services-and-bookings');
+      print(response.data);
+      print(response.data);
+      if (response.statusCode == StatusCode.ok) {
+        final responseData = jsonDecode(response.data);
+        notes.value = NoteModel.fromJsonList(responseData);
+      }
+    } catch (e) {
+      print(e);
     }
   }
 }

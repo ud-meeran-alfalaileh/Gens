@@ -64,7 +64,7 @@ class _AuthFormState extends State<AuthForm> {
                 hintStyle: TextStyle(
                     fontFamily: "Inter",
                     fontWeight: FontWeight.w400,
-                    letterSpacing: 1.5,
+                    letterSpacing: .5,
                     color: AppTheme.lightAppColors.black.withOpacity(.5),
                     fontSize: 14))
             : InputDecoration(
@@ -83,10 +83,12 @@ class _AuthFormState extends State<AuthForm> {
                     borderRadius: BorderRadius.all(Radius.circular(5))),
                 hintText: widget.formModel.hintText.tr,
                 hintStyle: TextStyle(
-                    fontFamily: "Inter",
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: 0.2,
-                    color: AppTheme.lightAppColors.black.withOpacity(.5),
-                    fontSize: 14)));
+                  // fontFamily: "Inter",
+                  fontWeight: FontWeight.w400,
+                  letterSpacing:
+                      0.5, // Try a negative value to force smaller spacing
+                  color: AppTheme.lightAppColors.black.withOpacity(.5),
+                  fontSize: 14,
+                )));
   }
 }

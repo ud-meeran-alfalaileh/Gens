@@ -7,8 +7,10 @@ import 'package:gens/src/feature/question/controller/second_question_controller.
 import 'package:get/get.dart';
 
 class SecResultsPage extends StatelessWidget {
-  const SecResultsPage({super.key, required this.gender});
+  const SecResultsPage({super.key, required this.gender,required this.from});
+  final String from;
   final String gender;
+
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +131,7 @@ class SecResultsPage extends StatelessWidget {
                       20.0.kH,
                       AppButton(
                           onTap: () {
-                            controller.secQuestionApi(gender);
+                            controller.secQuestionApi(gender,from);
                           },
                           title: "Next")
                     ],

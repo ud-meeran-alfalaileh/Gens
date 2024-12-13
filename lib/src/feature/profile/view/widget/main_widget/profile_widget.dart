@@ -6,6 +6,7 @@ import 'package:gens/src/config/sizes/size_box_extension.dart';
 import 'package:gens/src/config/sizes/sizes.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/core/user.dart';
+import 'package:gens/src/core/utils/app_button.dart';
 import 'package:gens/src/feature/fav_page/view/page/fav_page.dart';
 import 'package:gens/src/feature/profile/controller/profile_controller.dart';
 import 'package:gens/src/feature/profile/view/page/profile_row_container.dart';
@@ -45,6 +46,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     // controller.isUserLoading.value = true;
 
     await productController.getProduct();
+    await controller.fetchSectionStatus();
     // await imageController.getUserthreeImage();
     // await controller.getUser(user.userId, context);
   }
@@ -157,7 +159,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
 
   SizedBox _buildHeaderText(BuildContext context) {
     return SizedBox(
-      width: context.screenWidth * .46,
+      width: context.screenWidth * .45,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -251,7 +253,12 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           10.0.kW,
           GestureDetector(
             onTap: () {
-              controller.logout();
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return _buildLogoutDialog(context);
+                },
+              );
             },
             child: Image.asset(
               "assets/image/out.png",
@@ -260,6 +267,32 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           ),
         ],
       ),
+    );
+  }
+
+  AlertDialog _buildLogoutDialog(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: AppTheme.lightAppColors.background,
+      title: ProfileText.mainText("Confirmation".tr),
+      content: ProfileText.secText("Are you sure you want to log out?".tr),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(); // Close the dialog
+          },
+          child: ProfileText.mainText("Cancel".tr),
+        ),
+        SizedBox(
+          width: context.screenWidth * .3,
+          child: AppButton(
+            onTap: () {
+              Navigator.of(context).pop(); // Close the dialog
+              controller.logout(context); // Call the logout function
+            },
+            title: "logout".tr,
+          ),
+        ),
+      ],
     );
   }
 
@@ -282,7 +315,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           value: 1,
           child: Row(
             children: [
-              Icon(Icons.edit, color: Colors.black),
+              const Icon(Icons.edit, color: Colors.black),
               8.0.kH,
               Text(
                 "Edit Profile",
@@ -295,8 +328,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           value: 2,
           child: Row(
             children: [
-              Icon(Icons.language, color: Colors.black),
-              SizedBox(width: 8),
+              const Icon(Icons.language, color: Colors.black),
+              const SizedBox(width: 8),
               Text(
                 "Edit Language",
                 style: TextStyle(

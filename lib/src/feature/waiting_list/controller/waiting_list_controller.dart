@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gens/src/config/theme/theme.dart';
 import 'package:gens/src/core/api/api_services.dart';
@@ -54,9 +55,7 @@ class WaitingListController extends GetxController {
     formattedEnd.value = rangeEndDay.value != null
         ? DateFormat('yyyy-MM-dd').format(rangeEndDay.value!)
         : DateFormat('yyyy-MM-dd').format(rangeStartDay.value!);
-
-    print(formattedStart);
-    print(formattedEnd);
+ 
   }
  Future workingTime(BuildContext context, TextEditingController text) async {
     TimeOfDay? newTime = await showTimePicker(
@@ -166,12 +165,10 @@ class WaitingListController extends GetxController {
           "status": "Waiting"
         });
 
-        print(body);
-
+ 
         final response =
             await dioConsumer.post(EndPoints.addWaitingList, body: body);
-        print(response.data);
-        if (response.statusCode == StatusCode.ok ||
+         if (response.statusCode == StatusCode.ok ||
             response.statusCode == StatusCode.created) {
           isLoading.value = false;
           waitingSuccess(context);
@@ -180,13 +177,14 @@ class WaitingListController extends GetxController {
               message:
                   "A user has joined the waiting list for an appointment. Please monitor the list and update availability as needed.",
               imageURL: "",
-              externalIds: vendorPhone));
+              externalIds: vendorPhone, route: 'vendorWaitingList'));
         }
         isLoading.value = false;
 
-        print(response.data);
-      } catch (e) {
-        print(e); // For debugging purposes
+       } catch (e) {
+        if (kDebugMode) {
+          print(e);
+        } // For debugging purposes
       }
     } else {
       Get.snackbar(
